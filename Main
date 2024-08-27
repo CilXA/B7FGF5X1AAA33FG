@@ -1,4 +1,5 @@
 if key == "CilX-private-source/project-delta-v6" then
+print("correct key u pass my nigga")
 local sexyahh = true
 if sexyahh == true then
 	local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
