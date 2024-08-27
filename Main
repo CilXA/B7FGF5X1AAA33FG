@@ -1,3 +1,4 @@
+if key == "CilX-private-source/project-delta-v6" then
 local sexyahh = true
 if sexyahh == true then
 	local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -2320,4 +2321,5 @@ end
 
 else
 	print("Script is not active")
+end
 end
