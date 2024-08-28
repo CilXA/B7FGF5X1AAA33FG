@@ -1574,14 +1574,16 @@ end
 			if values.enabled["megaBullets"] and rp:FindFirstChild("AmmoTypes") then
 				for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 					if v then
+						v:SetAttribute("RecoilStrength", 0)
+					--[[
 						v:SetAttribute("ProjectileDrop", 0)
 						v:SetAttribute("Tracer", true)
 						v:SetAttribute("Drag", 0)
 						v:SetAttribute("MuzzleVelocity", 3000)
-						v:SetAttribute("RecoilStrength", 0)
 						if v:GetAttribute("AccuracyDeviation") then
 							v:SetAttribute("AccuracyDeviation", 0)
 						end
+]]
 					end
 				end
 			elseif not values.enabled["megaBullets"] and rp:FindFirstChild("AmmoTypes") then
