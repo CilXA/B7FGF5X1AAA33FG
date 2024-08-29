@@ -458,19 +458,26 @@ if sexyahh == true then
 						end
 					end
 				elseif values.misc["aimMode"] == "Silent" then
-					if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel") then
-						local head = closestCharacter:FindFirstChild("Head")
-						local vm = camera:FindFirstChild("ViewModel")
-						local ap = vm:FindFirstChild("AimPart")
-						local apc = vm:FindFirstChild("AimPartCanted")
-						local fc = vm:FindFirstChild("FakeCamera")
-						if ap and apc and fc then
-							if values.enabled["aimCheckVisible"] and isVisible(closestCharacter) or not values.enabled["aimCheckVisible"] then
-								ap.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
-								apc.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
-							end
-						end
-					end
+    local head = closestCharacter:FindFirstChild("Head")
+    local vm = camera:FindFirstChild("ViewModel")
+    local ap = vm:FindFirstChild("AimPart")
+    local apc = vm:FindFirstChild("AimPartCanted")
+    local fc = vm:FindFirstChild("FakeCamera")
+
+    if ap and apc and fc then
+        if values.enabled["aimCheckVisible"] and isVisible(closestCharacter) or not values.enabled["aimCheckVisible"] then
+            local predictionTime = 0.08
+            local predictedPosition = predictFuturePosition(closestCharacter, camera, predictionTime)
+
+            if predictedPosition then
+                ap.CFrame = CFrame.new(camera.CFrame.Position, predictedPosition)
+                apc.CFrame = CFrame.new(camera.CFrame.Position, predictedPosition)
+            end
+        end
+    end
+else
+    warn("Head or ViewModel not found")
+end
 elseif values.misc["aimMode"] == "OMEGA" then
     local closestDistance = math.huge
     local targetHeadPosition = nil
