@@ -1,5 +1,5 @@
 if key == "CilX-private-source/project-delta-v6F" then
-print("V1.0.4")
+print("V1.0.5")
 local sexyahh = true
 if sexyahh == true then
 	local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -458,6 +458,17 @@ if sexyahh == true then
 						end
 					end
 				elseif values.misc["aimMode"] == "Silent" then
+local function predictFuturePosition(target, camera, predictionTime)
+    local head = target:FindFirstChild("Head")
+    if not head then return nil end
+
+    local velocity = target.PrimaryPart and target.PrimaryPart.Velocity or Vector3.new(0, 0, 0)
+    local currentPosition = head.Position
+    local futurePosition = currentPosition + velocity * predictionTime
+    return futurePosition
+end
+
+if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel") then
     local head = closestCharacter:FindFirstChild("Head")
     local vm = camera:FindFirstChild("ViewModel")
     local ap = vm:FindFirstChild("AimPart")
@@ -466,7 +477,7 @@ if sexyahh == true then
 
     if ap and apc and fc then
         if values.enabled["aimCheckVisible"] and isVisible(closestCharacter) or not values.enabled["aimCheckVisible"] then
-            local predictionTime = 0.08
+            local predictionTime = 0.079
             local predictedPosition = predictFuturePosition(closestCharacter, camera, predictionTime)
 
             if predictedPosition then
@@ -478,6 +489,7 @@ if sexyahh == true then
 else
     warn("Head or ViewModel not found")
 end
+
 elseif values.misc["aimMode"] == "OMEGA" then
     local closestDistance = math.huge
     local targetHeadPosition = nil
