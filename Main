@@ -1,5 +1,5 @@
 if key == "CilX-private-source/project-delta-v6F" then
-print("V1.0.5")
+print("V1.0.7")
 local sexyahh = true
 if sexyahh == true then
 	local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -128,6 +128,7 @@ if sexyahh == true then
 			fov = 90,
 			aimMode = "Magnet",
 			tpWalkSpeed = 1,
+			silentprediction = 0.167,
 		}
 	}
 
@@ -458,13 +459,13 @@ if sexyahh == true then
 						end
 					end
 				elseif values.misc["aimMode"] == "Silent" then
-local function predictFuturePosition(target, camera, predictionTime)
+local function predictFuturePosition(target, camera, predictionFactor)
     local head = target:FindFirstChild("Head")
     if not head then return nil end
 
     local velocity = target.PrimaryPart and target.PrimaryPart.Velocity or Vector3.new(0, 0, 0)
     local currentPosition = head.Position
-    local futurePosition = currentPosition + velocity * predictionTime
+    local futurePosition = currentPosition + velocity * predictionFactor
     return futurePosition
 end
 
@@ -477,8 +478,17 @@ if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel"
 
     if ap and apc and fc then
         if values.enabled["aimCheckVisible"] and isVisible(closestCharacter) or not values.enabled["aimCheckVisible"] then
-            local predictionTime = 0.079
-            local predictedPosition = predictFuturePosition(closestCharacter, camera, predictionTime)
+            local distance = (head.Position - camera.CFrame.Position).Magnitude
+
+            local basePrediction = 0.05
+            local scalingFactor = 0.00025  -- Further reduced scaling factor
+            local silentPrediction = basePrediction + (distance * scalingFactor)
+
+            -- Optional: Add a small adjustment to fine-tune the prediction
+            local adjustmentFactor = 0.5
+            local adjustedPrediction = silentPrediction * adjustmentFactor
+
+            local predictedPosition = predictFuturePosition(closestCharacter, camera, adjustedPrediction)
 
             if predictedPosition then
                 ap.CFrame = CFrame.new(camera.CFrame.Position, predictedPosition)
@@ -1300,6 +1310,18 @@ end
 		Decimals = 1,
 		Callback = function(value)
 			values.misc["tpWalkSpeed"] = value
+		end
+	})
+
+	local silentpredictionSlider = aimSec:AddSlider({
+		Name = "Prediction (Silent)",
+		Flag = "silentpredictionSectionFlag",
+		Value = 0.167,
+		Min = 0,
+		Max = 2,
+		Decimals = 1,
+		Callback = function(value)
+			values.misc["silentprediction"] = value
 		end
 	})
 	--]
