@@ -1,5 +1,5 @@
 if key == "CilX-private-source/project-delta-v6F" then
-	print("V1.0.8")
+	print("V1.0.9")
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -481,7 +481,7 @@ if key == "CilX-private-source/project-delta-v6F" then
 				local distance = (head.Position - camera.CFrame.Position).Magnitude
 	
 				local basePrediction = 0.06
-				local scalingFactor = 0.00035  -- Further reduced scaling factor
+				local scalingFactor = 0.00028  -- Further reduced scaling factor
 				local silentPrediction = basePrediction + (distance * scalingFactor)
 	
 				-- Optional: Add a small adjustment to fine-tune the prediction
