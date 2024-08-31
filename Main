@@ -1,11 +1,12 @@
 if key == "wt4tn4witwgkawd24yt" then
-	print("V3.2.0")
+	local version = "V3.2.2"
+	print(version)
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
 		local Window = Library:CreateWindow({
 			Name = "CilX - Private",	
-			Themeable = {Credit = false, Info = {"V3 - By Cilerted"}, Background = "rbxassetid://12739424491"},
+			Themeable = {Credit = false, Info = {version .." - By Cilerted"}, Background = "rbxassetid://12739424491"},
 		})
 	
 		local workspace = game.Workspace
