@@ -1,5 +1,5 @@
 if key == "wt4tn4witwgkawd24yt" then
-	print("V3.1.4")
+	print("V3.1.6")
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
