@@ -1,5 +1,5 @@
 if key == "CilX-Private/4H6J-K8LQ-R0W3-MNP5-HJE2-AZW0" then
-	local version = "V4.0.1"
+	local version = "V4.0.2"
 	print(version)
 	local sexyahh = true
 	if sexyahh == true then
@@ -734,7 +734,7 @@ local ic3Connect
 local renderStepConnection
 local enabled = false  -- Spider effect is disabled by default
 local peek228 = false
-local speed = 1.8
+local speed = 3.8
 
 -- Function to Check for Walls
 local function seewalls(pos, lookvector)
