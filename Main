@@ -1,5 +1,5 @@
 if key == "wt4tn4witwgkawd24yt" then
-	print("V3.1.2")
+	print("V3.1.4")
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -496,10 +496,21 @@ if key == "wt4tn4witwgkawd24yt" then
 				end
 			end
 		end
-	else
-		warn("Head or ViewModel not found")
 	end
-	
+	elseif values.misc["aimMode"] == "SilentLock" then
+		if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel") then
+			local head = closestCharacter:FindFirstChild("Head")
+			local vm = camera:FindFirstChild("ViewModel")
+			local ap = vm:FindFirstChild("AimPart")
+			local apc = vm:FindFirstChild("AimPartCanted")
+			local fc = vm:FindFirstChild("FakeCamera")
+			if ap and apc and fc then
+				if values.enabled["aimCheckVisible"] and isVisible(closestCharacter) or not values.enabled["aimCheckVisible"] then
+					ap.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
+					apc.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
+				end
+			end
+		end
 	elseif values.misc["aimMode"] == "OMEGA" then
 		local closestDistance = math.huge
 		local targetHeadPosition = nil
@@ -1769,7 +1780,7 @@ if key == "wt4tn4witwgkawd24yt" then
 
 
                 		local megaBullets4Toggle = megaBulletsSec:AddToggle({
-			Name = "Bullet Velocity",
+			Name = "High Velocity",
 			Value = false,
 			Flag = 'megaBullets4ToggleFlag',
 			Callback = function(value)
@@ -1777,7 +1788,42 @@ if key == "wt4tn4witwgkawd24yt" then
 				if values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
 					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 						if v then
-							v:SetAttribute("MuzzleVelocity", 60000)
+							v:SetAttribute("MuzzleVelocity", 70000)
+                            --[[
+							v:SetAttribute("ProjectileDrop", 0)
+                            v:SetAttribute("RecoilStrength", 0)
+							v:SetAttribute("Tracer", true)
+							v:SetAttribute("Drag", 0)
+							v:SetAttribute("MuzzleVelocity", 3000)
+							if v:GetAttribute("AccuracyDeviation") then
+								v:SetAttribute("AccuracyDeviation", 0)
+							end
+                            ]]
+						end
+					end
+				elseif not values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
+					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+						if v then
+							local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
+							if realAmmo then
+								v:SetAttribute("MuzzleVelocity", realAmmo:GetAttribute("MuzzleVelocity"))
+							end
+						end
+					end
+				end
+			end
+		})
+
+		local megaBullets4Toggle = megaBulletsSec:AddToggle({
+			Name = "Low Velocity",
+			Value = false,
+			Flag = 'megaBullets4ToggleFlag',
+			Callback = function(value)
+				values.enabled["megaBullets4"] = value
+				if values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
+					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+						if v then
+							v:SetAttribute("MuzzleVelocity", 12015)
                             --[[
 							v:SetAttribute("ProjectileDrop", 0)
                             v:SetAttribute("RecoilStrength", 0)
@@ -1939,7 +1985,7 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 		--[ DROPDOWNS
 		local aimModeDrop = aimSec:AddDropdown({
 			Name = "Type",
-			List = {"Lock", "Silent", "OMEGA"},
+			List = {"Lock", "Silent", "SilentLock", "OMEGA"},
 			Flag = "aimModeDropFlag",
 			Callback = function(value)
 				values.misc["aimMode"] = value
