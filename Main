@@ -1,5 +1,5 @@
 if key == "CilX-Private/4H6J-K8LQ-R0W3-MNP5-HJE2-AZW0" then
-	local version = "V4.0.3"
+	local version = "V4.0.5"
 	print(version)
 	local sexyahh = true
 	if sexyahh == true then
@@ -1459,54 +1459,56 @@ spiderKeybind = spiderSec:AddKeybind({
 			end
 		})
 
-        		local loadedAnim2
-		local banger2Toggle = antiaimSec:AddToggle({
-			Name = "Flare Anti",
-			Value = false,
-			Flag = 'flareToggleFlag',
-			Callback = function(value)
-				values.enabled["flare"] = value
-				local function stopAnimation()
-					if loadedAnim2 then
-						loadedAnim2:Stop()
-						loadedAnim2:Destroy()
-						loadedAnim2 = nil
-					end
-				end
-	
-				local function startAnimation()
-					local char = LC.Character or LC.CharacterAdded:Wait()
-					local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-					if not humanoid then return end
-	
-					local anim2 = Instance.new("Animation")
-					anim2.AnimationId = "rbxassetid://10214311282"
-					loadedAnim2 = humanoid:LoadAnimation(anim1)
-					loadedAnim2:Play()
-					loadedAnim2:AdjustSpeed(1000000)
-				end
-	
-				local function onCharacterAdded(char)
-					local humanoid = char:WaitForChild("Humanoid")
-	
-					humanoid.Died:Connect(function()
-						stopAnimation()
-					end)
-	
-					if values.enabled["flare"] then
-						startAnimation()
-					end
-				end
-	
-				LC.CharacterAdded:Connect(onCharacterAdded)
-	
-				if value then
-					startAnimation()
-				else
-					stopAnimation()
-				end
-			end
-		})
+local loadedAnim2
+local banger2Toggle = antiaimSec:AddToggle({
+    Name = "Flare Anti",
+    Value = false,
+    Flag = 'flareToggleFlag',
+    Callback = function(value)
+        values.enabled["flare"] = value
+        local function stopAnimation1()
+            if loadedAnim2 then
+                loadedAnim2:Stop()
+                loadedAnim2:Destroy()
+                loadedAnim2 = nil
+            end
+        end
+
+        local function startAnimation1()
+            local char = LC.Character or LC.CharacterAdded:Wait()
+            local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+            if not humanoid then return end
+
+            local anim2 = Instance.new("Animation")
+            anim2.AnimationId = "rbxassetid://10214311282"
+            loadedAnim2 = humanoid:LoadAnimation(anim2)
+            loadedAnim2.Looped = true  -- Set the animation to loop
+            loadedAnim2:Play()
+            loadedAnim2:AdjustSpeed(50)
+        end
+
+        local function onCharacterAdded(char)
+            local humanoid = char:WaitForChild("Humanoid")
+
+            humanoid.Died:Connect(function()
+                stopAnimation1()
+            end)
+
+            if values.enabled["flare"] then
+                startAnimation1()
+            end
+        end
+
+        LC.CharacterAdded:Connect(onCharacterAdded)
+
+        if value then
+            startAnimation1()
+        else
+            stopAnimation1()
+        end
+    end
+})
+
 
 		local gnomeToggle = antiaimSec:AddToggle({
 			Name = "Gnome Mode",
