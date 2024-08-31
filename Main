@@ -1,5 +1,5 @@
 if key == "CilX-Private/4H6J-K8LQ-R0W3-MNP5-HJE2-AZW0" then
-	local version = "V4.0.2"
+	local version = "V4.0.3"
 	print(version)
 	local sexyahh = true
 	if sexyahh == true then
@@ -93,6 +93,7 @@ if key == "CilX-Private/4H6J-K8LQ-R0W3-MNP5-HJE2-AZW0" then
 				megaBullets = false,
 				jesus = false,
 				banger = false,
+                flare = false,
 				tpWalk = false,
 				bunnyHop = false,
 				aimAlwaysActivated = false,
@@ -1411,7 +1412,7 @@ spiderKeybind = spiderSec:AddKeybind({
 		--[ TOGGLES
 		local loadedAnim1
 		local bangerToggle = antiaimSec:AddToggle({
-			Name = "Anti Aim",
+			Name = "Dolphin Anti",
 			Value = false,
 			Flag = 'bangerToggleFlag',
 			Callback = function(value)
@@ -1458,6 +1459,55 @@ spiderKeybind = spiderSec:AddKeybind({
 			end
 		})
 
+        		local loadedAnim2
+		local banger2Toggle = antiaimSec:AddToggle({
+			Name = "Flare Anti",
+			Value = false,
+			Flag = 'flareToggleFlag',
+			Callback = function(value)
+				values.enabled["flare"] = value
+				local function stopAnimation()
+					if loadedAnim2 then
+						loadedAnim2:Stop()
+						loadedAnim2:Destroy()
+						loadedAnim2 = nil
+					end
+				end
+	
+				local function startAnimation()
+					local char = LC.Character or LC.CharacterAdded:Wait()
+					local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+					if not humanoid then return end
+	
+					local anim2 = Instance.new("Animation")
+					anim2.AnimationId = "rbxassetid://10214311282"
+					loadedAnim2 = humanoid:LoadAnimation(anim1)
+					loadedAnim2:Play()
+					loadedAnim2:AdjustSpeed(1000000)
+				end
+	
+				local function onCharacterAdded(char)
+					local humanoid = char:WaitForChild("Humanoid")
+	
+					humanoid.Died:Connect(function()
+						stopAnimation()
+					end)
+	
+					if values.enabled["flare"] then
+						startAnimation()
+					end
+				end
+	
+				LC.CharacterAdded:Connect(onCharacterAdded)
+	
+				if value then
+					startAnimation()
+				else
+					stopAnimation()
+				end
+			end
+		})
+
 		local gnomeToggle = antiaimSec:AddToggle({
 			Name = "Gnome Mode",
 			Value = false,
@@ -1468,6 +1518,8 @@ spiderKeybind = spiderSec:AddKeybind({
 			end
 		})
 	
+
+    
 		local tpWalkToggle = movementSec:AddToggle({
 			Name = "Speed Toggle",
 			Value = false,
