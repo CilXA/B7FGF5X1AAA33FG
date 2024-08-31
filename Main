@@ -1,5 +1,5 @@
 if key == "wt4tn4witwgkawd24yt" then
-	print("V3.1.6")
+	print("V3.1.7")
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -1777,10 +1777,10 @@ if key == "wt4tn4witwgkawd24yt" then
 		local megaBullets4Toggle = megaBulletsSec:AddToggle({
 			Name = "Low Velocity",
 			Value = false,
-			Flag = 'megaBullets4ToggleFlag',
+			Flag = 'megaBullets7ToggleFlag',
 			Callback = function(value)
-				values.enabled["megaBullets4"] = value
-				if values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
+				values.enabled["megaBullets7"] = value
+				if values.enabled["megaBullets7"] and rp:FindFirstChild("AmmoTypes") then
 					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 						if v then
 							v:SetAttribute("MuzzleVelocity", 12015)
@@ -1796,7 +1796,7 @@ if key == "wt4tn4witwgkawd24yt" then
                             ]]
 						end
 					end
-				elseif not values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
+				elseif not values.enabled["megaBullets7"] and rp:FindFirstChild("AmmoTypes") then
 					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 						if v then
 							local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
