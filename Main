@@ -497,7 +497,7 @@ if key == "wt4tn4witwgkawd24yt" then
 			end
 		end
 	end
-	elseif values.misc["aimMode"] == "SilentLock" then
+	elseif values.misc["aimMode"] == "OMEGA" then
 		if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel") then
 			local head = closestCharacter:FindFirstChild("Head")
 			local vm = camera:FindFirstChild("ViewModel")
@@ -509,46 +509,6 @@ if key == "wt4tn4witwgkawd24yt" then
 					ap.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
 					apc.CFrame = CFrame.new(camera.CFrame.Position, head.Position)
 				end
-			end
-		end
-	elseif values.misc["aimMode"] == "OMEGA" then
-		local closestDistance = math.huge
-		local targetHeadPosition = nil
-	
-		-- Iterate through all players in the Workspace
-		for _, playerModel in pairs(game.Workspace:GetChildren()) do
-			if playerModel:FindFirstChild("Humanoid") and playerModel:FindFirstChild("Head") then
-				local head = playerModel:FindFirstChild("Head")
-				local distance = (head.Position - workspace.CurrentCamera.CFrame.Position).Magnitude
-	
-				-- Find the closest player in front of the camera
-				local screenPosition, onScreen = workspace.CurrentCamera:WorldToViewportPoint(head.Position)
-	
-				if onScreen and distance < closestDistance then
-					closestDistance = distance
-					targetHeadPosition = head.Position
-				end
-			end
-		end
-	
-		-- If a target head position is found, simulate aiming at that position
-		if targetHeadPosition then
-			if values.enabled["aimCheckVisible"] and isVisible(targetHeadPosition) or not values.enabled["aimCheckVisible"] then
-				-- Adjust the camera's CFrame to simulate aiming at the target head
-				local camera = workspace.CurrentCamera
-				local aimCFrame = CFrame.new(camera.CFrame.Position, targetHeadPosition)
-				
-				-- Create a temporary camera to simulate aiming without affecting the actual camera
-				local tempCamera = Instance.new("Camera")
-				tempCamera.CFrame = aimCFrame
-				
-				-- Use this temporary camera's CFrame to simulate where the shot would go
-				-- Note: Actual shot simulation logic should be handled based on the game's shooting mechanism
-				-- Here we would simulate a hit check or similar based on the tempCamera's CFrame
-				-- Example: Check if the target head is within a certain range or angle from the tempCamera's position
-	
-				-- Clean up the temporary camera if needed
-				tempCamera:Destroy()
 			end
 		end
 	end
@@ -1788,7 +1748,7 @@ if key == "wt4tn4witwgkawd24yt" then
 				if values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
 					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 						if v then
-							v:SetAttribute("MuzzleVelocity", 70000)
+							v:SetAttribute("MuzzleVelocity", 60000)
                             --[[
 							v:SetAttribute("ProjectileDrop", 0)
                             v:SetAttribute("RecoilStrength", 0)
@@ -1985,7 +1945,7 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 		--[ DROPDOWNS
 		local aimModeDrop = aimSec:AddDropdown({
 			Name = "Type",
-			List = {"Lock", "Silent", "SilentLock", "OMEGA"},
+			List = {"Lock", "Silent", "OMEGA"},
 			Flag = "aimModeDropFlag",
 			Callback = function(value)
 				values.misc["aimMode"] = value
