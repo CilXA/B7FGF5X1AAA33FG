@@ -1,12 +1,12 @@
-if key == "wt4tn4witwgkawd24yt" then
-	local version = "V3.2.2"
+if key == "CilX-Private/4H6J-K8LQ-R0W3-MNP5-HJE2-AZW0" then
+	local version = "V4.0.1"
 	print(version)
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
 		local Window = Library:CreateWindow({
 			Name = "CilX - Private",	
-			Themeable = {Credit = false, Info = {version .." - By Cilerted"}, Background = "rbxassetid://12739424491"},
+			Themeable = {Credit = false, Info = {version .." - By Cilerted"}, Background = "rbxassetid://0"},
 		})
 	
 		local workspace = game.Workspace
@@ -98,6 +98,7 @@ if key == "wt4tn4witwgkawd24yt" then
 				aimAlwaysActivated = false,
 				aimTracer = false,
 				aimWallbang = false,
+                spider = false,
 			},
 			distance = {
 				player = 5000,
@@ -129,7 +130,8 @@ if key == "wt4tn4witwgkawd24yt" then
 				fov = 90,
 				aimMode = "Magnet",
 				tpWalkSpeed = 1,
-				silentprediction = 0.167,
+				grass = false,
+                gnome = false,
 			}
 		}
 	
@@ -587,12 +589,12 @@ if key == "wt4tn4witwgkawd24yt" then
 	
 		--[ UI ELEMENTS CREATING ]--
 		--[ TABS
-		local visualsTab = Window:CreateTab({Name = "Visuals"})
-		local playerTab = Window:CreateTab({Name = "Player"})
-		local combatTab = Window:CreateTab({Name = "Combat"})
+        local combatTab = Window:CreateTab({Name = "Combat"})
+        local playerTab = Window:CreateTab({Name = "Player"})
+		local visualsTab = Window:CreateTab({Name = "Esp"})
 		local worldTab = Window:CreateTab({Name = "World"})
-		local screenTab = Window:CreateTab({Name = "Screen"})
-		local miscTab = Window:CreateTab({Name = "Misc"})
+        local miscTab = Window:CreateTab({Name = "Misc"})
+		local screenTab = Window:CreateTab({Name = "Display"})
 		local settingsTab = Window:CreateTab({Name = "Settings"})
 		--]
 		--[ SECTIONS
@@ -602,15 +604,17 @@ if key == "wt4tn4witwgkawd24yt" then
 		local vehicleVisualsSec = visualsTab:CreateSection({Name = "VEHICLES", Side = "Right"})
 		local corpseVisualsSec = visualsTab:CreateSection({Name = "CORPSES", Side = "Right"})
 		local droppedItemVisualsSec = visualsTab:CreateSection({Name = "ITEMS", Side = "Right"})
+        local exitespSec = visualsTab:CreateSection({Name = "EXIT ESP", Side = "Right"})
 	
 		local movementSec = playerTab:CreateSection({Name = "MOVEMENT", Side = "Right"})
+        local antiaimSec = playerTab:CreateSection({Name = "ANTI AIM", Side = "Left"})
+        local spiderSec = playerTab:CreateSection({Name = "SPIDER", Side = "Left"})
 	
-		local screenEffectsSec = screenTab:CreateSection({Name = "SCREEN EFFECTS", Side = "Right"})
+		local screenEffectsSec = screenTab:CreateSection({Name = "DISPLAY EFFECTS", Side = "Right"})
 		local crosshairSec = screenTab:CreateSection({Name = "CROSSHAIR", Side = "Left"})
 	
 		local toggleVisualsSec = miscTab:CreateSection({Name = "VISUAL TOGGLES", Side = "Right"})
 		local inventoryCheckerSec = miscTab:CreateSection({Name = "INVENTORY VIEWER", Side = "Left"})
-		local skinChangerSec = miscTab:CreateSection({Name = "SKIN CHANGER", Side = "Left"})
 		local viewmodelSec = miscTab:CreateSection({Name = "VIEWMODEL", Side = "Right"})
 		local hitSoundSec = miscTab:CreateSection({Name = "HIT SOUND", Side = "Left"})
 	
@@ -624,7 +628,220 @@ if key == "wt4tn4witwgkawd24yt" then
 		local worldSettingsSec = worldTab:CreateSection({Name = "WORLD VISUALS", Side = "Right"})
 		--]
 		--][--
-	
+        --[ exit esp ]--
+
+        local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+
+local exitespon = false
+
+local function createExitEsp(drop)
+    local dropesp = Drawing.new("Text")
+    dropesp.Visible = false
+    dropesp.Center = true
+    dropesp.Outline = true
+    dropesp.Font = Enum.Font.Code
+    dropesp.Size = 6
+    dropesp.Color = Color3.fromRGB(255, 255, 255)
+
+    local function updateESP()
+        if exitespon and drop then
+            local drop_pos, drop_onscreen = Camera:WorldToViewportPoint(drop.Position)
+            if drop_onscreen then
+                dropesp.Position = Vector2.new(drop_pos.X, drop_pos.Y)
+                dropesp.Text = drop.Name .. "\n[" .. math.floor((Camera.CFrame.p - drop.Position).Magnitude * 0.28) .. "]"
+                dropesp.Visible = true
+            else
+                dropesp.Visible = false
+            end
+        else
+            dropesp.Visible = false
+        end
+    end
+
+    local renderstepped
+    renderstepped = RunService.RenderStepped:Connect(function()
+        updateESP()
+    end)
+
+    local function cleanup()
+        dropesp.Visible = false
+        dropesp:Remove()
+        if renderstepped then
+            renderstepped:Disconnect()
+        end
+    end
+
+    drop.AncestryChanged:Connect(function()
+        if not drop:IsDescendantOf(workspace.NoCollision.ExitLocations) then
+            cleanup()
+        end
+    end)
+
+    return cleanup
+end
+
+local activeExitEsp = {}
+
+local function toggleExitEsp(value)
+    exitespon = value
+
+    if value then
+        for _, drop in next, workspace.NoCollision.ExitLocations:GetChildren() do
+            local cleanup = createExitEsp(drop)
+            table.insert(activeExitEsp, cleanup)
+        end
+
+        workspace.NoCollision.ExitLocations.ChildAdded:Connect(function(drop)
+            local cleanup = createExitEsp(drop)
+            table.insert(activeExitEsp, cleanup)
+        end)
+    else
+        for _, cleanup in ipairs(activeExitEsp) do
+            cleanup()
+        end
+        activeExitEsp = {}
+    end
+end
+
+local exitespToggle = exitespSec:AddToggle({
+    Name = "Name",
+    Value = false,
+    Flag = 'ExitEspToggleFlag',
+    Callback = function(value)
+        toggleExitEsp(value)
+    end
+})
+
+if exitespToggle.Value then
+    toggleExitEsp(true)
+end
+
+
+        --[ SPIDER ]--
+
+-- Required Services
+local uis = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local players = game:GetService("Players")
+local plr = players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- Initialize Variables
+local spiderToggle
+local spiderKeybind
+local ic3Connect
+local renderStepConnection
+local enabled = false  -- Spider effect is disabled by default
+local peek228 = false
+local speed = 1.8
+
+-- Function to Check for Walls
+local function seewalls(pos, lookvector)
+    if pos and lookvector then
+        local ray = Ray.new(pos, (lookvector).Unit * 2)
+        local part = workspace:FindPartOnRayWithIgnoreList(ray, { plr.Character, camera })
+
+        return part ~= nil  -- Return true if a part is hit, otherwise false
+    end
+    return false
+end
+
+-- Function to Enable/Disable Spider Effect
+local function toggleSpiderEffect(state)
+    if state == enabled then
+        return  -- No change if the state is already set
+    end
+    
+    enabled = state
+    if enabled then
+        -- Enable Spider Effect
+        renderStepConnection = RunService.RenderStepped:Connect(function(deltaTime)
+            local chr = plr.Character
+            if chr and chr:FindFirstChild("HumanoidRootPart") then
+                local hrp = chr.HumanoidRootPart
+                local result
+
+                if peek228 then
+                    result = seewalls(hrp.Position, hrp.CFrame.LookVector)
+                else
+                    local cframe = hrp.CFrame * CFrame.new(0, -2.5, 0)
+                    result = seewalls(cframe.Position, cframe.LookVector)
+                end
+
+                if result then
+                    -- Adjust the speed dynamically to prevent slowing down when climbing up
+                    local climbSpeed = speed * 10 * deltaTime
+                    hrp.CFrame = hrp.CFrame * CFrame.new(0, climbSpeed, 0)
+
+                    -- Reset velocities to prevent physics glitches
+                    for _, v in pairs(chr:GetDescendants()) do
+                        if v:IsA("BasePart") then
+                            v.Velocity = Vector3.new(0, 0, 0)
+                            v.RotVelocity = Vector3.new(0, 0, 0)
+                        end
+                    end
+                end
+            end
+        end)
+    else
+        -- Disable Spider Effect
+        if renderStepConnection then
+            renderStepConnection:Disconnect()
+            renderStepConnection = nil
+        end
+        
+        -- Ensure that player movement is reset and no residual effects remain
+        local chr = plr.Character
+        if chr then
+            for _, v in pairs(chr:GetDescendants()) do
+                if v:IsA("BasePart") then
+                    v.Velocity = Vector3.new(0, 0, 0)
+                    v.RotVelocity = Vector3.new(0, 0, 0)
+                end
+            end
+        end
+    end
+end
+
+-- Toggle Initialization
+spiderToggle = spiderSec:AddToggle({
+    Name = "Spider",
+    Value = false,  -- Ensure the toggle is off by default
+    Flag = 'spiderToggleFlag',
+    Callback = function(value)
+        values.misc["spider"] = value
+        toggleSpiderEffect(value)
+    end
+})
+
+-- Keybind Configuration
+spiderKeybind = spiderSec:AddKeybind({
+    Name = "Spider Bind",
+    Value = Enum.KeyCode.Z,  -- Set to Z key
+    Flag = "SpiderKeybindFlag",
+    Pressed = function(io, gp)
+        if gp then return end  -- Prevent GUI element input from triggering the bind
+
+        -- Disconnect previous connection if it exists
+        if ic3Connect then
+            ic3Connect:Disconnect()
+        end
+
+        ic3Connect = uis.InputEnded:Connect(function(input, _)
+            if input.KeyCode == io.KeyCode then
+                ic3Connect:Disconnect()
+                -- Toggle Spider Effect based on current state
+                local newState = not enabled
+                toggleSpiderEffect(newState)
+                -- Update the main toggle to reflect the new state
+                spiderToggle:Set(newState)
+            end
+        end)
+    end,
+})
+
+
 		--[ SHIT ]--
 	
 		--[ VISUALS {{
@@ -1193,7 +1410,7 @@ if key == "wt4tn4witwgkawd24yt" then
 	
 		--[ TOGGLES
 		local loadedAnim1
-		local bangerToggle = movementSec:AddToggle({
+		local bangerToggle = antiaimSec:AddToggle({
 			Name = "Anti Aim",
 			Value = false,
 			Flag = 'bangerToggleFlag',
@@ -1240,6 +1457,16 @@ if key == "wt4tn4witwgkawd24yt" then
 				end
 			end
 		})
+
+		local gnomeToggle = antiaimSec:AddToggle({
+			Name = "Gnome Mode",
+			Value = false,
+			Flag = 'gnomeToggleFlag',
+			Callback = function(value)
+				values.misc["gnome"] = value
+                game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(value and 0/0 or 0)
+			end
+		})
 	
 		local tpWalkToggle = movementSec:AddToggle({
 			Name = "Speed Toggle",
@@ -1282,18 +1509,6 @@ if key == "wt4tn4witwgkawd24yt" then
 			Decimals = 1,
 			Callback = function(value)
 				values.misc["tpWalkSpeed"] = value
-			end
-		})
-	
-		local silentpredictionSlider = aimSec:AddSlider({
-			Name = "Prediction (Silent)",
-			Flag = "silentpredictionSectionFlag",
-			Value = 0.167,
-			Min = 0,
-			Max = 2,
-			Decimals = 1,
-			Callback = function(value)
-				values.misc["silentprediction"] = value
 			end
 		})
 		--]
@@ -1369,6 +1584,20 @@ if key == "wt4tn4witwgkawd24yt" then
 							end
 						end
 					end
+				end
+			end
+		})
+
+				local grassToggle = worldSettingsSec:AddToggle({
+			Name = "No Grass",
+			Value = false,
+			Flag = "grassToggleFlag",
+			Callback = function(value)
+				values.enabled["grass"] = value
+				if values.enabled["grass"] then
+					sethiddenproperty(game:GetService("Workspace").Terrain, "Decoration", not grass)
+				else
+					sethiddenproperty(game:GetService("Workspace").Terrain, "Decoration", not grass)
 				end
 			end
 		})
@@ -1465,7 +1694,7 @@ if key == "wt4tn4witwgkawd24yt" then
 	
 		--[ TOGGLES 
 		local noScreenEffectsToggle = screenEffectsSec:AddToggle({
-			Name = "No screen effects",
+			Name = "No visual effects",
 			Value = false,
 			Flag = 'noScreenEffectsToggleFlag',
 			Callback = function(value)
@@ -1999,31 +2228,6 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 	
 		--[ TOGGLES
 	
-		local skinChangerToggle = skinChangerSec:AddToggle({
-			Name = "SkinChanger",
-			Value = false,
-			Flag = 'skinChangerToggleFlag',
-			Callback = function(value)
-				values.enabled["skinChanger"] = value
-				while values.enabled["skinChanger"] do task.wait(1)
-					local DV2 = game.ReplicatedStorage.ViewModels:FindFirstChild("DV2")
-					local Karambit = game.ReplicatedStorage.ViewModels:FindFirstChild("Karambit")
-					if DV2 and Karambit then
-						DV2.Name = ("DV2real")
-						Karambit.Name = ("DV2")
-					end
-					if rp:FindFirstChild("Players") and rp.Players:FindFirstChild(LC.Name) then
-						local plr = rp.Players:FindFirstChild(LC.Name)
-						for i,v in plr:GetDescendants() do
-							if v:FindFirstChild("ItemProperties") and skins[v.Name] then
-								v.ItemProperties:SetAttribute("Skin", skins[v.Name])
-							end
-						end
-					end
-				end
-			end
-		})
-	
 		local customViewModelToggle = viewmodelSec:AddToggle({
 			Name = "Custom ViewModel",
 			Value = false,
@@ -2204,7 +2408,7 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 	
 		local icConnect
 		local inventoryCheckerKeybind = inventoryCheckerSec:AddKeybind({
-			Name = "InventoryChecker",
+			Name = "Inventory Viewer",
 			Value = Enum.KeyCode.Backquote,
 			Flag = "inventoryCheckerKeyFlag",
 			Mode = "Hold",
