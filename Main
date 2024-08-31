@@ -1,5 +1,5 @@
 if key == "wt4tn4witwgkawd24yt" then
-	print("V3.1.8")
+	print("V3.2.0")
 	local sexyahh = true
 	if sexyahh == true then
 		local Library, Flags, Subs = loadstring(game:HttpGet("https://pastebin.com/raw/JnTFzr8J"))()
@@ -497,7 +497,7 @@ if key == "wt4tn4witwgkawd24yt" then
 			end
 		end
 	end
-	elseif values.misc["aimMode"] == "OMEGA" then
+	elseif values.misc["aimMode"] == "NP Silent" then
 		if closestCharacter:FindFirstChild("Head") and camera:FindFirstChild("ViewModel") then
 			local head = closestCharacter:FindFirstChild("Head")
 			local vm = camera:FindFirstChild("ViewModel")
@@ -1748,7 +1748,7 @@ if key == "wt4tn4witwgkawd24yt" then
 				if values.enabled["megaBullets4"] and rp:FindFirstChild("AmmoTypes") then
 					for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 						if v then
-							v:SetAttribute("MuzzleVelocity", 60000)
+							v:SetAttribute("MuzzleVelocity", 36789)
                             --[[
 							v:SetAttribute("ProjectileDrop", 0)
                             v:SetAttribute("RecoilStrength", 0)
@@ -1945,7 +1945,7 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 		--[ DROPDOWNS
 		local aimModeDrop = aimSec:AddDropdown({
 			Name = "Type",
-			List = {"Lock", "Silent", "OMEGA"},
+			List = {"Lock", "Silent", "NP Silent"},
 			Flag = "aimModeDropFlag",
 			Callback = function(value)
 				values.misc["aimMode"] = value
