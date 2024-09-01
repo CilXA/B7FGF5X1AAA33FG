@@ -1,5 +1,5 @@
 if key == "197854239824539802453908524309782543908" then
-	local version = "V4.0.5"
+	local version = "V4.0.7"
 	print(version)
 	local sexyahh = true
 	if sexyahh == true then
@@ -22,7 +22,7 @@ if key == "197854239824539802453908524309782543908" then
 		local mainFolder = cg:FindFirstChild("Exothium.xyz") or Instance.new("Folder", cg); mainFolder.Name = "Exothium.xyz"
 		local sg = mainFolder:FindFirstChild("1Exothium.xyz") or Instance.new("ScreenGui", mainFolder); sg.Name = "1Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 		local loopsEnabled = true
-		local defaultColor = Color3.fromRGB(153, 0, 255)
+		local defaultColor = Color3.fromRGB(204, 255, 255)
 		local realAmmoTypes = rp:FindFirstChild("realAmmoTypes") or rp:FindFirstChild("AmmoTypes") and rp:FindFirstChild("AmmoTypes"):Clone(); if realAmmoTypes then realAmmoTypes.Name = "realAmmoTypes" end
 		local fovCircle
 		local aimTracer
@@ -32,28 +32,28 @@ if key == "197854239824539802453908524309782543908" then
 		--[ TABLES
 		local values = {
 			color = {
-				playerEsp = Color3.fromRGB(153, 0, 255),
-				playerEspOutline = Color3.fromRGB(153, 0, 255),
-				playerNameTag = Color3.fromRGB(153, 0, 255),
-				playerBox = Color3.fromRGB(153, 0, 255),
-				playerBoxOutline = Color3.fromRGB(107, 0, 179),
+				playerEsp = Color3.fromRGB(204, 255, 255),
+				playerEspOutline = Color3.fromRGB(204, 255, 255),
+				playerNameTag = Color3.fromRGB(204, 255, 255),
+				playerBox = Color3.fromRGB(204, 255, 255),
+				playerBoxOutline = Color3.fromRGB(0, 179, 179),
 				playerHealthTag = Color3.fromRGB(0,255,0),
-				playerDistanceTag = Color3.fromRGB(153, 0, 255),
-				npcEsp = Color3.fromRGB(102, 102, 255),
-				npcNameTag = Color3.fromRGB(102, 102, 255),
-				npcBox = Color3.fromRGB(102, 102, 255),
-				npcBoxOutline = Color3.fromRGB(0, 0, 128),
-				npcHealthTag = Color3.fromRGB(102, 102, 255),
-				npcDistanceTag = Color3.fromRGB(102, 102, 255),
-				vehicleEsp = Color3.fromRGB(153, 0, 255),
-				vehicleNameTag = Color3.fromRGB(153, 0, 255),
-				containerEsp = Color3.fromRGB(153, 0, 255),
-				containerNameTag = Color3.fromRGB(153, 0, 255),
-				corpseNameTag = Color3.fromRGB(82, 0, 204),
-				droppedItemNameTag = Color3.fromRGB(82, 0, 204),
-				viewmodel = Color3.fromRGB(153, 0, 255),
-				crosshair = Color3.fromRGB(153, 0, 255),
-				aimFov = Color3.fromRGB(153, 0, 255),
+				playerDistanceTag = Color3.fromRGB(204, 255, 255),
+				npcEsp = Color3.fromRGB(0, 230, 230),
+				npcNameTag = Color3.fromRGB(0, 230, 230),
+				npcBox = Color3.fromRGB(0, 230, 230),
+				npcBoxOutline = Color3.fromRGB(0, 230, 230),
+				npcHealthTag = Color3.fromRGB(0, 230, 230),
+				npcDistanceTag = Color3.fromRGB(0, 230, 230),
+				vehicleEsp = Color3.fromRGB(204, 255, 255),
+				vehicleNameTag = Color3.fromRGB(204, 255, 255),
+				containerEsp = Color3.fromRGB(204, 255, 255),
+				containerNameTag = Color3.fromRGB(204, 255, 255),
+				corpseNameTag = Color3.fromRGB(0, 230, 230),
+				droppedItemNameTag = Color3.fromRGB(0, 230, 230),
+				viewmodel = Color3.fromRGB(204, 255, 255),
+				crosshair = Color3.fromRGB(204, 255, 255),
+				aimFov = Color3.fromRGB(204, 255, 255),
 			},
 			transparency = {
 				playerEsp = 0.70,
@@ -2280,93 +2280,229 @@ local megaBullets6Toggle = megaBulletsSec:AddToggle({
 	
 		--[ MISC {{
 	
-		--[ TOGGLES
-	
-		local customViewModelToggle = viewmodelSec:AddToggle({
-			Name = "Custom ViewModel",
-			Value = false,
-			Flag = 'customViewModelToggleFlag',
-			Callback = function(value)
-				values.enabled["customViewmodel"] = value
-				local function updateVm(vm)
-					if values.enabled["customViewmodel"] then
-						if not vm:FindFirstChild("Item") then return end
-						for i, v in ipairs(vm.Item:GetDescendants()) do
-							if v:IsA("MeshPart") or v:IsA("Part") then
-								if v.Transparency ~= 1 then
-									v.Transparency = values.transparency["viewmodel"]
-								end
-								if v.Material ~= values.misc["viewmodelMaterial"] then
-									v.Material = values.misc["viewmodelMaterial"]
-								end
-							end
-						end
-						for _, d in ipairs(vm:GetChildren()) do
-							if d:IsA("MeshPart") or d:IsA("Part") then
-								if d.Transparency ~= 1 then
-									d.Transparency = values.transparency["viewmodel"]
-								end
-								if d.Material ~= values.misc["viewmodelMaterial"] then
-									d.Material = values.misc["viewmodelMaterial"]
-								end
-							elseif d:IsA("Model") or d:IsA("Folder") then
-								for _, s in ipairs(d:GetChildren()) do
-									if s:IsA("MeshPart") or s:IsA("Part") then
-										if s.Transparency ~= 1 then
-											s.Transparency = values.transparency["viewmodel"]
-										end
-										if s.Material ~= values.misc["viewmodelMaterial"] then
-											s.Material = values.misc["viewmodelMaterial"]
-										end
-									end
-								end
-							end
-						end
-					else
-						if not vm:FindFirstChild("Item") then return end
-						for i, v in ipairs(vm.Item:GetDescendants()) do
-							if v:IsA("MeshPart") or v:IsA("Part") then
-								if v.Transparency ~= 1 and v.Transparency ~= 0 then
-									v.Transparency = 0
-								end
-								if v.Material ~= Enum.Material.Plastic then
-									v.Material = Enum.Material.Plastic
-								end
-							end
-						end
-						for _, d in ipairs(vm:GetChildren()) do
-							if d:IsA("MeshPart") or d:IsA("Part") then
-								if d.Transparency ~= 1 and d.Transparency ~= 0 then
-									d.Transparency = 0
-								end
-								if d.Material ~= Enum.Material.Plastic then
-									d.Material = Enum.Material.Plastic
-								end
-							elseif d:IsA("Model") or d:IsA("Folder") then
-								for _, s in ipairs(d:GetChildren()) do
-									if s:IsA("MeshPart") or s:IsA("Part") then
-										if s.Transparency ~= 1 and s.Transparency ~= 0 then
-											s.Transparency = 0
-										end
-										if s.Material ~= Enum.Material.Plastic then
-											s.Material = Enum.Material.Plastic
-										end
-									end
-								end
-							end
-						end
-					end
-				end
-				while values.enabled["customViewmodel"] do task.wait(0.1)
-					if camera:FindFirstChild("ViewModel") then
-						updateVm(camera.ViewModel)
-					end
-				end
-			end
-		})
-	
-		table.insert(toggles, skinChangerToggle)
-		table.insert(toggles, customViewModelToggle)
+		--[ TOGGLES viewmodel
+			
+		-- Chams UI Elements
+local mainChamsToggle = viewmodelSec:AddToggle({
+    Name = "Toggle Chams",
+    Value = false,
+    Flag = 'MainVisualChamsEnabled',
+    Callback = function(value)
+        toggleChams(value)
+    end
+})
+
+local characterChamsToggle = viewmodelSec:AddToggle({
+    Name = "Character Chams",
+    Value = false,
+    Flag = 'CharacterChamsFlag',
+    Callback = function(value)
+        toggleCharacterChams(value)
+    end
+})
+
+local characterChamsColor = viewmodelSec:AddColorPicker({
+    Name = 'Character Chams Color',
+    Flag = 'CharacterChamsColorFlag',
+    Value = Color3.new(1, 1, 1),
+    Callback = function(color)
+        updateCharacterChamsColor(color)
+    end
+})
+
+local armChamsToggle = viewmodelSec:AddToggle({
+    Name = "Arm Chams",
+    Value = false,
+    Flag = 'ArmChamsFlag',
+    Callback = function(value)
+        toggleArmChams(value)
+    end
+})
+
+local armChamsColor = viewmodelSec:AddColorPicker({
+    Name = 'Arm Chams Color',
+    Flag = 'ArmChamsColorFlag',
+    Value = Color3.new(1, 1, 1),
+    Callback = function(color)
+        updateArmChamsColor(color)
+    end
+})
+
+local gunChamsToggle = viewmodelSec:AddToggle({
+    Name = "Gun Chams",
+    Value = false,
+    Flag = 'GunChamsFlag',
+    Callback = function(value)
+        toggleGunChams(value)
+    end
+})
+
+local gunChamsColor = viewmodelSec:AddColorPicker({
+    Name = 'Gun Chams Color',
+    Flag = 'GunChamsColorFlag',
+    Value = Color3.new(1, 1, 1),
+    Callback = function(color)
+        updateGunChamsColor(color)
+    end
+})
+
+local characterChamsMaterial = viewmodelSec:AddDropdown({
+    Name = "Character Chams Material",
+    List = { "ForceField", "Neon", "SmoothPlastic", "Glass" },
+    Flag = "CharacterChamsMaterialFlag",
+    Value = "SmoothPlastic",
+    Callback = function(material)
+        updateCharacterChamsMaterial(material)
+    end
+})
+
+local armChamsMaterial = viewmodelSec:AddDropdown({
+    Name = "Arm Chams Material",
+    List = { "ForceField", "Neon", "SmoothPlastic", "Glass" },
+    Flag = "ArmChamsMaterialFlag",
+    Value = "SmoothPlastic",
+    Callback = function(material)
+        updateArmChamsMaterial(material)
+    end
+})
+
+local gunChamsMaterial = viewmodelSec:AddDropdown({
+    Name = "Gun Chams Material",
+    List = { "ForceField", "Neon", "SmoothPlastic", "Glass" },
+    Flag = "GunChamsMaterialFlag",
+    Value = "SmoothPlastic",
+    Callback = function(material)
+        updateGunChamsMaterial(material)
+    end
+})
+
+-- Functions to Handle Chams Logic
+function toggleChams(value)
+    if value then
+        print("Chams Enabled")
+        draw:changevis(true)
+    else
+        print("Chams Disabled")
+        draw:changevis(false)
+    end
+end
+
+function toggleCharacterChams(value)
+    if value then
+        print("Character Chams Enabled")
+        updateCharacterChams()
+    else
+        print("Character Chams Disabled")
+    end
+end
+
+function updateCharacterChamsColor(color)
+    print("Character Chams Color Updated")
+    updateCharacterChams()
+end
+
+function updateCharacterChamsMaterial(material)
+    print("Character Chams Material Updated")
+    updateCharacterChams()
+end
+
+function toggleArmChams(value)
+    if value then
+        print("Arm Chams Enabled")
+        updateArmChams()
+    else
+        print("Arm Chams Disabled")
+    end
+end
+
+function updateArmChamsColor(color)
+    print("Arm Chams Color Updated")
+    updateArmChams()
+end
+
+function updateArmChamsMaterial(material)
+    print("Arm Chams Material Updated")
+    updateArmChams()
+end
+
+function toggleGunChams(value)
+    if value then
+        print("Gun Chams Enabled")
+        updateGunChams()
+    else
+        print("Gun Chams Disabled")
+    end
+end
+
+function updateGunChamsColor(color)
+    print("Gun Chams Color Updated")
+    updateGunChams()
+end
+
+function updateGunChamsMaterial(material)
+    print("Gun Chams Material Updated")
+    updateGunChams()
+end
+
+-- Draw Management Functions
+local draw = {}
+local objects = {}
+
+function draw:new(type, props)
+    local obj = Drawing.new(type)
+    for i, v in pairs(props) do
+        obj[i] = v
+    end
+    objects[#objects + 1] = obj
+    return obj
+end
+
+function draw:changevis(value)
+    for i, v in pairs(objects) do
+        v.Visible = value
+    end
+end
+
+-- Chams Position Update Function
+local function chams_pos(vm)
+    if not vm then return end
+    repeat task.wait() until vm.Name == "ViewModel"
+    local hrp = vm:FindFirstChild("HumanoidRootPart")
+    if hrp then
+        if MainVisualChamsEnabled then
+            local ItemView = vm:FindFirstChild("Item")
+            if characterChamsToggle.Value and game.Players.LocalPlayer.Character then -- character
+                for _, v in pairs(game.Players.LocalPlayer.Character:GetChildren()) do
+                    if v:IsA("MeshPart") then
+                        v.Material = characterChamsMaterial.Value
+                        v.Color = characterChamsColor.Value
+                    end
+                end
+            end
+            if ItemView and gunChamsToggle.Value then -- gun
+                for _, v in pairs(ItemView:GetDescendants()) do
+                    if v:IsA("MeshPart") or v:IsA("Part") then
+                        v.Material = gunChamsMaterial.Value
+                        v.Color = gunChamsColor.Value
+                    end
+                    if v:FindFirstChildOfClass("SurfaceAppearance") then
+                        v:FindFirstChildOfClass("SurfaceAppearance"):Destroy()
+                    end
+                end
+            end
+            if armChamsToggle.Value then -- arms
+                for _, vm_item in pairs(vm:GetChildren()) do
+                    if vm_item:IsA("MeshPart") and (vm_item.Name:find("Hand") or vm_item.Name:find("Arm")) then
+                        vm_item.Material = armChamsMaterial.Value
+                        vm_item.Color = armChamsColor.Value
+                    end
+                end
+            end
+        end
+    end
+end
+
+		
 		--]
 	
 		--[ DROPDOWNS
