@@ -1915,7 +1915,7 @@ local function handleToggle(value)
     if instantReloadEnabled then
         while instantReloadEnabled do
             reloadRemote:InvokeServer()
-            wait(0.0001) -- Adjust the wait time as needed
+            wait(0.00001) -- Adjust the wait time as needed
         end
     end
 end
