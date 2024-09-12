@@ -1,3 +1,6 @@
+local version = "V6.3.2 - Wave"
+print(version)
+
 local exec = identifyexecutor()
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
 
