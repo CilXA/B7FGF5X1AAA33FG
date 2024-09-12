@@ -1,14 +1,11 @@
-local version = "V6.1.4 - Wave"
-print(version)
-
 local exec = identifyexecutor()
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
 
     return
 else
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Loading script",
-        Text = "%" .. exec .. "%",
+        Title = "Script is loading",
+        Text = "Nice " .. exec .. " Sexy boy",
         Duration = 2
     })
 end
