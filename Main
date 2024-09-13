@@ -1,4 +1,4 @@
-local version = "V6.3.2 - Wave"
+local version = "V6.3.4 - Wave"
 print(version)
 
 local exec = identifyexecutor()
@@ -7,8 +7,8 @@ if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil th
     return
 else
     game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Script is loading",
-        Text = "Nice " .. exec .. " Sexy boy",
+        Title = "Loading script",
+        Text = "% " .. exec .. " %",
         Duration = 2
     })
 end
@@ -39,6 +39,7 @@ _G.exothiumrr = true
 local wcamera = workspace.CurrentCamera
 local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
+local rp = game:GetService("ReplicatedStorage")
 
 local markvisible = true
 
@@ -105,6 +106,8 @@ local viewmodZ = 0
 
 local speedbool = false
 local speedboost = 1.2
+
+local bunnyhop = false
 
 local worldleaves = false
 local worldclock = 14
@@ -174,26 +177,29 @@ aimtargetname.Outline = true
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/oShyyyyy/Plaguecheat.cc-Roblox-Ui-library/main/Source.lua", true))()
 game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
 
-library:ChangeWeb(".gg/exothium")
+library:ChangeWeb("Exothium.xyz")
 library:ChangeGame("Project Delta")
 
-local home = library:AddWindow('Home')
 local combat = library:AddWindow('Combat')
+local player = library:AddWindow('Player')
 local visual = library:AddWindow('Visuals')
-local other = library:AddWindow('Other')
+local other = library:AddWindow('Misc')
+local home = library:AddWindow('Settings')
 local watermark = library:AddWatermark('Exothium.xyz');
 
-local mainhome = home:AddSection('Info')
-local aim = combat:AddSection('Aim')
-local gunmods = combat:AddSection('Gun Mods')
-local tarinfo = combat:AddSection('Target')
-local wh = visual:AddSection('ESP')
-local cross = visual:AddSection('Crosshair')
-local tracers = visual:AddSection('Tracers')
-local camer = visual:AddSection('Camera')
-local viewmod = visual:AddSection('View Model')
-local speedh = other:AddSection('Speed Hack')
-local worldh = other:AddSection('World')
+local mainhome = home:AddSection('MENU')
+local aim = combat:AddSection('AIM')
+local gunmods = combat:AddSection('GUN MODS')
+local tarinfo = combat:AddSection('TARGET')
+local wh = visual:AddSection('PLAYER VISUALS')
+local cross = visual:AddSection('CROSSHAIR')
+local tracers = visual:AddSection('BULLET TRACERS')
+local camer = visual:AddSection('CAMERA')
+local viewmod = visual:AddSection('VIEW MODEL')
+local speedh = player:AddSection('PLAYER SPEED')
+local antiaim = player:AddSection('ANTI AIM')
+local bhop = player:AddSection('BHOP')
+local worldh = other:AddSection('WORLD')
 
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
@@ -231,6 +237,52 @@ aim:AddColorPallete('FOV Color', Color3.fromRGB(255, 255, 255),function(a)
    aimfovcircle.Color = a
 end)
 
+local loadedAnim2 = nil
+
+local function stopAnimation1()
+    if loadedAnim2 then
+        loadedAnim2:Stop()
+        loadedAnim2:Destroy()
+        loadedAnim2 = nil
+    end
+end
+
+local function startAnimation1()
+    local char = localplayer.Character or localplayer.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+    if not humanoid then return end
+
+    local anim2 = Instance.new("Animation")
+    anim2.AnimationId = "rbxassetid://10214311282"
+    loadedAnim2 = humanoid:LoadAnimation(anim2)
+    loadedAnim2.Looped = true
+    loadedAnim2:Play()
+    loadedAnim2:AdjustSpeed(50)
+end
+
+local function onCharacterAdded(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.Died:Connect(stopAnimation1)
+    
+    if antiaim.toggleValue then
+        startAnimation1()
+    end
+end
+
+localplayer.CharacterAdded:Connect(onCharacterAdded)
+
+antiaim:AddToggle('AntiAim', true, nil, function(v)
+    antiaim.toggleValue = v
+    if v then
+        startAnimation1()
+    else
+        stopAnimation1()
+    end
+end)
+
+antiaim:AddToggle('Gnome Mode', true, nil, function(v)
+    game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
+end)
 
 gunmods:AddToggle('Rapid Fire', true, nil, function(v)
     rapidfire = v
@@ -263,7 +315,7 @@ tarinfo:AddToggle('Target Name', true, nil, function(v)
 end)
 
 
-wh:AddToggle('ESP Toggle', true, nil, function(v)
+wh:AddToggle('ESP Enabled', true, nil, function(v)
     espbool = v
 end)
 wh:AddToggle('Name', true, nil, function(v)
@@ -296,7 +348,7 @@ end)
 wh:AddSlider('Text Size', 35, 1, 14, function(c) 
     esptextsize = c
 end)
-wh:AddToggle('Text outline', true, nil, function(v)
+wh:AddToggle('Text Outline', true, nil, function(v)
     esptextline = v
 end)
 wh:AddSlider('Chams Outline Transparency', 1, 0, 0, function(c) 
@@ -328,12 +380,63 @@ tracers:AddToggle('Enabled', true, nil, function(v)
     tracbool = v
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(255, 255, 255),function(a) 
-    traccolor.Color = a
+    traccolor.Color = Color3.fromRGB(a)
 end)
 
 camer:AddKeyBind('Freecam', Enum.KeyCode.Dollar, function() 
 
 end)
+
+camer:AddToggle('No visual effects', true, nil, function(v) 
+
+local noscreeneffects = v
+
+while noscreeneffects do task.wait(0.1)
+local pg = localplayer.PlayerGui
+	if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
+		for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
+			if v:IsA("Frame") then
+				v.Visible = false
+			end
+		end
+	end
+end
+
+end)
+
+--[[ -- ZOOM START -- 
+local classicfov = 100
+local zoomfov = 5
+
+camer:AddSlider('Classic FOV', 100, 5, 120, function(c) 
+    classicfov = c
+end)
+
+camer:AddSlider('Zoom FOV', 5, 1, 100, function(c) 
+    zoomfov = c
+end)
+
+local zoombind = Enum.KeyCode.C
+
+camer:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function()
+	local ic3Connect
+	ic3Connect = uis.InputEnded:Connect(function(input, _)
+		if input.KeyCode == zoombind.KeyCode then
+			ic3Connect:Disconnect()
+			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+				settings.GameplaySettings:SetAttribute("DefaultFOV", values.misc["fov"])
+			end
+		end
+	end)
+	if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+		local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+		settings.GameplaySettings:SetAttribute("DefaultFOV", values.misc["fovChange"])
+	end
+end)
+--[[ -- ZOOM END -- ]]
+
+
 camer:AddToggle('Anti Mask', true, nil, function(v)
     if v == true then
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(0,0,1,0)
@@ -383,9 +486,19 @@ speedh:AddToggle('Enabled', true, nil, function(v)
     speedbool = v
     startspeedhack()
 end)
-speedh:AddSlider('Speed Boost', 1.5, 0, 1.2, function(c) 
+speedh:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c) 
     speedboost = c
 end)
+bhop:AddToggle('Enabled', true, nil, function(v)
+    bunnyhop = v
+    repeat
+        if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
+            localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
+        end
+        task.wait()
+    until not bunnyhop
+end)
+
 
 
 worldh:AddToggle('No Grass', true, nil, function(v)
