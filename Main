@@ -1,9 +1,9 @@
-local version = "V6.3.5 - Wave"
-print(version)
-
 local exec = identifyexecutor()
-if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
+local version = "V6.3.6"
+print(version, exec)
 
+if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
+    warn("[[ Exoguard V3 || Exothium.xyz ||" .. exec ..  " is not supported]]")
     return
 else
     game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -11,11 +11,12 @@ else
         Text = "% " .. exec .. " %",
         Duration = 2
     })
+    print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
 if _G.exothiumrr then
     game:GetService("StarterGui"):SetCore("SendNotification", {
         Title = "Exothium.xyz",
-        Text = "Script is loaded, therefore you are not executing it again",
+        Text = "Script is loaded, therefore you cant execute it again",
         Duration = 4
     })
     return
@@ -28,11 +29,6 @@ function Notify(tt, tx)
     })
 end
 local isfirstrun = false
-
-
-----------------------script start-------------------------------
-
---variables--
 
 _G.exothiumrr = true
 
@@ -102,8 +98,8 @@ local traccolor = Color3.fromRGB(255,255,255)
 
 local crosshair = Drawing.new("Circle")
 
-local basefov = 120
-local zoomfov = 5
+local basefov = 100
+local zoomfov = 14
 
 local defaultfirerate = {}
 
@@ -328,6 +324,9 @@ end)
 wh:AddToggle('ESP Enabled', true, nil, function(v)
     espbool = v
 end)
+wh:AddToggle('Bots', true, nil, function(v)
+    espbots = v
+end)
 wh:AddToggle('Name', true, nil, function(v)
     espname = v
 end)
@@ -340,14 +339,11 @@ end)
 wh:AddToggle('Chams', true, nil, function(v)
     esphigh = v
 end)
-wh:AddToggle('Equipped Weapon', true, nil, function(v)
+wh:AddToggle('Equipped Tool', true, nil, function(v)
     esphotbar = v
 end)
 wh:AddToggle('Body', true, nil, function(v)
     espdead = v
-end)
-wh:AddToggle('Bots', true, nil, function(v)
-    espbots = v
 end)
 wh:AddToggle('Loot', true, nil, function(v)
     esploot = v
@@ -473,7 +469,7 @@ camer:AddToggle('Anti Flash', true, nil, function(v)
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(1,0,1,0)
     end
 end)
-camer:AddSlider('Base FOV', 150, 10, 120, function(c) 
+camer:AddSlider('Base FOV', 150, 10, 100, function(c) 
     basefov = c
 end)
 camer:AddSlider('Zoom FOV', 50, 0, 14, function(c) 
@@ -1062,7 +1058,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
         elseif v:FindFirstAncestor("DroppedItems") then
             startesp(v, "Dead333")
         end
-    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
@@ -1082,7 +1078,7 @@ workspace.DescendantAdded:Connect(function(v)
                 startesp(v.Parent, "Dead333")
             end
         end
-    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
@@ -1580,13 +1576,13 @@ runs.RenderStepped:Connect(function() --  fast
                     end --original = https://rbxscript.com/post/ProjectDeltaLootEsp-P7xaS
 
                     if Value >= 20 then
-                        dobj.Text = "Rate : Godly | " .. TotalPrice .. "$"
+                        dobj.Text = "Rate: $$$$ || " .. TotalPrice .. "$"
                     elseif Value >= 12 then
-                        dobj.Text = "Rate : Good | " .. TotalPrice .. "$"
+                        dobj.Text = "Rate: $$$ || " .. TotalPrice .. "$"
                     elseif Value >= 8 then
-                        dobj.Text = "Rate : Not bad | " .. TotalPrice .. "$"
+                        dobj.Text = "Rate: $$ || " .. TotalPrice .. "$"
                     elseif Value >= 4 then
-                        dobj.Text = "Rate : Bad | " .. TotalPrice .. "$"
+                        dobj.Text = "Rate: $ || " .. TotalPrice .. "$"
                     end
                 else
                     dobj.Text = hotgun
@@ -1617,9 +1613,6 @@ runs.RenderStepped:Connect(function() --  fast
         end
     end
 end)
-
-
---outro--
 
 Notify("Exothium.xyz", "Script loaded")
 game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
