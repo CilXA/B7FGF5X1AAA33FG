@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.3.6"
+local version = "V6.3.8"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -36,7 +36,7 @@ local wcamera = workspace.CurrentCamera
 local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
-local stg = game:GetService("StarterGui")
+local stg = localplayer:WaitForChild("PlayerGui")
 local sg = stg:FindFirstChild("Exothium.xyz") or Instance.new("ScreenGui", stg); sg.Name = "Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 local uis = game:GetService("UserInputService")
 
@@ -92,6 +92,7 @@ local espfillcolor = Color3.fromRGB(255,255,255)
 local esplinecolor = Color3.fromRGB(255,255,255)
 
 local inventoryCheckerToggle = true
+local inventoryCheckerBind = Enum.KeyCode.Backquote
 
 local tracbool = false
 local traccolor = Color3.fromRGB(255,255,255)
@@ -198,7 +199,7 @@ local gunmods = combat:AddSection('GUN MODS')
 local tarinfo = combat:AddSection('TARGET')
 local wh = visual:AddSection('PLAYER VISUALS')
 local cross = visual:AddSection('CROSSHAIR')
-local inventorychecker = visual:AddSection('INVENTORY CHECKER')
+local inventorychecker = other:AddSection('INVENTORY CHECKER')
 local tracers = visual:AddSection('BULLET TRACERS')
 local camer = visual:AddSection('CAMERA')
 local viewmod = visual:AddSection('VIEW MODEL')
@@ -395,6 +396,10 @@ end)
 
 inventorychecker:AddToggle('Inventory Checker', true, nil, function(v)
     inventoryCheckerToggle = v
+end)
+
+inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, function(s) 
+    inventoryCheckerBind = s
 end)
 
 camer:AddToggle('No visual effects', true, nil, function(v) 
@@ -1149,127 +1154,123 @@ pcall(function() --paste1
 end)
 
 --inventory checker--
---[[
+
+local function inventoryCheckerFrame()
+	local BackgroundColor = Color3.fromRGB(30, 30, 30)
+	local BorderColor = Color3.fromRGB(255, 255, 255)
+	local TextColor = Color3.fromRGB(255, 255, 255)
+
+	local MainFrame = sg:FindFirstChild("InventoryCheckerFrame") or Instance.new("Frame", sg)
+	MainFrame.Name = "InventoryCheckerFrame"
+	MainFrame.BackgroundColor3 = BackgroundColor
+	MainFrame.BackgroundTransparency = 1
+	MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+	MainFrame.BorderColor3 = BorderColor
+	MainFrame.BorderSizePixel = 1
+	MainFrame.Position = UDim2.fromScale(0.5, 0.15)
+	MainFrame.Size = UDim2.fromScale(0.575, 0.18)
+
+	local GridHolder = Instance.new("Frame", MainFrame)
+	GridHolder.Name = "GridHolder"
+	GridHolder.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+	GridHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	GridHolder.BorderSizePixel = 0
+	GridHolder.Position = UDim2.new(0, 0, 0.314, 0)
+	GridHolder.Size = UDim2.new(1, 0, 0.5, 0)
+
+	local UICornerGridHolder = Instance.new("UICorner", GridHolder)
+	UICornerGridHolder.CornerRadius = UDim.new(0, 0.5)
+
+	local StrokeGridHolder = Instance.new("UIStroke", GridHolder)
+	StrokeGridHolder.Thickness = 2
+	StrokeGridHolder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	StrokeGridHolder.Color = Color3.fromRGB(255, 255, 255)
+	local GridHolderGradient = Instance.new("UIGradient", StrokeGridHolder)
+	GridHolderGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
+	}
+	
+	local GridHolderElement = Instance.new("UIGridLayout", GridHolder)
+	GridHolderElement.Name = "GridHolderElement"
+	GridHolderElement.SortOrder = Enum.SortOrder.LayoutOrder
+	GridHolderElement.CellPadding = UDim2.new(0, 7, 0, 7)
+	GridHolderElement.CellSize = UDim2.new(0, 51, 0, 51)
+
+	local NameFrame = Instance.new("Frame", MainFrame)
+	NameFrame.Name = "NameFrame"
+	NameFrame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
+	NameFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	NameFrame.BorderSizePixel = 0
+	NameFrame.Position = UDim2.new(0, 0, 0, 0)
+	NameFrame.Size = UDim2.new(1, 0, 0.25, 0)
+
+	local UICornerNameFrame = Instance.new("UICorner", NameFrame)
+	UICornerNameFrame.CornerRadius = UDim.new(0, 0.5)
+
+	local StrokeNameFrame = Instance.new("UIStroke", NameFrame)
+	StrokeNameFrame.Thickness = 2
+	StrokeNameFrame.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	StrokeNameFrame.Color = Color3.fromRGB(255, 255, 255)
+	local NameFrameGradient = Instance.new("UIGradient", StrokeNameFrame)
+	NameFrameGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
+	}
+
+	local TextLabel = Instance.new("TextLabel", NameFrame)
+	TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TextLabel.BackgroundTransparency = 1.0
+	TextLabel.Position = UDim2.new(0, 0, 0.169, 0)
+	TextLabel.Size = UDim2.new(1, 0, 0.5, 0)
+	TextLabel.Font = Enum.Font.Ubuntu
+	TextLabel.Text = "N/A"
+	TextLabel.TextColor3 = TextColor
+	TextLabel.TextScaled = true
+	TextLabel.TextSize = 14
+	TextLabel.TextStrokeTransparency = 0.7
+	TextLabel.TextWrapped = true
+
+	local TextLabelGradient = Instance.new("UIGradient", TextLabel)
+	TextLabelGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
+	}
+
+	local FooterLabel = Instance.new("TextLabel", MainFrame)
+	FooterLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	FooterLabel.BackgroundTransparency = 1.0
+	FooterLabel.Position = UDim2.new(0, 0, 1.046, 0)
+	FooterLabel.Size = UDim2.new(0, 178, 0, 17)
+	FooterLabel.Font = Enum.Font.Ubuntu
+	FooterLabel.Text = "Exothium.xyz"
+	FooterLabel.TextColor3 = TextColor
+	FooterLabel.TextSize = 14
+	FooterLabel.TextStrokeTransparency = 0.7
+	FooterLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+	local FooterLabelGradient = Instance.new("UIGradient", FooterLabel)
+	FooterLabelGradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
+		ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
+	}
+
+	if not table.find(createdThings, MainFrame) then
+		table.insert(createdThings, MainFrame)
+	end
+
+	return MainFrame, GridHolder, TextLabel
+end
+
 local Debounce = false
 local closestDistance = math.huge
 local closestPlayerTemp
 
 local MainFrame, GridHolder, TextLabel
 
-local function inventoryCheckerFrame()
-    local BackgroundColor = Color3.fromRGB(50, 50, 50)
-    local BorderColor = Color3.fromRGB(255, 255, 255)
-    local TextColor = Color3.fromRGB(255, 255, 255)
-
-    local MainFrame = sg:FindFirstChild("InventoryCheckerFrame") or Instance.new("Frame", sg)
-    MainFrame.Name = "InventoryCheckerFrame"
-    MainFrame.BackgroundColor3 = BackgroundColor
-    MainFrame.BackgroundTransparency = 1
-    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    MainFrame.BorderColor3 = BorderColor
-    MainFrame.BorderSizePixel = 1
-    MainFrame.Position = UDim2.fromScale(0.5, 0.15)
-    MainFrame.Size = UDim2.fromScale(0.575, 0.18)
-    MainFrame.Visible = inventoryCheckerToggle -- Set visibility based on toggle
-
-    local GridHolder = Instance.new("Frame", MainFrame)
-    GridHolder.Name = "GridHolder"
-    GridHolder.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
-    GridHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    GridHolder.BorderSizePixel = 0
-    GridHolder.Position = UDim2.new(0, 0, 0.314, 0)
-    GridHolder.Size = UDim2.new(1, 0, 0.5, 0)
-
-    local UICornerGridHolder = Instance.new("UICorner", GridHolder)
-    UICornerGridHolder.CornerRadius = UDim.new(0, 5)
-
-    local StrokeGridHolder = Instance.new("UIStroke", GridHolder)
-    StrokeGridHolder.Thickness = 2
-    StrokeGridHolder.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    StrokeGridHolder.Color = Color3.fromRGB(255, 255, 255)
-    local GridHolderGradient = Instance.new("UIGradient", StrokeGridHolder)
-    GridHolderGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
-    }
-    
-    local GridHolderElement = Instance.new("UIGridLayout", GridHolder)
-    GridHolderElement.Name = "GridHolderElement"
-    GridHolderElement.SortOrder = Enum.SortOrder.LayoutOrder
-    GridHolderElement.CellPadding = UDim2.new(0, 7, 0, 7)
-    GridHolderElement.CellSize = UDim2.new(0, 51, 0, 51)
-
-    local NameFrame = Instance.new("Frame", MainFrame)
-    NameFrame.Name = "NameFrame"
-    NameFrame.BackgroundColor3 = Color3.fromRGB(33, 33, 33)
-    NameFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
-    NameFrame.BorderSizePixel = 0
-    NameFrame.Position = UDim2.new(0, 0, 0, 0)
-    NameFrame.Size = UDim2.new(1, 0, 0.25, 0)
-
-    local UICornerNameFrame = Instance.new("UICorner", NameFrame)
-    UICornerNameFrame.CornerRadius = UDim.new(0, 5)
-
-    local StrokeNameFrame = Instance.new("UIStroke", NameFrame)
-    StrokeNameFrame.Thickness = 2
-    StrokeNameFrame.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-    StrokeNameFrame.Color = Color3.fromRGB(255, 255, 255)
-    local NameFrameGradient = Instance.new("UIGradient", StrokeNameFrame)
-    NameFrameGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
-    }
-
-    local TextLabel = Instance.new("TextLabel", NameFrame)
-    TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    TextLabel.BackgroundTransparency = 1.0
-    TextLabel.Position = UDim2.new(0, 0, 0.169, 0)
-    TextLabel.Size = UDim2.new(1, 0, 0.5, 0)
-    TextLabel.Font = Enum.Font.Ubuntu
-    TextLabel.Text = "N/A"
-    TextLabel.TextColor3 = TextColor
-    TextLabel.TextScaled = true
-    TextLabel.TextSize = 14
-    TextLabel.TextStrokeTransparency = 0.7
-    TextLabel.TextWrapped = true
-
-    local TextLabelGradient = Instance.new("UIGradient", TextLabel)
-    TextLabelGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
-    }
-
-    local FooterLabel = Instance.new("TextLabel", MainFrame)
-    FooterLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-    FooterLabel.BackgroundTransparency = 1.0
-    FooterLabel.Position = UDim2.new(0, 0, 1.046, 0)
-    FooterLabel.Size = UDim2.new(0, 178, 0, 17)
-    FooterLabel.Font = Enum.Font.Ubuntu
-    FooterLabel.Text = "Exothium.xyz"
-    FooterLabel.TextColor3 = TextColor
-    FooterLabel.TextSize = 14
-    FooterLabel.TextStrokeTransparency = 0.7
-    FooterLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-    local FooterLabelGradient = Instance.new("UIGradient", FooterLabel)
-    FooterLabelGradient.Color = ColorSequence.new{
-        ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 145, 255)),
-        ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 86, 161))
-    }
-
-    if not table.find(createdThings, MainFrame) then
-        table.insert(createdThings, MainFrame)
-    end
-
-    return MainFrame, GridHolder, TextLabel
-end
-
 local function inventoryChecker()
     MainFrame, GridHolder, TextLabel = inventoryCheckerFrame()
-    
-    -- Ensure the menu is visible when toggle is true
-    MainFrame.Visible = inventoryCheckerToggle
-    
+
     while inventoryCheckerToggle do
         task.wait()
         closestDistance = math.huge
@@ -1283,7 +1284,7 @@ local function inventoryChecker()
                 local mousePos = Vector2.new(mouse.X, mouse.Y)
                 local distance = (screenpoint - mousePos).Magnitude
 
-                if onscreen and distance < 100 and distance < closestDistance then
+                if onscreen and distance < aimfov and distance < closestDistance then
                     closestDistance = distance
                     closestPlayerTemp = player
                 end
@@ -1324,20 +1325,21 @@ local function inventoryChecker()
     end
 end
 
--- Continuously check the inventory checker toggle
-while true do
-    if inventoryCheckerToggle then
-        if not MainFrame then
-            inventoryChecker()
-        end
-    else
-        if MainFrame then
-            MainFrame.Visible = false
-        end
+local function onInventoryCheckerPressed(input)
+    if input.KeyCode == inventoryCheckerBind then
+        inventoryChecker()
     end
-    task.wait(1) -- Adjust wait time if needed
 end
-]]
+
+local function onInventoryCheckerReleased(input)
+    if input.KeyCode == inventoryCheckerBind then
+        MainFrame.Visible = false
+    end
+end
+
+uis.InputBegan:Connect(onInventoryCheckerPressed)
+uis.InputEnded:Connect(onInventoryCheckerReleased)
+
 --camera--
 
 do --prikol
