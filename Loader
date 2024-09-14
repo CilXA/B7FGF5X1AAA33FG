@@ -14,3 +14,7 @@ local elapsedTime = os.clock() - startTime
 print("[[ Exoguard V3 || Exothium.xyz || Loading Script || Loaded in: " .. string.format("%.6f", elapsedTime) .. " secs ]]")
 
 print("[[ Exoguard V3 || Exothium.xyz || Script Loaded Successfully ]]")
+
+if OldShit == true then
+
+end
