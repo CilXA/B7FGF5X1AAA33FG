@@ -69,7 +69,7 @@ local esptable = {}
         primary = instance
         type = string --(highlight, name, hp, hotbar, distance, skelet)
         otype = string --(plr, bot, dead, extract, loot)
-        fpart = instance --(for skelet) --forget about that
+        fpart = instance --(for skelet)
         spart = instance --(for skelet)
     }      
 ]] 
