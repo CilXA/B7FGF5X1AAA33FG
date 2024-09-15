@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.5.2"
+local version = "V6.5.4"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -395,7 +395,7 @@ camer:AddKeyBind('Freecam', Enum.KeyCode.M, function()
 
 end)
 
-watermark:AddToggle('Watermark', false, nil, function(v)
+watermark:AddToggle('Watermark', true, nil, function(v)
     LibraryVS:SetWatermarkVisibility(v)
 end)
 
@@ -1620,8 +1620,6 @@ runs.RenderStepped:Connect(function() --  fast
         end
     end
 end)
-
-LibraryVS:SetWatermarkVisibility(false)
 
 local FrameTimer = tick()
 local FrameCounter = 0;
