@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.3.8"
+local version = "V6.5.2"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -179,9 +179,10 @@ aimtargetname.Center = true
 aimtargetname.Outline = true
 
 --gui setup--
+local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/oShyyyyy/Plaguecheat.cc-Roblox-Ui-library/main/Source.lua", true))()
-game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/UI%20LIB", true))()
+game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 
 library:ChangeWeb("Exothium.xyz")
 library:ChangeGame("Project Delta")
@@ -191,26 +192,26 @@ local player = library:AddWindow('Player')
 local visual = library:AddWindow('Visuals')
 local other = library:AddWindow('Misc')
 local home = library:AddWindow('Settings')
-local watermark = library:AddWatermark('Exothium.xyz');
 
-local mainhome = home:AddSection('MENU')
-local aim = combat:AddSection('AIM')
-local gunmods = combat:AddSection('GUN MODS')
-local tarinfo = combat:AddSection('TARGET')
-local wh = visual:AddSection('PLAYER VISUALS')
-local cross = visual:AddSection('CROSSHAIR')
-local inventorychecker = other:AddSection('INVENTORY CHECKER')
-local tracers = visual:AddSection('BULLET TRACERS')
-local camer = visual:AddSection('CAMERA')
-local viewmod = visual:AddSection('VIEW MODEL')
-local speedh = player:AddSection('PLAYER SPEED')
-local antiaim = player:AddSection('ANTI AIM')
-local bhop = player:AddSection('BHOP')
-local worldh = other:AddSection('WORLD')
+local mainhome = home:AddSection('Menu')
+local watermark = home:AddSection('Watermark')
+local aim = combat:AddSection('Aim')
+local gunmods = combat:AddSection('Gun mods')
+local tarinfo = combat:AddSection('Target')
+local wh = visual:AddSection('Player Visuals')
+local cross = visual:AddSection('Crosshair')
+local inventorychecker = other:AddSection('Inventory Checker')
+local tracers = visual:AddSection('Bullet Tracers')
+local camer = visual:AddSection('Camera')
+local viewmod = visual:AddSection('View Model')
+local speedh = player:AddSection('Speed')
+local antiaim = player:AddSection('Anti Aim')
+local bhop = player:AddSection('Bunnyhop')
+local worldh = other:AddSection('World')
 
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
-    game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
+    game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 end)
 
 aim:AddToggle('Silent Aim', true, nil, function(v)
@@ -390,8 +391,12 @@ tracers:AddColorPallete('Tracers Color', Color3.fromRGB(255, 255, 255),function(
     traccolor.Color = Color3.fromRGB(a)
 end)
 
-camer:AddKeyBind('Freecam', Enum.KeyCode.Dollar, function() 
+camer:AddKeyBind('Freecam', Enum.KeyCode.M, function() 
 
+end)
+
+watermark:AddToggle('Watermark', false, nil, function(v)
+    LibraryVS:SetWatermarkVisibility(v)
 end)
 
 inventorychecker:AddToggle('Inventory Checker', true, nil, function(v)
@@ -1094,7 +1099,7 @@ end)
 
 --speedhack--
 
-function startspeedhack() --paste2
+function startspeedhack()
     local speaker = game:GetService("Players").LocalPlayer
     local chr = speaker.Character
     local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
@@ -1111,7 +1116,7 @@ end
 
 --fullbright--
 
-pcall(function() --paste1
+pcall(function()
     local lighting = game:GetService("Lighting");
     lighting.Ambient = worldambient
     lighting.OutdoorAmbient = worldoutdoor
@@ -1342,7 +1347,7 @@ uis.InputEnded:Connect(onInventoryCheckerReleased)
 
 --camera--
 
-do --prikol
+do
     local csys = require(game.ReplicatedStorage.Modules.CameraSystem)
     local dop2 = require(game.ReplicatedStorage.Modules.spring).new(Vector3.new(), Vector3.new(), Vector3.new(), 15, 0.5)
     local dop3 = game:GetService("TweenService")
@@ -1392,7 +1397,7 @@ end
 
 --global cycle--
 
-spawn(function() -- slow
+spawn(function()
     while wait(1) do
         if workspace:FindFirstChild("SpawnerZones") then
             for i,v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
@@ -1616,5 +1621,26 @@ runs.RenderStepped:Connect(function() --  fast
     end
 end)
 
+LibraryVS:SetWatermarkVisibility(false)
+
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+    FrameCounter += 1;
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter;
+        FrameTimer = tick();
+        FrameCounter = 0;
+    end;
+
+    LibraryVS:SetWatermark(('Exothium.xyz | %s fps | %s ms'):format(
+        math.floor(FPS),
+        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    ));
+end);
+
 Notify("Exothium.xyz", "Script loaded")
-game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
+game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
