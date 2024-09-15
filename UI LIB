@@ -847,7 +847,7 @@ function library:AddWatermark(Text)
 	--[MAIN]--
 	local obj1 = Instance.new("Frame")
 	obj1.AnchorPoint = Vector2.new(0, 0.5)
-	obj1.BackgroundColor3 = Color3.new(0.0862745, 0.0862745, 0.0862745)
+	obj1.BackgroundColor3 = Color3.new(0.066667, 0.066667, 0.066667)
 	obj1.BorderSizePixel = 0
 	obj1.Position = UDim2.new(0.0109301507, 0, 0.973039031, 0)
 	obj1.Size = UDim2.new(0, size, 0, 28)
@@ -863,7 +863,7 @@ function library:AddWatermark(Text)
 	--[MAIN]--
 	local obj3 = Instance.new("Frame", obj1)
 	obj3.AnchorPoint = Vector2.new(0.5, 0.5)
-	obj3.BackgroundColor3 = Color3.new(0.113725, 0.113725, 0.113725)
+	obj3.BackgroundColor3 = Color3.new(0.066667, 0.066667, 0.066667)
 	obj3.BorderSizePixel = 0
 	obj3.Position = UDim2.new(0.5, 0, 0.5, 0)
 	obj3.Size = UDim2.new(1, -6, 1, -6)
