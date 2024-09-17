@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.5.4"
+local version = "V6.5.6"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -98,9 +98,6 @@ local tracbool = false
 local traccolor = Color3.fromRGB(255,255,255)
 
 local crosshair = Drawing.new("Circle")
-
-local basefov = 100
-local zoomfov = 14
 
 local defaultfirerate = {}
 
@@ -478,12 +475,6 @@ camer:AddToggle('Anti Flash', true, nil, function(v)
     else
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(1,0,1,0)
     end
-end)
-camer:AddSlider('Base FOV', 150, 10, 100, function(c) 
-    basefov = c
-end)
-camer:AddSlider('Zoom FOV', 50, 0, 14, function(c) 
-    zoomfov = c
 end)
 camer:AddButton('Third Person',function() 
     game:GetService("Players").LocalPlayer.CameraMaxZoomDistance = 99999
@@ -1347,53 +1338,7 @@ uis.InputEnded:Connect(onInventoryCheckerReleased)
 
 --camera--
 
-do
-    local csys = require(game.ReplicatedStorage.Modules.CameraSystem)
-    local dop2 = require(game.ReplicatedStorage.Modules.spring).new(Vector3.new(), Vector3.new(), Vector3.new(), 15, 0.5)
-    local dop3 = game:GetService("TweenService")
-    local dop4 = workspace.Camera
-    local dop5 = false
-    local dop6 = 1
-    local dop7 = false
-    local dop8 = 1
-    local dop9 = 1
-    local dop10 = nil
-    local function FieldOfViewUpdate(p11, p12, p13) 
-        local v14 = p12 or Enum.EasingStyle.Quad
-        local v15 = p13 or Enum.EasingDirection.Out
-        local targetfov
-        if dop8 > 1 then
-            targetfov = zoomfov
-        else
-            targetfov = basefov
-        end
-        local v16 = dop9 ~= 1 and dop9 or dop5 and dop6 or targetfov
-        dop3:Create(dop4, TweenInfo.new(p11, v14, v15), {
-            ["FieldOfView"] = v16 > 1 and dop7 and v16 or v16
-        }):Play()
-        if dop10 then
-            local v_u_17 = dop10
-            task.spawn(function() 
-                local v_u_18 = v_u_17:FindFirstChild("Head") or v_u_17.PrimaryPart
-                dop2.p = v_u_18.Position
-                local v_u_19 = nil
-                v_u_19 = game:GetService("RunService").RenderStepped:Connect(function(p20)
-                    dop4.CFrame = CFrame.lookAt(dop4.CFrame.Position, dop2.p)
-                    dop2.target = v_u_18.Position
-                    dop2:update(p20)
-                    if dop10 ~= v_u_17 then
-                        v_u_19:Disconnect()
-                    end
-                end)
-            end)
-        end
-    end
-    csys.SetZoomTarget = function(_, p21, p22, p23, p24, p25)
-        dop7 = p22
-        dop8 = p21
-        FieldOfViewUpdate(p23, p24, p25)
-    end
-end
+
 
 --global cycle--
 
