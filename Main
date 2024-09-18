@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.5.6"
+local version = "V6.5.8"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -103,9 +103,9 @@ local defaultfirerate = {}
 
 local createdThings = {}
 
-local viewmodX = -2
+local viewmodX = 0.20
 local viewmodY = -2
-local viewmodZ = 0
+local viewmodZ = -0.32
 
 local speedbool = false
 local speedboost = 1.2
@@ -167,9 +167,9 @@ crosshair.Filled = true
 crosshair.Transparency = 1
 crosshair.Color = Color3.fromRGB(255, 255, 255)
 crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
-aimtargetname.Text = "None"
+aimtargetname.Text = " "
 aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
-aimtargetname.Size = 24
+aimtargetname.Size = 20
 aimtargetname.Color = Color3.fromRGB(255,255,255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
@@ -193,13 +193,14 @@ local home = library:AddWindow('Settings')
 local mainhome = home:AddSection('Menu')
 local watermark = home:AddSection('Watermark')
 local aim = combat:AddSection('Aim')
-local gunmods = combat:AddSection('Gun mods')
+local gunmods = combat:AddSection('Gun Mods')
+local camzoom = other:AddSection('Zoom')
 local tarinfo = combat:AddSection('Target')
 local wh = visual:AddSection('Player Visuals')
 local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
-local camer = visual:AddSection('Camera')
+local camer = other:AddSection('Effects')
 local viewmod = visual:AddSection('View Model')
 local speedh = player:AddSection('Speed')
 local antiaim = player:AddSection('Anti Aim')
@@ -404,7 +405,7 @@ inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, fu
     inventoryCheckerBind = s
 end)
 
-camer:AddToggle('No visual effects', true, nil, function(v) 
+camer:AddToggle('No Effects', true, nil, function(v) 
 
 local noscreeneffects = v
 
@@ -421,40 +422,39 @@ end
 
 end)
 
---[[ -- ZOOM START -- 
 local classicfov = 100
 local zoomfov = 5
 
-camer:AddSlider('Classic FOV', 100, 5, 120, function(c) 
+camzoom:AddSlider('Base FOV', 100, 5, 100, function(c) 
     classicfov = c
 end)
 
-camer:AddSlider('Zoom FOV', 5, 1, 100, function(c) 
+camzoom:AddSlider('Zoom FOV', 80, 5, 5, function(c) 
     zoomfov = c
 end)
 
 local zoombind = Enum.KeyCode.C
 
-camer:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function()
+camzoom:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function(g)
+    zoombind = g
 	local ic3Connect
 	ic3Connect = uis.InputEnded:Connect(function(input, _)
-		if input.KeyCode == zoombind.KeyCode then
+		if input.KeyCode == zoombind then
 			ic3Connect:Disconnect()
 			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
 				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
-				settings.GameplaySettings:SetAttribute("DefaultFOV", values.misc["fov"])
+				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
 			end
 		end
 	end)
 	if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
 		local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
-		settings.GameplaySettings:SetAttribute("DefaultFOV", values.misc["fovChange"])
+		settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
 	end
 end)
---[[ -- ZOOM END -- ]]
 
 
-camer:AddToggle('Anti Mask', true, nil, function(v)
+camer:AddToggle('No Visor', true, nil, function(v)
     if v == true then
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(0,0,1,0)
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Mask.GP5.Size = UDim2.new(0,0,1,0)
@@ -469,7 +469,7 @@ camer:AddToggle('Anti Mask', true, nil, function(v)
         end
     end
 end)
-camer:AddToggle('Anti Flash', true, nil, function(v)
+camer:AddToggle('No Flashbang', true, nil, function(v)
     if v == true then
         game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(0,0,1,0)
     else
@@ -482,13 +482,13 @@ camer:AddButton('Third Person',function()
 end)
 
 
-viewmod:AddSlider('Offset X', 5, -5, -2, function(c) 
+viewmod:AddSlider('Offset X', 5, -5, 0.20, function(c) 
     viewmodX = c
 end)
 viewmod:AddSlider('Offset Y', 5, -5, -2, function(c) 
     viewmodY = c
 end)
-viewmod:AddSlider('Offset Z', 5, -5, 0, function(c) 
+viewmod:AddSlider('Offset Z', 5, -5, -0.32, function(c) 
     viewmodZ = c
 end)
 
@@ -1366,6 +1366,15 @@ spawn(function()
                 local sett = require(v.SettingsModule)
                 sett.weaponOffSet = offset
             end
+        do
+            if rapidfire == true then
+                local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
+                for i,v in ipairs(inv:GetChildren()) do
+                    local sett = require(v.SettingsModule)
+                    sett.FireRate = 0.002
+                end
+            end
+        end
         end
     end
 end)
@@ -1374,11 +1383,36 @@ end)
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
 
-    if aimtarget ~= nil then --on screen stuff
-        aimtargetname.Text = aimtarget.Name
+if aimtarget ~= nil then
+    local character = aimtarget.Character
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    
+    if humanoid then
+        local health = humanoid.Health
+        local camera = workspace.CurrentCamera
+        local screenPos, onScreen = camera:WorldToScreenPoint(character.PrimaryPart.Position)
+
+        aimtargetname.Text = string.format(
+            "[[ %s | Health: %d ]]",
+            aimtarget.Name, math.floor(health)
+        )
+
+        aimtargetname.Position = Vector2.new(screenPos.X, screenPos.Y)
     else
-        aimtargetname.Text = "None"
+        aimtargetname.Text = "[[ ".. aimtarget.Name .." | Health: N/A ]]"
     end
+else
+    aimtargetname.Text = " "
+end
+
+
+--[[
+    if aimtarget ~= nil then --on screen stuff
+        aimtargetname.Text = " ".. aimtarget.Name .." "
+    else
+        aimtargetname.Text = " "
+    end
+    ]]
     aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
     aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
     crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
