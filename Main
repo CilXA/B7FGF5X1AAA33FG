@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.5.8"
+local version = "V6.5.9"
 print(version, exec)
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
@@ -39,6 +39,8 @@ local rp = game:GetService("ReplicatedStorage")
 local stg = localplayer:WaitForChild("PlayerGui")
 local sg = stg:FindFirstChild("Exothium.xyz") or Instance.new("ScreenGui", stg); sg.Name = "Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 local uis = game:GetService("UserInputService")
+
+local realAmmoTypes = rp:FindFirstChild("realAmmoTypes") or rp:FindFirstChild("AmmoTypes") and rp:FindFirstChild("AmmoTypes"):Clone(); if realAmmoTypes then realAmmoTypes.Name = "realAmmoTypes" end
 
 local mouse = localplayer:GetMouse()
 
@@ -119,6 +121,12 @@ waterplatforms.Name = "WaterPlatforms"
 local worldjesus
 local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
+
+local NoRecoil = false
+local BulletTracer = false
+local InstaReload = true
+local GunDrag = false
+local NoProjectileDrop = false
 
 local valcache = {
     ["6B45"] = 16,
@@ -277,7 +285,7 @@ end
 
 localplayer.CharacterAdded:Connect(onCharacterAdded)
 
-antiaim:AddToggle('AntiAim', true, nil, function(v)
+antiaim:AddToggle('Anti Aim', true, nil, function(v)
     antiaim.toggleValue = v
     if v then
         startAnimation1()
@@ -286,7 +294,7 @@ antiaim:AddToggle('AntiAim', true, nil, function(v)
     end
 end)
 
-antiaim:AddToggle('Gnome Mode', true, nil, function(v)
+antiaim:AddToggle('Gnome', true, nil, function(v)
     game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
 end)
 
@@ -308,13 +316,107 @@ gunmods:AddToggle('Rapid Fire', true, nil, function(v)
         end
     end
 end)
-gunmods:AddToggle('wallbang(broken)', true, nil, function(v)
+
+gunmods:AddToggle('Wallbang (broken, dont use)', true, nil, function(v)
     aiminfrange = v
 end)
+
+gunmods:AddToggle('No Recoil', true, nil, function(v)
+			NoRecoil = v
+			if NoRecoil and rp:FindFirstChild("AmmoTypes") then
+				for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+					if v then
+						v:SetAttribute("RecoilStrength", 0)
+					end
+				end
+			elseif not NoRecoil and rp:FindFirstChild("AmmoTypes") then
+				for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+					if v then
+						local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
+						if realAmmo then
+							v:SetAttribute("RecoilStrength", realAmmo:GetAttribute("RecoilStrength"))
+						end
+					end
+				end
+			end
+end)
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local reloadRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Reload")
+
+gunmods:AddToggle('Insta Reload', true, nil, function(v)
+    InstaReload = v
+    if InstaReload then
+	    while InstaReload do
+	      	reloadRemote:InvokeServer()
+	     	wait(0.00001)
+	    end
+    end
+end)
+
+gunmods:AddToggle('No Drag', true, nil, function(v)
+	GunDrag = v
+	if GunDrag and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				v:SetAttribute("Drag", 0)
+			end
+		end
+	elseif not GunDrag and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
+				if realAmmo then
+					v:SetAttribute("Drag", realAmmo:GetAttribute("Drag"))
+				end
+	    	end
+		end
+	end
+end)
+
+gunmods:AddToggle('No Projectile Drop', true, nil, function(v)
+	NoProjectileDrop = v
+	if NoProjectileDrop and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				v:SetAttribute("ProjectileDrop", 0)
+			end
+		end
+	elseif not NoProjectileDrop and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
+				if realAmmo then
+					v:SetAttribute("ProjectileDrop", realAmmo:GetAttribute("ProjectileDrop"))
+				end
+			end
+		end
+	end
+end)
+
+gunmods:AddToggle('Bullet Tracer', true, nil, function(v)
+	BulletTracer = v
+	if BulletTracer and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				v:SetAttribute("Tracer", true)
+			end
+		end
+	elseif not BulletTracer and rp:FindFirstChild("AmmoTypes") then
+		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
+			if v then
+				local realAmmo = realAmmoTypes:FindFirstChild(v.Name)
+				if realAmmo then
+					v:SetAttribute("Tracer", realAmmo:GetAttribute("Tracer"))
+				end
+			end
+		end
+	end
+end)
+
 gunmods:AddSlider('Multitaps', 5, 1, 1,function(c)
     multitaps = c
 end)
-
 
 tarinfo:AddToggle('Target Name', true, nil, function(v)
     aimtargetname.Visible = v
