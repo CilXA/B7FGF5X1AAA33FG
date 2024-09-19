@@ -568,7 +568,7 @@ MAIN.Size = UDim2.new(0, 588, 0, 415)
 MAIN.ZIndex = 2
 
 local cornerElementXX = Instance.new("UICorner")
-cornerElementXX.CornerRadius = UDim.new(0, 0.7)
+cornerElementXX.CornerRadius = UDim.new(0, 8)
 cornerElementXX.Parent = MAIN
 
 local borderStroke = Instance.new("UIStroke")
@@ -1156,7 +1156,7 @@ function library:AddWindow(text)
 		us.Name = '_STROKE_'
 
 		local cornerElementFF = Instance.new("UICorner")
-		cornerElementFF.CornerRadius = UDim.new(0, 0.7)
+		cornerElementFF.CornerRadius = UDim.new(0, 8)
 		cornerElementFF.Parent = Section
 
 		SECTIONHOLDER.Name = Texto
