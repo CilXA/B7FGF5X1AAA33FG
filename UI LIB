@@ -257,11 +257,6 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	BG.Position = UDim2.new(0, 0, 0.157927245, 0)
 	BG.Size = UDim2.new(0, 272, 0, 125)
 
-	local cornerElementXX = Instance.new("UICorner")
-	cornerElementXX.CornerRadius = UDim.new(0, 0.7)
-	cornerElementXX.Parent = BG
-
-
 	S12.Name = "S12"
 	S12.Parent = BG
 	S12.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
@@ -572,6 +567,18 @@ MAIN.Position = UDim2.new(0.285505116, 0, 0.649934769, 0)
 MAIN.Size = UDim2.new(0, 588, 0, 415)
 MAIN.ZIndex = 2
 
+local cornerElementXX = Instance.new("UICorner")
+cornerElementXX.CornerRadius = UDim.new(0, 0.7)
+cornerElementXX.Parent = MAIN
+
+local borderStroke = Instance.new("UIStroke")
+borderStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+borderStroke.Color = Color3.fromRGB(120, 241, 255	)
+borderStroke.Thickness = 1.1
+borderStroke.Transparency = 0.5
+borderStroke.Parent = MAIN
+
+
 BG.Name = "BG"
 BG.Parent = MAIN
 BG.BackgroundColor3 = Color3.fromRGB(9, 9, 9)
@@ -596,7 +603,7 @@ UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 
-linedecoupper.Name = "linedecoupper"
+linedecoupper.Name = "UpperDeco"
 linedecoupper.Parent = MAIN
 linedecoupper.BackgroundColor3 = Color3.fromRGB(120, 241, 255)
 linedecoupper.BorderColor3 = Color3.fromRGB(120, 241, 255)
@@ -605,7 +612,7 @@ linedecoupper.Position = UDim2.new(0, 0, 0.0591259636, 0)
 linedecoupper.Size = UDim2.new(1, 0, 0, 1)
 linedecoupper.ZIndex = 3
 
-DOWNER.Name = "DOWNER"
+DOWNER.Name = "BottomText"
 DOWNER.Parent = MAIN
 DOWNER.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 DOWNER.BackgroundTransparency = 1.000
@@ -615,7 +622,7 @@ DOWNER.Position = UDim2.new(0, 0, 0.943463266, 0)
 DOWNER.Size = UDim2.new(0, 600, 0, 23)
 DOWNER.ZIndex = 2
 
-WEBSITE.Name = "WEBSITE"
+WEBSITE.Name = "NAME"
 WEBSITE.Parent = DOWNER
 WEBSITE.AnchorPoint = Vector2.new(0.5, 0.5)
 WEBSITE.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -625,12 +632,12 @@ WEBSITE.Position = UDim2.new(0.177174687, 0, 0.499190629, 0)
 WEBSITE.Size = UDim2.new(0, 197, 0, 23)
 WEBSITE.ZIndex = 3
 WEBSITE.Font = Enum.Font.ArialBold
-WEBSITE.Text = "NerdsInc.gq" 
-WEBSITE.TextColor3 = Color3.fromRGB(199, 199, 199)
+WEBSITE.Text = "Exothium.xyz" 
+WEBSITE.TextColor3 = Color3.fromRGB(255, 255, 255)
 WEBSITE.TextSize = 14.000
 WEBSITE.TextXAlignment = Enum.TextXAlignment.Left
 
-LABEL2.Name = "LABEL2"
+LABEL2.Name = "GAME"
 LABEL2.Parent = DOWNER
 LABEL2.AnchorPoint = Vector2.new(0.5, 0.5)
 LABEL2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -640,12 +647,12 @@ LABEL2.Position = UDim2.new(0.795508027, 0, 0.455712378, 0)
 LABEL2.Size = UDim2.new(0, 197, 0, 23)
 LABEL2.ZIndex = 3
 LABEL2.Font = Enum.Font.ArialBold
-LABEL2.Text = "Alpha build / âˆž days left"
-LABEL2.TextColor3 = Color3.fromRGB(199, 199, 199)
+LABEL2.Text = "Project Delta"
+LABEL2.TextColor3 = Color3.fromRGB(255, 255, 255)
 LABEL2.TextSize = 14.000
 LABEL2.TextXAlignment = Enum.TextXAlignment.Right
 
-linedecoDOWNER.Name = "linedecoDOWNER"
+linedecoDOWNER.Name = "BottomDeco"
 linedecoDOWNER.Parent = MAIN
 linedecoDOWNER.BackgroundColor3 = Color3.fromRGB(120, 241, 255)
 linedecoDOWNER.BorderColor3 = Color3.fromRGB(120, 241, 255)
@@ -1142,10 +1149,16 @@ function library:AddWindow(text)
 
 		us.ApplyStrokeMode = Enum.ApplyStrokeMode.Contextual
 		us.LineJoinMode = Enum.LineJoinMode.Round
-		us.Thickness = 1;
-		us.Transparency =0;
+		us.Thickness = 1.1;
+		us.Transparency =0.5;
+		us.Color = Color3.fromRGB(120, 241, 255);
 		us.Parent  = Section;
 		us.Name = '_STROKE_'
+
+		local cornerElementFF = Instance.new("UICorner")
+		cornerElementFF.CornerRadius = UDim.new(0, 0.7)
+		cornerElementFF.Parent = Section
+
 		SECTIONHOLDER.Name = Texto
 		SECTIONHOLDER.Parent = _PARENT
 		SECTIONHOLDER.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
