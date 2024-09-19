@@ -257,6 +257,11 @@ function OpenedColor(text,ColourDisplay,Action,def)
 	BG.Position = UDim2.new(0, 0, 0.157927245, 0)
 	BG.Size = UDim2.new(0, 272, 0, 125)
 
+	local cornerElementXX = Instance.new("UICorner")
+	cornerElementXX.CornerRadius = UDim.new(0, 0.7)
+	cornerElementXX.Parent = BG
+
+
 	S12.Name = "S12"
 	S12.Parent = BG
 	S12.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
