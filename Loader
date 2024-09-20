@@ -1,6 +1,4 @@
-if script_key == "nWYZRhWgGRZejgBKJSaNVaKLFaJFNSnv" then
-print("[[ Exoguard V3 || Exoguard V6.0.4 || Failed to load assets ]]")
-else
+
 local startTime = os.clock()
 
 print("[[ Exoguard V3 || Exoguard V6.0.4 || Current Version ]]")
@@ -21,5 +19,4 @@ print("[[ Exoguard V3 || Exothium.xyz || Script Loaded Successfully ]]")
 if OldShit == true then
 print("loading2")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/oldscript"))()
-end
 end
