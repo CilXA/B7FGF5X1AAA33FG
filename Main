@@ -569,6 +569,20 @@ inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, fu
 end)
 
 camer:AddToggle('No Effects', true, nil, function(v) 
+local noscreeneffects = v
+
+while noscreeneffects do task.wait(0.1)
+local pg = localplayer.PlayerGui
+	if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
+		for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
+			if v:IsA("Frame") then
+				v.Visible = false
+			end
+		end
+	end
+end
+end)
+
 
 local finishCharacterCreation = rp:WaitForChild("Remotes"):WaitForChild("FinishCharacterCreation")
 
@@ -614,21 +628,6 @@ camer:AddToggle('Appearance Switcher', true, nil, function(v)
     else
         runningThread = nil
     end
-end)
-
-local noscreeneffects = v
-
-while noscreeneffects do task.wait(0.1)
-local pg = localplayer.PlayerGui
-	if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
-		for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
-			if v:IsA("Frame") then
-				v.Visible = false
-			end
-		end
-	end
-end
-
 end)
 
 local classicfov = 100
