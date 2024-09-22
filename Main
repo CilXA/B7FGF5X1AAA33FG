@@ -1,33 +1,150 @@
 local exec = identifyexecutor()
-local version = "V6.6.1"
-print(version, exec)
+local version = "V6.6.2"
+
+local notificationOffset = 45
+local notifications = {}
+
+function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerStroke1, darkerStroke2, fillColor)
+    duration = duration or 5
+    rounding = rounding or 5
+    strokeColor1 = strokeColor1 or Color3.fromRGB(77, 210, 255)
+    strokeColor2 = strokeColor2 or Color3.fromRGB(66, 180, 245)
+    darkerStroke1 = darkerStroke1 or Color3.fromRGB(66, 180, 245)
+    darkerStroke2 = darkerStroke2 or Color3.fromRGB(55, 170, 235)
+    fillColor = fillColor or Color3.fromRGB(3, 3, 3)
+
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Name = "_328325987432908859812491480"
+    screenGui.Parent = game:GetService("CoreGui")
+    screenGui.ResetOnSpawn = false
+
+    local yPos = #notifications * notificationOffset + 10
+
+    local frame = Instance.new("Frame")
+    frame.Parent = screenGui
+    frame.Size = UDim2.new(0, 300, 0, 40)
+    frame.Position = UDim2.new(0, 10, 0, yPos)
+    frame.AnchorPoint = Vector2.new(0, 0)
+    frame.BackgroundColor3 = fillColor
+    frame.BackgroundTransparency = 1
+    frame.BorderSizePixel = 0
+
+    table.insert(notifications, frame)
+
+    local uiCorner = Instance.new("UICorner")
+    uiCorner.CornerRadius = UDim.new(0, rounding)
+    uiCorner.Parent = frame
+
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.Parent = frame
+    uiStroke.Thickness = 1.1
+    uiStroke.Color = Color3.new(1, 1, 1)
+
+    local gradient = Instance.new("UIGradient")
+    gradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, strokeColor1),
+        ColorSequenceKeypoint.new(1, strokeColor2)
+    })
+    gradient.Rotation = 0
+    gradient.Parent = uiStroke
+
+    local tweenService = game:GetService("TweenService")
+    local rotateTween = tweenService:Create(gradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, -1), {Rotation = 360})
+    rotateTween:Play()
+
+    local title = Instance.new("TextLabel")
+    title.Parent = frame
+    title.Text = tt
+    title.Font = Enum.Font.SourceSansBold
+    title.TextSize = 18
+    title.Size = UDim2.new(1, 0, 0.5, 0)
+    title.BackgroundTransparency = 1
+    title.TextColor3 = Color3.new(1, 1, 1)
+    title.TextTransparency = 1
+
+    local body = Instance.new("TextLabel")
+    body.Parent = frame
+    body.Text = tx
+    body.Font = Enum.Font.SourceSans
+    body.TextSize = 14
+    body.Size = UDim2.new(1, 0, 0.5, 0)
+    body.Position = UDim2.new(0, 0, 0.5, 0)
+    body.BackgroundTransparency = 1
+    body.TextColor3 = Color3.new(1, 1, 1)
+    body.TextTransparency = 1
+
+    local progressBar = Instance.new("Frame")
+    progressBar.Parent = frame
+    progressBar.Size = UDim2.new(1, -4, 0.02, 0)
+    progressBar.Position = UDim2.new(0, 2, 1, -3)
+    progressBar.BackgroundTransparency = 0
+    progressBar.BorderSizePixel = 0
+
+    local progressGradient = Instance.new("UIGradient")
+    progressGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, darkerStroke1),
+        ColorSequenceKeypoint.new(1, darkerStroke2)
+    })
+    progressGradient.Rotation = 0
+    progressGradient.Parent = progressBar
+
+    local progressCorner = Instance.new("UICorner")
+    progressCorner.CornerRadius = UDim.new(0, rounding)
+    progressCorner.Parent = progressBar
+
+    local fadeInTween = tweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0})
+    local titleFadeInTween = tweenService:Create(title, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
+    local bodyFadeInTween = tweenService:Create(body, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
+
+    fadeInTween:Play()
+    titleFadeInTween:Play()
+    bodyFadeInTween:Play()
+
+    local progressTween = tweenService:Create(progressBar, TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0.02, 0)})
+    progressTween:Play()
+
+    local function fadeOut()
+        local fadeOutTween = tweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1})
+        local titleFadeOutTween = tweenService:Create(title, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 1})
+        local bodyFadeOutTween = tweenService:Create(body, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 1})
+
+        fadeOutTween:Play()
+        titleFadeOutTween:Play()
+        bodyFadeOutTween:Play()
+
+        fadeOutTween.Completed:Connect(function()
+            frame:Destroy()
+            table.remove(notifications, table.find(notifications, frame))
+            UpdateNotificationPositions()
+        end)
+    end
+
+    task.delay(duration, fadeOut)
+end
+
+function UpdateNotificationPositions()
+    for i, notification in ipairs(notifications) do
+        local targetYPos = (i - 1) * notificationOffset + 10
+        local tweenService = game:GetService("TweenService")
+        local moveTween = tweenService:Create(notification, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0, 10, 0, targetYPos)})
+        moveTween:Play()
+    end
+end
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
-    warn("[[ Exoguard V3 || Exothium.xyz ||" .. exec ..  " is not supported]]")
+    Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
 else
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Loading script",
-        Text = "% " .. exec .. " %",
-        Duration = 2
-    })
+    Notify("Exothium.xyz || Loading Script", " ".. exec .." ", 3.5)
+    wait(0.03)
+    Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
 if _G.exothiumrr then
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Exothium.xyz",
-        Text = "Script is loaded, therefore you cant execute it again",
-        Duration = 4
-    })
+    Notify("Exothium.xyz", "Script is already loaded, therefore you cant execute it again", 4)
     return
 end
-function Notify(tt, tx)
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = tt,
-        Text = tx,
-        Duration = 5
-    })
-end
+
 local isfirstrun = false
 
 _G.exothiumrr = true
@@ -64,7 +181,7 @@ local aimmodfunc -- will change later in script
 local rapidfire = false
 local multitaps = 1
 
-local esptextcolor = Color3.fromRGB(255,255,255)
+local esptextcolor = Color3.fromRGB(77, 210, 255)
 local esptable = {}
 --[[ esptable template
     drawingobj = {
@@ -88,16 +205,16 @@ local esphotbar = false
 local esploot = false
 local espexit = false
 local esptextline = false
-local espchamsfill = 0.5
+local espchamsfill = 1
 local espchamsline = 0
-local espfillcolor = Color3.fromRGB(255,255,255)
-local esplinecolor = Color3.fromRGB(255,255,255)
+local espfillcolor = Color3.fromRGB(77, 210, 255)
+local esplinecolor = Color3.fromRGB(77, 210, 255)
 
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
 local tracbool = false
-local traccolor = Color3.fromRGB(255,255,255)
+local traccolor = Color3.fromRGB(77, 210, 255)
 
 local crosshair = Drawing.new("Circle")
 
@@ -116,9 +233,12 @@ local bunnyhop = false
 
 local worldleaves = false
 local worldclock = 14
+
 local waterplatforms = Instance.new("Folder", workspace)
 waterplatforms.Name = "WaterPlatforms"
 local worldjesus
+
+local worldvisualstoggle = false
 local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
 
@@ -169,19 +289,19 @@ aimfovcircle.Radius = aimfov
 aimfovcircle.Thickness = 2
 aimfovcircle.Filled = false
 aimfovcircle.Transparency = 1
-aimfovcircle.Color = Color3.fromRGB(255, 255, 255)
+aimfovcircle.Color = Color3.fromRGB(77, 210, 255)
 aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
 crosshair.Visible = false
 crosshair.Radius = 2
 crosshair.Thickness = 1
 crosshair.Filled = true
 crosshair.Transparency = 1
-crosshair.Color = Color3.fromRGB(255, 255, 255)
+crosshair.Color = Color3.fromRGB(77, 210, 255)
 crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
 aimtargetname.Text = " "
 aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
 aimtargetname.Size = 20
-aimtargetname.Color = Color3.fromRGB(255,255,255)
+aimtargetname.Color = Color3.fromRGB(77, 210, 255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
 aimtargetname.Outline = true
@@ -249,7 +369,7 @@ aim:AddSeparateBar()
 aim:AddToggle('FOV Visible', true, nil, function(v)
     aimfovcircle.Visible = v
 end)
-aim:AddColorPallete('FOV Color', Color3.fromRGB(255, 255, 255),function(a) 
+aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
    aimfovcircle.Color = a
 end)
 
@@ -466,13 +586,13 @@ end)
 wh:AddSlider('Chams Fill Transparency', 1, 0, 0.5, function(c) 
     espchamsfill = c
 end)
-wh:AddColorPallete('Text Color', Color3.fromRGB(255, 255, 255),function(a) 
+wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
     esptextcolor = a
 end)
-wh:AddColorPallete('Chams Outline Color', Color3.fromRGB(255, 255, 255),function(a) 
+wh:AddColorPallete('Chams Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
     esplinecolor = a
 end)
-wh:AddColorPallete('Chams Fill Color', Color3.fromRGB(255, 255, 255),function(a) 
+wh:AddColorPallete('Chams Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
     espfillcolor = a
 end)
 
@@ -480,7 +600,7 @@ end)
 cross:AddToggle('Crosshair', true, nil, function(v)
     crosshair.Visible = v
 end)
-cross:AddColorPallete('Crosshair Color', Color3.fromRGB(255, 255, 255),function(a) 
+cross:AddColorPallete('Crosshair Color', Color3.fromRGB(77, 210, 255),function(a) 
     crosshair.Color = a
 end)
 
@@ -488,12 +608,8 @@ end)
 tracers:AddToggle('Enabled', true, nil, function(v)
     tracbool = v
 end)
-tracers:AddColorPallete('Tracers Color', Color3.fromRGB(255, 255, 255),function(a) 
+tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
     traccolor.Color = Color3.fromRGB(a)
-end)
-
-camer:AddKeyBind('Freecam', Enum.KeyCode.M, function() 
-
 end)
 
 function isFalling()
@@ -711,6 +827,22 @@ viewmod:AddSlider('Offset Z', 5, -5, -0.32, function(c)
     viewmodZ = c
 end)
 
+--speedhack--
+
+function startspeedhack()
+    local speaker = game:GetService("Players").LocalPlayer
+    local chr = speaker.Character
+    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+    local hb = game:GetService("RunService").Heartbeat
+    while speedbool and chr and hum and hum.Parent do
+        local delta = hb:Wait()
+        if hum.MoveDirection.Magnitude > 0 then
+            chr:TranslateBy(hum.MoveDirection * tonumber(speedboost) * delta * 10)
+        else
+            chr:TranslateBy(hum.MoveDirection * delta * 10)
+        end
+    end
+end
 
 speedh:AddToggle('Enabled', true, nil, function(v)
     speedbool = v
@@ -756,15 +888,28 @@ worldh:AddSlider('Clock Time', 24, 0, 14, function(c)
     game.Lighting.ClockTime = c
 end)
 
-worldh:AddColorPallete('Ambient Color', Color3.fromRGB(255, 255, 255),function(a) 
-    worldambient = a
-    game.Lighting.Ambient = worldambient
+local prevAmbient = game.Lighting.Ambient
+local prevOutdoor = game.Lighting.OutdoorAmbient
+
+worldh:AddToggle('Ambient Toggle', true, nil, function(v)
+    worldvisualstoggle = v
+    if worldvisualstoggle then
+        game.Lighting.Ambient = worldambient
+        game.Lighting.OutdoorAmbient = worldoutdoor
+    else
+        game.Lighting.Ambient = prevAmbient
+        game.Lighting.OutdoorAmbient = prevOutdoor
+    end
 end)
 
-worldh:AddColorPallete('Outdoor Ambient Color', Color3.fromRGB(255, 255, 255),function(a) 
-    worldoutdoor = a
-    game.Lighting.OutdoorAmbientAmbient = worldoutdoor
+worldh:AddColorPallete('Ambient Color', Color3.fromRGB(255, 255, 255), function(a) 
+    worldambient = a
 end)
+
+worldh:AddColorPallete('Outdoor Ambient Color', Color3.fromRGB(255, 255, 255), function(a) 
+    worldoutdoor = a
+end)
+
 
 --tracers--
 
@@ -1292,66 +1437,57 @@ workspace.DescendantAdded:Connect(function(v)
     end
 end)
 
---speedhack--
-
-function startspeedhack()
-    local speaker = game:GetService("Players").LocalPlayer
-    local chr = speaker.Character
-    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
-    local hb = game:GetService("RunService").Heartbeat
-    while speedbool and chr and hum and hum.Parent do
-        local delta = hb:Wait()
-        if hum.MoveDirection.Magnitude > 0 then
-            chr:TranslateBy(hum.MoveDirection * tonumber(speedboost) * delta * 10)
-        else
-            chr:TranslateBy(hum.MoveDirection * delta * 10)
-        end
-    end
-end
-
 --fullbright--
 
-pcall(function()
-    local lighting = game:GetService("Lighting");
-    lighting.Ambient = worldambient
-    lighting.OutdoorAmbient = worldoutdoor
-    lighting.Brightness = 1;
-    lighting.FogEnd = 100000
-    lighting.GlobalShadows = false
-	for i,v in pairs(lighting:GetDescendants()) do
-		if v:IsA("Atmosphere") then
-			v:Destroy()
-		end
-	end
-    for i, v in pairs(lighting:GetDescendants()) do
-        if v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("SunRaysEffect") then
-            v.Enabled = false;
-        end;
-    end;
-    lighting.Changed:Connect(function()
+if worldvisualstoggle then
+    pcall(function()
+        local lighting = game:GetService("Lighting")
         lighting.Ambient = worldambient
-        lighting.Brightness = 1;
-        lighting.FogEnd = 100000
         lighting.OutdoorAmbient = worldoutdoor
-        lighting.ClockTime = worldclock
-	    for i,v in pairs(lighting:GetChildren()) do
-		    if v:IsA("Atmosphere") then
-			    v:Destroy()
-		    end
-	    end
-    end);
-    spawn(function()
-        local character = localplayer.Character;
-        while wait(0.1) do
-            repeat wait(0.1) until character ~= nil;
-            if not character.HumanoidRootPart:FindFirstChildWhichIsA("PointLight") then
-                local headlight = Instance.new("PointLight", character.HumanoidRootPart);
-                headlight.Brightness = 1;
-                headlight.Range = 60;
-            end;
-        end;
-    end);
-end)
+        lighting.Brightness = 1
+        lighting.FogEnd = 100000
+        lighting.GlobalShadows = false
+        
+        for _, v in pairs(lighting:GetDescendants()) do
+            if v:IsA("Atmosphere") then
+                v:Destroy()
+            end
+        end
+        
+        for _, v in pairs(lighting:GetDescendants()) do
+            if v:IsA("BloomEffect") or v:IsA("BlurEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("SunRaysEffect") then
+                v.Enabled = false
+            end
+        end
+        
+        lighting.Changed:Connect(function()
+            lighting.Ambient = worldambient
+            lighting.Brightness = 1
+            lighting.FogEnd = 100000
+            lighting.OutdoorAmbient = worldoutdoor
+            lighting.ClockTime = worldclock
+            
+            for _, v in pairs(lighting:GetChildren()) do
+                if v:IsA("Atmosphere") then
+                    v:Destroy()
+                end
+            end
+        end)
+        
+        spawn(function()
+            local character = localplayer.Character
+            while wait(0.1) do
+                repeat wait(0.1) until character ~= nil
+                if not character.HumanoidRootPart:FindFirstChildWhichIsA("PointLight") then
+                    local headlight = Instance.new("PointLight", character.HumanoidRootPart)
+                    headlight.Brightness = 1
+                    headlight.Range = 60
+                end
+            end
+        end)
+    end)
+end
+
 
 --inventory checker--
 
