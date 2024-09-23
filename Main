@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.6.2"
+local version = "V6.6.3"
 
 local notificationOffset = 45
 local notifications = {}
@@ -176,7 +176,13 @@ local aimdynamicfov = false
 local aimfovcircle = Drawing.new("Circle")
 local aimtargetname = Drawing.new("Text")
 local aimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
-local aimmodfunc -- will change later in script
+local aimmodfunc
+local aimignoreparts = {}
+for i,v in ipairs(workspace:GetDescendants()) do
+    if v:GetAttribute("PassThrough") then
+        table.insert(aimignoreparts, v)
+    end
+end
 
 local rapidfire = false
 local multitaps = 1
@@ -978,7 +984,8 @@ local function isvisible(char, object)
     params.FilterDescendantsInstances = {
         localplayer.Character:GetChildren(),
         wcamera:GetChildren(),
-        globalist11
+        globalist11,
+        aimignoreparts
     }
 
     local ray = workspace:Raycast(origin, dir * dist, params)
@@ -1150,7 +1157,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
         function v185()
             local v_u_110 = RaycastParams.new()
             v_u_110.FilterType = Enum.RaycastFilterType.Exclude
-            local v_u_111 = { v_u_56, p_u_51, v_u_18 }
+            local v_u_111 = { v_u_56, p_u_51, v_u_18, aimignoreparts}
             v_u_110.FilterDescendantsInstances = v_u_111
             v_u_110.CollisionGroup = "WeaponRay"
             v_u_110.IgnoreWater = true
@@ -1676,11 +1683,18 @@ end
 uis.InputBegan:Connect(onInventoryCheckerPressed)
 uis.InputEnded:Connect(onInventoryCheckerReleased)
 
---camera--
-
-
-
 --global cycle--
+
+spawn(function() -- very slow
+    while wait(10) do
+        table.clear(aimignoreparts)
+        for i,v in ipairs(workspace:GetDescendants()) do
+            if v:GetAttribute("PassThrough") then
+                table.insert(aimignoreparts, v)
+            end
+        end
+    end
+end)
 
 spawn(function()
     while wait(1) do
