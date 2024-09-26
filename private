@@ -221,9 +221,6 @@ local espchamsline = 0
 local espfillcolor = Color3.fromRGB(77, 210, 255)
 local esplinecolor = Color3.fromRGB(77, 210, 255)
 
-local invcheck = false
-local invchecktext = Drawing.new("Text")
-
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
@@ -319,13 +316,6 @@ aimtargetname.Color = Color3.fromRGB(77, 210, 255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
 aimtargetname.Outline = true
-invchecktext.Text = " "
-invchecktext.Position = Vector2.new(100, wcamera.ViewportSize.Y / 2)
-invchecktext.Size = 19
-invchecktext.Color = Color3.fromRGB(255,255,255)
-invchecktext.Visible = true
-invchecktext.Center = true
-invchecktext.Outline = true
 
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
@@ -710,10 +700,6 @@ inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, fu
     inventoryCheckerBind = s
 end)
 
-private:AddLabel('Inventory Checker')
-private:AddToggle('Full Inventory Checker', true, nil, function(v)
-    invcheck = v
-end)
 private:AddLabel('─────────────────────')
 
 camer:AddToggle('No Effects', true, nil, function(v) 
@@ -1865,37 +1851,6 @@ spawn(function() -- slow
                     sett.FireRate = 0.002
                 end
             end
-        end
-
-        invchecktext.Position = Vector2.new(100, wcamera.ViewportSize.Y / 2)
-        if invcheck and aimtarget ~= nil then
-            local profile = game.ReplicatedStorage.Players:FindFirstChild(aimtarget.Name)
-            local cloth = profile.Clothing
-            local inv = profile.Inventory
-            local result = ""
-
-            for _, item in ipairs(cloth:GetChildren()) do
-                local itemName = item.Name
-                local inventory = item:FindFirstChild("Inventory")
-        
-                if inventory then
-                    result = result .. itemName .. ": \n"
-                    for _, invItem in pairs(inventory:GetChildren()) do
-                        result = result .. "    " .. invItem.Name .. "\n"
-                    end
-                    result = result .. "\n"
-                else
-                    result = result .. itemName .. "\n"
-                end
-            end
-            for _, item in ipairs(inv:GetChildren()) do
-                result = result .. item.Name .. "\n"
-            end
-            result = result:sub(1, -3)
-
-            invchecktext.Text = result
-        else
-            invchecktext.Text = " "
         end
     end
 end)
