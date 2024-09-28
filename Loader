@@ -6,11 +6,10 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
-if privatebuild_v21991asdfkuyr8492415750982yjtkdsgdf7areg91530679345ascvx764cvbnarge52790825439780xcvafdaerh4236973xcvraeg4572693400978vx == true then
-    print("[[ Exoguard V3 || Exothium.xyz || Private Build ]]")
-    warn("[[ Exoguard V3 || Exothium.xyz || User isnt whitelisted ]]")
+if script_key == "ZJJcEIkhBFJymMZOyMRnhBqpyDRYZOHZ" or script_key == "JKVlxpSPoJaBaZCdBErlJflpdvEvidfj" or script_key == "gwkZMxgvCtGLPIUrFWqvDOIFAbUYsXRl" then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 else
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
+print("key blacklisted gg")
 end
 
 if OldShit == true then
