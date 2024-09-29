@@ -5,8 +5,11 @@ print("[[ Exoguard V3 || Exothium.xyz || Checking Key ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
-
+if script_key == "JKVlxpSPoJaBaZCdBErlJflpdvEvidfj" or script_key "gwkZMxgvCtGLPIUrFWqvDOIFAbUYsXRl" then
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
+else
+print("unwhitelisted")
+end
 
 if OldShit == true then
     print("loading old script")
