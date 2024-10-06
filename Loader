@@ -6,7 +6,7 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
-if privatebuild == true and script_key == "nWYZRhWgGRZejgBKJSaNVaKLFaJFNSnv" or script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" end
+if privatebuild == true and script_key == "KEwuAgFonjvEziSOvVGAWHwNeVdBtzaR" or script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" end
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/private"))()
 else
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
