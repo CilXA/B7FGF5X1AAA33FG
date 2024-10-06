@@ -6,11 +6,17 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
+if privatebuild == true and script_key == "nWYZRhWgGRZejgBKJSaNVaKLFaJFNSnv" or script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" end
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/private"))()
+else
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
+end
+
 
 if OldShit == true then
-    print("loading old script")
+    print("[[ Exoguard V3 || Exothium.xyz || Loading old script ]]")
     loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/oldscript"))()
+    print("[[ Exoguard V3 || Exothium.xyz || Old script loaded ]]")
 end
 
 local elapsedTime = os.clock() - startTime
