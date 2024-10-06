@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.6.3"
+local version = "V6.6.4"
 
 local notificationOffset = 45
 local notifications = {}
