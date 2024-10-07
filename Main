@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.6.4"
+local version = "V6.6.5"
 
 local notificationOffset = 45
 local notifications = {}
@@ -166,13 +166,18 @@ local markvisible = true
 local aimbool = false
 local aimvischeck = false
 local aimbang = false
+local aimrecbang = false
+local aimtrigger = false
 local aiminfrange = false
-local aimpart = "Head"
-local aimtype = "Instant Hit"
-local aimfov = 150
 local aimtarget = nil
 local aimtargetpart = nil
 local aimdynamicfov = false
+local aimpart = "Head"
+local aimtype = "Instant Hit"
+local aimfov = 150
+local aimdistance = 1800
+local aimchance = 100
+local aimfakewait = 0
 local aimfovcircle = Drawing.new("Circle")
 local aimtargetname = Drawing.new("Text")
 local aimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
@@ -285,7 +290,11 @@ local valcache = {
     ["Village Key"] = 2,
     ["Wrench"] = 1,
     ["SPSh-44"] = 12,
-    ["R700"] = 16
+    ["R700"] = 16,
+    ["AKMN"] = 12,
+    ["Mosin"] = 12,
+    ["SVD"] = 12,
+    ["7.62x39AP"] = 0.15,
 }
 
 --drawing setup--
@@ -445,7 +454,7 @@ gunmods:AddToggle('Rapid Fire', true, nil, function(v)
     end
 end)
 
-gunmods:AddToggle('Wallbang (broken, dont use)', true, nil, function(v)
+gunmods:AddToggle('Wallbang', true, nil, function(v)
     aiminfrange = v
 end)
 
@@ -989,8 +998,20 @@ local function isvisible(char, object)
     }
 
     local ray = workspace:Raycast(origin, dir * dist, params)
-    if ray and ray.Instance:IsDescendantOf(char) then
-        return true
+    if aimbang then
+        if ray and ray.Instance:IsDescendantOf(char) then
+            return true
+        elseif ray and ray.Instance.Name ~= "Terrain" then
+            local neworigin = ray.Position + dir * 0.01
+            local newray = workspace:Raycast(neworigin, dir * (dist - (neworigin - origin).Magnitude), params)
+            if newray and newray.Instance:IsDescendantOf(char) then
+                return true
+            end
+        end
+    else
+        if ray and ray.Instance:IsDescendantOf(char) then
+            return true
+        end
     end
 
     return false
@@ -1016,6 +1037,24 @@ local function choosetarget()
     local ctar = nil
     local cpart = nil
 
+    local bparts = {
+        "Head",
+        "UpperTorso",
+        "LowerTorso",
+        "LeftUpperArm",
+        "RightUpperArm",
+        "LeftLowerArm",
+        "RightLowerArm",
+        "LeftHand",
+        "RightHand",
+        "LeftUpperLeg",
+        "RightUpperLeg",
+        "LeftLowerLeg",
+        "RightLowerLeg",
+        "LeftFoot",
+        "RightFoot"
+    }
+
     for _, pottar in ipairs(game.Players:GetPlayers()) do
         if pottar ~= localplayer and pottar.Character then
             local potroot = nil
@@ -1032,27 +1071,21 @@ local function choosetarget()
                 else
                     potroot = head
                 end
+            elseif aimpart == "Random" then
+                potroot = pottar.Character:FindFirstChild( bparts[math.random(1, #bparts)] )
             end
 
             if potroot then
-                local canvis = isvisible(pottar.Character, potroot)
-                if canvis and isonscreen(potroot) then
-                    local spoint = wcamera:WorldToViewportPoint(potroot.Position)
-                    local optpoint = Vector2.new(spoint.X, spoint.Y)
-                    local dist = (optpoint - cent).Magnitude
-
-                    if aimdynamicfov then
-                        if dist <= aimfovcircle.Radius and dist < cdist then
-                            cdist = dist
-                            ctar = pottar
-                            cpart = potroot
-                        end
-                    else
-                        if dist <= aimfov and dist < cdist then
-                            cdist = dist
-                            ctar = pottar
-                            cpart = potroot
-                        end
+                local spoint = wcamera:WorldToViewportPoint(potroot.Position)
+                local optpoint = Vector2.new(spoint.X, spoint.Y)
+                local dist = (optpoint - cent).Magnitude
+            
+                if dist <= aimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < aimdistance then
+                    local canvis = isvisible(pottar.Character, potroot)
+                    if canvis and isonscreen(potroot) then
+                        cdist = dist
+                        ctar = pottar
+                        cpart = potroot
                     end
                 end
             end
@@ -1097,30 +1130,13 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     local v_u_115 = v_u_4:GetEstimatedCameraPosition(v_u_15)
     local v65 = v_u_10.AmmoTypes:FindFirstChild(p52)
     local v_u_74 = v65:GetAttribute("Pellets")
-
-    if target ~= nil and aimtargetpart ~= nil then
-        target_part = aimtargetpart
-        if aimtype == "Prediction" then
-            local buldrop = v65:GetAttribute("ProjectileDrop")
-            local bulsp = v65:GetAttribute("MuzzleVelocity")
-            target_part = predictpos(target_part, bulsp, buldrop)
-            v_u_103 = CFrame.new(v_u_115, target_part).LookVector
-        else
-            v_u_103 = CFrame.new(v_u_115, target_part.Position).LookVector
-        end
-        v_u_114 = v_u_103
-    else
-        target_part = p55
-        v_u_103 = CFrame.new(v_u_115, v_u_15:GetMouse().Hit.Position).LookVector
-        v_u_114 = v_u_103
-    end
-
     local v60 = p50.ItemRoot
     local v61 = p49.ItemProperties
     local v62 = v_u_12:FindFirstChild(p49.Name)
     local v63 = v61:FindFirstChild("SpecialProperties")
     local v_u_66 = v63 and v63:GetAttribute("TracerColor") or v62:GetAttribute("ProjectileColor")
     local itemprop = require(v_u_16.Inventory:FindFirstChild(p49.Name).SettingsModule)
+    local bulletspeed = v65:GetAttribute("MuzzleVelocity")
     local v79 = {
         ["x"] = {
             ["Value"] = 0
@@ -1154,6 +1170,23 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             local _ = p50.Barrel
         end
 
+        if target ~= nil and aimtargetpart ~= nil then
+            target_part = aimtargetpart
+            if aimtype == "Prediction" then
+                local buldrop = v65:GetAttribute("ProjectileDrop")
+                local bulsp = v65:GetAttribute("MuzzleVelocity")
+                target_part = predictpos(target_part, bulsp, buldrop)
+                v_u_103 = CFrame.new(v_u_115, target_part).LookVector
+            else
+                v_u_103 = CFrame.new(v_u_115, target_part.Position).LookVector
+            end
+            v_u_114 = v_u_103
+        else
+            target_part = p55
+            v_u_103 = CFrame.new(v_u_115, v_u_15:GetMouse().Hit.Position).LookVector
+            v_u_114 = v_u_103
+        end
+
         function v185()
             local v_u_110 = RaycastParams.new()
             v_u_110.FilterType = Enum.RaycastFilterType.Exclude
@@ -1162,11 +1195,6 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             v_u_110.CollisionGroup = "WeaponRay"
             v_u_110.IgnoreWater = true
 
-            if aiminfrange then
-                v_u_110.FilterType = Enum.RaycastFilterType.Include
-                v_u_110.FilterDescendantsInstances = {target_part}
-            end
-            
             v_u_106 += 1
             if v_u_106 == 1 then
                 v_u_108 = 0
@@ -1193,17 +1221,29 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             local v_u_132 = 0
             local v_u_133 = 0
 
-            if aimtype == "Prediction" and target ~= nil then
-                local bulletspeed = v65:GetAttribute("MuzzleVelocity")
+            if (aimtype == "Prediction" or aimfakewait) and target ~= nil then
                 local tpart = target.Character.HumanoidRootPart
                 local velocity = tpart.Velocity
                 local distance = (wcamera.CFrame.Position - tpart.CFrame.Position).Magnitude
                 local tth = (distance / bulletspeed)
-                local predict1 = tpart.CFrame.Position + (velocity * tth)
-                local delta = (predict1 - tpart.CFrame.Position).Magnitude
-                local finalspeed = bulletspeed - 0.013 * bulletspeed ^ 2 * tth ^ 2
-                tth += (delta / finalspeed)
-                wait(tth + 0.1)
+                task.wait(tth + 0.01)
+
+                if target ~= nil and aimtargetpart ~= nil then
+                    target_part = aimtargetpart
+                    if aimtype == "Prediction" then
+                        local buldrop = v65:GetAttribute("ProjectileDrop")
+                        local bulsp = v65:GetAttribute("MuzzleVelocity")
+                        target_part = predictpos(target_part, bulsp, buldrop)
+                        v_u_103 = CFrame.new(v_u_115, target_part).LookVector
+                    else
+                        v_u_103 = CFrame.new(v_u_115, target_part.Position).LookVector
+                    end
+                    v_u_114 = v_u_103
+                else
+                    target_part = p55
+                    v_u_103 = CFrame.new(v_u_115, v_u_15:GetMouse().Hit.Position).LookVector
+                    v_u_114 = v_u_103
+                end
             end
 
             function v184(p134)
@@ -1234,19 +1274,102 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         return
                     end
 
-                    if aiminfrange then
-                        v_u_4:Penetration(v137, v140, v_u_114, 300)
+                    local v171 = v_u_4:FindDeepAncestor(v137, "Model")
+                    if v171:FindFirstChild("Humanoid") then
+                        local ran = math.random(1, 100)
+                        local ranbool = ran <= aimchance
+                        if ranbool then
+                            local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                            v_u_5:FireServer(v137, v175, v_u_108, tick())
+                        else
+                            local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                            v_u_5:FireServer(p55, v175, v_u_108, tick())
+                        end
+    
+                        v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+                    elseif v137.Name == "Terrain" then
+                        local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                        v_u_5:FireServer(v137, v175, v_u_108, tick())
+                        v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+                    else
+                        if aimbang then
+                            local ogmat = v137.Material
+                            v137.Material = Enum.Material.Wood
+                            v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+                            local newlookvector
+                            if target_part ~= nil and aimtarget ~= nil then
+                                newlookvector = CFrame.new(v140, target_part.Position).LookVector
+                            else
+                                newlookvector = v_u_114
+                            end
+                            local v176, v177, v178 = v_u_4:Penetration(v137, v140, newlookvector, 9999)
+                            --v176 - armor pen
+                            --v177 - vector3
+                            --v178 - args for impact
+
+                            if v177 ~= nil and 0 < v176 then
+                                v_u_2.Impact(unpack(v178))
+                                v_u_115 = v177  
+                                v_u_110.FilterDescendantsInstances = v_u_111
+
+                                local function recursivebang(arg1, arg2, arg3)
+                                    if forinstanceray and forinstanceray.Instance:IsDescendantOf(aimtarget) then
+                                        return
+                                    else
+                                        task.spawn(function()--debug
+                                            if tracbool == true then
+                                                local tooo = v140 + (newlookvector * 100)
+                                                runtracer(v140, tooo)
+                                            end
+                                        end)
+                                        newlookvector = CFrame.new(arg2, target_part.Position).LookVector
+                                        local forinstanceray = workspace:Raycast(arg2, newlookvector, v_u_110)
+                                        if forinstanceray == nil then return end
+                                        local newinst = forinstanceray.Instance
+
+                                        local ogmat1 = newinst.Material
+                                        newinst.Material = Enum.Material.Wood
+                                        local bang1, bang2, bang3 = v_u_4:Penetration(newinst, arg2, newlookvector, 9999)
+                                        newinst.Material = Enum.Material.Wood
+
+                                        if bang2 ~= nil and 0 < bang1 then
+                                            v_u_2.Impact(unpack(bang3))
+                                            v_u_115 = bang2  
+                                            v_u_110.FilterDescendantsInstances = v_u_111
+                                            recursivebang(bang1, bang2, bang3)
+                                        end
+                                    end
+                                end
+
+                                task.spawn(function()--debug
+                                    if tracbool == true then
+                                        local tooo = v140 + (newlookvector * 20)
+                                        runtracer(v140, tooo)
+                                    end
+                                end)
+
+                                if aimrecbang and aimtarget ~= nil and target_part ~= nil then
+                                    recursivebang(v176, v177, v178)
+                                end
+                            end
+                            v137.Material = ogmat
+                        else    
+                            local ran = math.random(1, 100)
+                            local ranbool = ran <= aimchance
+                            if ranbool then
+                                local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                                v_u_5:FireServer(v137, v175, v_u_108, tick())
+                            else
+                                local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                                v_u_5:FireServer(p55, v175, v_u_108, tick())
+                            end
+        
+                            v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+                        end
                     end
-
-                    local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
-                    v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
-
-                    v_u_5:FireServer(v137, v175, v_u_108, tick())
-
-                    v_u_131:Disconnect()
-                    return
                 end
                 v_u_131:Disconnect()
+                return
             end
             v_u_131 = game:GetService("RunService").RenderStepped:Connect(v184)
             return
@@ -1261,13 +1384,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
 
         return v83, v82, v81, v79
     end
-    if not rapidfire then 
-        task.wait(itemprop.FireRate)
-    end
 end
-
-
-
 
 --esp--
 
@@ -1370,6 +1487,7 @@ local function setupesp(obj, dtype, otype1)
     end)
 end
 local function startesp(v, otype) --start esp for model
+    wait(math.random(0.01, 0.05))
     task.spawn(function()
         if otype == "Extract" then
             setupesp(v, "Name", otype)
@@ -1383,7 +1501,7 @@ local function startesp(v, otype) --start esp for model
                 Amount = i.ItemProperties:GetAttribute("Amount") or 1
                 TotalPrice += i.ItemProperties:GetAttribute("Price") or 0
                 Value += (valcache[i.ItemProperties:GetAttribute("CallSign")] or 0) * Amount
-            end --original = https://rbxscript.com/post/ProjectDeltaLootEsp-P7xaS
+            end
 
             if Value >= 4 then
                 setupesp(v, "Name", otype)
@@ -1415,7 +1533,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
         elseif v:FindFirstAncestor("DroppedItems") then
             startesp(v, "Dead333")
         end
-    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
@@ -1425,7 +1543,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
 end
 workspace.DescendantAdded:Connect(function(v)
     if v and v.Parent and v:IsA("BasePart") and v.Name == "Head" then
-        local hum = v.Parent:WaitForChild("Humanoid")
+        local hum = v.Parent:WaitForChild("Humanoid", 2)
         if hum and v.Parent ~= localplayer.Character then
             if game.Players:FindFirstChild(v.Parent.Name) and not v:FindFirstAncestor("DroppedItems") then
                 startesp(v.Parent, "Plr")
@@ -1435,7 +1553,7 @@ workspace.DescendantAdded:Connect(function(v)
                 startesp(v.Parent, "Dead333")
             end
         end
-    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
