@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V6.6.3"
+local version = "V0.0.1"
 
 local notificationOffset = 45
 local notifications = {}
@@ -145,7 +145,28 @@ if _G.exothiumrr then
     return
 end
 
-local isfirstrun = false
+local somemethods = {
+    "WalkSpeed",
+    "JumpHeight",
+    "HipHeight"
+}
+for _,met in ipairs(somemethods) do
+    for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met))) do
+        v:Disable()
+    end
+end
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded)) do
+    v:Disable()
+end
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.ChildRemoved)) do
+    v:Disable()
+end
+
+for i,v in pairs(getconnections(workspace:GetPropertyChangedSignal("Gravity"))) do
+    v:Disable()
+end
 
 _G.exothiumrr = true
 
@@ -181,6 +202,8 @@ local aimfakewait = 0
 local aimfovcircle = Drawing.new("Circle")
 local aimtargetname = Drawing.new("Text")
 local aimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
+local penetrateogfunc = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration
+local penetratemodfunc
 local aimmodfunc
 local aimignoreparts = {}
 for i,v in ipairs(workspace:GetDescendants()) do
@@ -221,6 +244,9 @@ local espchamsline = 0
 local espfillcolor = Color3.fromRGB(77, 210, 255)
 local esplinecolor = Color3.fromRGB(77, 210, 255)
 
+local invcheck = false
+local invchecktext = Drawing.new("Text")
+
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
@@ -239,6 +265,13 @@ local viewmodZ = -0.32
 
 local speedbool = false
 local speedboost = 1.2
+
+local nojumpcd = false
+local changerbool = false
+local changergrav = 95
+local changerspeed = 23
+local changerheight = 2
+local changerjump = 8
 
 local bunnyhop = false
 
@@ -316,6 +349,13 @@ aimtargetname.Color = Color3.fromRGB(77, 210, 255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
 aimtargetname.Outline = true
+invchecktext.Text = " "
+invchecktext.Position = Vector2.new(100, wcamera.ViewportSize.Y / 2)
+invchecktext.Size = 19
+invchecktext.Color = Color3.fromRGB(255,255,255)
+invchecktext.Visible = true
+invchecktext.Center = true
+invchecktext.Outline = true
 
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
@@ -345,6 +385,7 @@ local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
 local viewmod = visual:AddSection('View Model')
 local speedh = player:AddSection('Speed')
+local privatemods = player:AddSection('Player Stuff')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
 local worldh = other:AddSection('World')
@@ -364,11 +405,11 @@ end)
 aim:AddToggle('Only Visible', true, nil, function(v)
     aimvischeck = v
 end)
-private:AddLabel('Aimbot')
+
 private:AddToggle('Auto Shoot', true, nil, function(v)
     aimtrigger = v
 end)
-private:AddLabel('─────────────────────')
+
 aim:AddToggle('Dynamic FOV', true, nil, function(v)
     aimdynamicfov = v
 end)
@@ -458,6 +499,17 @@ end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
 end)
+
+--[[
+gunmods:AddToggle('Wallbang v2', true, nil, function(v) -- нужно в modules.fps чекнуть updatebulletlist, может быть тогда разгадаю как это сделать...
+    aimrecbang = v
+    if v == true then
+        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetratemodfunc
+    else
+        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetrateogfunc
+    end
+end)
+]]
 
 gunmods:AddToggle('No Recoil', true, nil, function(v)
 			NoRecoil = v
@@ -700,7 +752,7 @@ inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, fu
     inventoryCheckerBind = s
 end)
 
-private:AddLabel('─────────────────────')
+
 
 camer:AddToggle('No Effects', true, nil, function(v) 
 local noscreeneffects = v
@@ -870,6 +922,22 @@ speedh:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c)
     speedboost = c
 end)
 
+privatemods:AddToggle('Player Toggle', true, nil, function(v)
+    changerbool = v
+end)
+privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
+    changergrav = c
+end)
+privatemods:AddSlider('Player Jumppower', 25, 0, 1, function(c) 
+    changerjump = c
+end)
+privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
+    changerspeed = c
+end)
+privatemods:AddSlider('Player Hipheight', 15, 0, 1, function(c) 
+    changerheight = c
+end)
+
 worldh:AddToggle('No Grass', true, nil, function(v)
     sethiddenproperty(workspace.Terrain, "Decoration", not v)
 end)
@@ -984,7 +1052,7 @@ local function isvisible(char, object)
         return true
     end
 
-    local origin = localplayer.Character.HumanoidRootPart.Position
+    local origin = wcamera.CFrame.Position
     local pos = object.Position
     local dir = pos - origin
     local dist = dir.Magnitude + 5
@@ -1198,27 +1266,19 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             v_u_110.CollisionGroup = "WeaponRay"
             v_u_110.IgnoreWater = true
 
-            v_u_106 += 1
-            if v_u_106 == 1 then
-                v_u_108 = 0
-                task.spawn(function()
-                    for i=1, multitaps do
-                        if aimtype == "Instant Hit" then
-                            if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then 
-                                game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
-                            end
-                        else
-                            if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()) then 
-                                game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
-                            end
+            task.spawn(function()
+                for i=1, multitaps do
+                    if aimtype == "Instant Hit" then
+                        if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then
+                            game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
+                        end
+                    else
+                        if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()) then
+                            game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
                         end
                     end
-                end)
-            elseif 1 < v_u_106 then
-                for i=1, multitaps do
-                    v_u_6:FireServer(v_u_114, v_u_108)
                 end
-            end
+            end)
 
             local v_u_131 = nil
             local v_u_132 = 0
@@ -1295,7 +1355,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         v_u_5:FireServer(v137, v175, v_u_108, tick())
                         v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
                     else
-                        if aimbang then
+                        if aimbang then --wallbang
                             local ogmat = v137.Material
                             v137.Material = Enum.Material.Wood
                             v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
@@ -1389,6 +1449,37 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
         return v83, v82, v81, v79
     end
 end
+penetratemodfunc = function(_, p226, p227, p228, p229)
+	if true then
+		local v230 = RaycastParams.new()
+		v230.FilterType = Enum.RaycastFilterType.Include
+		v230.FilterDescendantsInstances = { p226 }
+		v230.IgnoreWater = true
+		v230.CollisionGroup = "WeaponRay"
+		local v231 = p227 + p228 * 5
+		local v232 = -p228
+		local v233 = workspace:Raycast(v231, v232 * 5, v230)
+		if v233 then
+			local v234 = v233.Instance
+			local v235 = v233.Position
+			local v236 = v233.Normal
+			local v237 = Enum.Material.Wood
+			local v238 = (v235 - p227).magnitude
+            local v241 = p227 + p228 * 0.03
+            return 9999, v241, {
+                v234,
+                v235,
+                v236,
+                v237,
+                p228,
+                "Ranged",
+                true
+            }, v235 + p228 * 0.3
+		end
+	end
+	return 0
+end
+
 
 --esp--
 
@@ -1445,7 +1536,7 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "Highlight" then
         dobj = Instance.new("Highlight")
-        dobj.Name = math.random(111111,99992999)
+        dobj.Name = math.random(1114,999799)
         dobj.FillColor = espfillcolor
         dobj.OutlineColor = esplinecolor
         dobj.FillTransparency = espchamsfill
@@ -1859,7 +1950,17 @@ end)
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
 
+    if changerbool and localplayer.Character ~= nil then -- humanoid changer
+        localplayer.Character.Humanoid.WalkSpeed = changerspeed
+        localplayer.Character.Humanoid.JumpHeight = changerjump
+        localplayer.Character.Humanoid.HipHeight = changerheight
+        workspace.Gravity = changergrav
+    end
+
 if aimtarget ~= nil then
+
+    
+
     local character = aimtarget.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
     
