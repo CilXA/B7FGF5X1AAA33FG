@@ -145,29 +145,6 @@ if _G.exothiumrr then
     return
 end
 
-local somemethods = {
-    "WalkSpeed",
-    "JumpHeight",
-    "HipHeight"
-}
-for _,met in ipairs(somemethods) do
-    for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met))) do
-        v:Disable()
-    end
-end
-
-for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded)) do
-    v:Disable()
-end
-
-for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.ChildRemoved)) do
-    v:Disable()
-end
-
-for i,v in pairs(getconnections(workspace:GetPropertyChangedSignal("Gravity"))) do
-    v:Disable()
-end
-
 _G.exothiumrr = true
 
 local wcamera = workspace.CurrentCamera
@@ -356,6 +333,29 @@ invchecktext.Color = Color3.fromRGB(255,255,255)
 invchecktext.Visible = true
 invchecktext.Center = true
 invchecktext.Outline = true
+
+local somemethods = {
+    "WalkSpeed",
+    "JumpHeight",
+    "HipHeight"
+}
+for _,met in ipairs(somemethods) do
+    for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met))) do
+        v:Disable()
+    end
+end
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded)) do
+    v:Disable()
+end
+
+for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.ChildRemoved)) do
+    v:Disable()
+end
+
+for i,v in pairs(getconnections(game.Workspace:GetPropertyChangedSignal("Gravity"))) do
+    v:Disable()
+end
 
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
