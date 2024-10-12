@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2"
+local version = "V0.0.3"
 
 local notificationOffset = 45
 local notifications = {}
@@ -135,7 +135,7 @@ if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil th
     Notify("Exothium.xyz - Private", "".. exec .." is not supported", 10)
     return
 else
-    Notify("Exothium.xyz - Private || Loading Script", " ".. exec .." ", 3.5)
+    Notify("Exothium.xyz - Private|| Loading Script", " ".. exec .." ", 3.5)
     wait(0.01)
     Notify("Exothium.xyz - Private || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz - Private || " .. exec .." || " .. version .. " ]]")
@@ -162,6 +162,7 @@ local mouse = localplayer:GetMouse()
 local markvisible = true
 
 local aimbool = false
+local aimbots = false
 local aimvischeck = false
 local aimbang = false
 local aimrecbang = false
@@ -190,6 +191,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
 end
 
 local rapidfire = false
+local unlockmodes = false
 local multitaps = 1
 
 local esptextcolor = Color3.fromRGB(77, 210, 255)
@@ -228,6 +230,7 @@ local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
 local tracbool = false
+local tracwait = 1
 local traccolor = Color3.fromRGB(77, 210, 255)
 
 local crosshair = Drawing.new("Circle")
@@ -236,19 +239,33 @@ local defaultfirerate = {}
 
 local createdThings = {}
 
-local viewmodX = 0.20
+local viewmod_materials = {
+    ["Forcefield"] = Enum.Material.ForceField,
+    ["Neon"] = Enum.Material.Neon,
+    ["Plastic"] = Enum.Material.SmoothPlastic
+}
+local viewmodbool = false
+local viewmodhandmat = Enum.Material.ForceField
+local viewmodgunmat = Enum.Material.ForceField
+local viewmodhandcolor = Color3.fromRGB(77, 210, 255)
+local viewmodguncolor = Color3.fromRGB(77, 210, 255)
+local viewmodX = 0.2
 local viewmodY = -2
 local viewmodZ = -0.32
 
 local speedbool = false
 local speedboost = 1.2
 
-local nojumpcd = false
 local changerbool = false
 local changergrav = 95
-local changerspeed = 23
+local changerspeed = 18
 local changerheight = 2
-local changerjump = 8
+local changerjump = 5
+
+local charsemifly = false
+local charsemiflydist = 6
+local charsemiflyspeed = 22
+local semifly_bodyvel = nil
 
 local bunnyhop = false
 
@@ -300,7 +317,12 @@ local valcache = {
     ["Village Key"] = 2,
     ["Wrench"] = 1,
     ["SPSh-44"] = 12,
-    ["R700"] = 16
+    ["R700"] = 16,
+    ["AKMN"] = 12,
+    ["Mosin"] = 12,
+    ["SVD"] = 12,
+    ["7.62x39AP"] = 0.15,
+    ["7.62x54AP"] = 0,15,
 }
 
 --drawing setup--
@@ -380,11 +402,11 @@ local tarinfo = combat:AddSection('Target')
 local wh = visual:AddSection('Player Visuals')
 local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
-local private = other:AddSection('Private Features')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
-local viewmod = visual:AddSection('View Model')
-local speedh = player:AddSection('Speed')
+local viewmod = visual:AddSection('Viewmodel')
+local speedh = player:AddSection('CFrame Speed')
+local semifly = player:AddSection('Semi Fly')
 local privatemods = player:AddSection('Player Stuff')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
@@ -402,32 +424,39 @@ aim:AddToggle('Silent Aim', true, nil, function(v)
         require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
     end
 end)
+aim:AddToggle('Target AI', true, nil, function(v)
+    aimbots = v
+end)
 aim:AddToggle('Only Visible', true, nil, function(v)
     aimvischeck = v
 end)
 
-private:AddToggle('Auto Shoot', true, nil, function(v)
+aim:AddToggle('Auto Shoot', true, nil, function(v)
     aimtrigger = v
 end)
 
+aim:AddSeparateBar()
+
+aim:AddToggle('FOV Visible', true, nil, function(v)
+    aimfovcircle.Visible = v
+end)
 aim:AddToggle('Dynamic FOV', true, nil, function(v)
     aimdynamicfov = v
 end)
 aim:AddSlider('FOV Radius', 250, 10, 150, function(c) 
     aimfov = c
 end)
+aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
+   aimfovcircle.Color = a
+end)
+
+aim:AddSeparateBar()
+
 aim:AddDropdown('Aim Part', {'Head', 'Torso', 'Scripted'}, 'Head', function(a)
     aimpart = a
 end)
 aim:AddDropdown('Aim Type', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
     aimtype = a
-end)
-aim:AddSeparateBar()
-aim:AddToggle('FOV Visible', true, nil, function(v)
-    aimfovcircle.Visible = v
-end)
-aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
-   aimfovcircle.Color = a
 end)
 
 local loadedAnim2 = nil
@@ -495,7 +524,9 @@ gunmods:AddToggle('Rapid Fire', true, nil, function(v)
         end
     end
 end)
-
+gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
+    unlockmodes = v
+end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
 end)
@@ -612,6 +643,28 @@ tarinfo:AddToggle('Target Name', true, nil, function(v)
     aimtargetname.Visible = v
 end)
 
+semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v) 
+    if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
+        if v == false then
+			semifly_bodyvel:Destroy()
+		elseif v == true then
+			semifly_bodyvel = Instance.new("BodyVelocity", localplayer.Character.HumanoidRootPart)
+			semifly_bodyvel.Velocity = Vector3.new(0,0,0)
+		end
+
+		localplayer.Character.Humanoid.PlatformStand = not localplayer.Character.Humanoid.PlatformStand 
+        charsemifly = v
+    else
+        charsemifly = false
+    end
+end)
+semifly:AddSlider('Distance', 6, 0.1, 6, function(c) 
+    charsemiflydist = c
+end)
+semifly:AddSlider('Speed', 80, 1, 22, function(c) 
+    charsemiflyspeed = c
+end)
+
 wh:AddToggle('ESP Enabled', true, nil, function(v)
     espbool = v
 end)
@@ -642,23 +695,30 @@ end)
 wh:AddToggle('Extract', true, nil, function(v)
     espexit = v
 end)
+
+wh:AddSeparateBar()
+
+wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
+    esptextcolor = a
+end)
 wh:AddSlider('Text Size', 35, 1, 17, function(c) 
     esptextsize = c
 end)
 wh:AddToggle('Text Outline', true, nil, function(v)
     esptextline = v
 end)
+
+wh:AddSeparateBar()
+
 wh:AddSlider('Chams Outline Transparency', 1, 0, 0, function(c) 
     espchamsline = c
 end)
-wh:AddSlider('Chams Fill Transparency', 1, 0, 0.5, function(c) 
-    espchamsfill = c
-end)
-wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
-    esptextcolor = a
-end)
 wh:AddColorPallete('Chams Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
     esplinecolor = a
+end)
+
+wh:AddSlider('Chams Fill Transparency', 1, 0, 0.5, function(c) 
+    espchamsfill = c
 end)
 wh:AddColorPallete('Chams Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
     espfillcolor = a
@@ -678,6 +738,9 @@ tracers:AddToggle('Enabled', true, nil, function(v)
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
     traccolor.Color = Color3.fromRGB(a)
+end)
+tracers:AddSlider('Tracer Lifetime', 20, 0, 1, function(c) 
+    tracwait = c
 end)
 
 function isFalling()
@@ -731,7 +794,7 @@ plrmods:AddToggle('Bunnyhop', true, nil, function(v)
     until not bunnyhop
 end)
 
-plrmods:AddLabel('─────────────────────')
+plrmods:AddSeparateBar()
 
 plrmods:AddToggle('No Fall Damage', true, nil, function(v)
     NoFallDamage = v
@@ -887,6 +950,32 @@ camer:AddToggle('Third Person', true, nil, function(isToggled)
     end
 end)
 
+viewmod:AddToggle('Viewmodel Chams', true, nil, function(v)
+    viewmodbool = v
+end)
+viewmod:AddDropdown('Arm Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
+    if viewmod_materials[a] then
+        viewmodhandmat = viewmod_materials[a]
+    else
+
+    end
+end)
+viewmod:AddDropdown('Weapon Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
+    if viewmod_materials[a] then
+        viewmodgunmat = viewmod_materials[a]
+    else
+
+    end
+end)
+viewmod:AddColorPallete('Arm Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
+    viewmodhandcolor = a
+end)
+viewmod:AddColorPallete('Weapon Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
+    viewmodguncolor = a
+end)
+
+viewmod:AddSeparateBar()
+
 viewmod:AddSlider('Offset X', 5, -5, 0.20, function(c) 
     viewmodX = c
 end)
@@ -967,7 +1056,7 @@ worldh:AddToggle('Jesus', true, nil, function(v)
     end
 end)
 
-worldh:AddLabel('─────────────────────')
+worldh:AddSeparateBar()
 
 worldh:AddSlider('Clock Time', 24, 0, 14, function(c) 
     worldclock = c
@@ -1028,7 +1117,7 @@ local function runtracer(start, endp)
     beam.Transparency = NumberSequence.new(0)
     beam.LightEmission = 1
 
-    wait(2.7)
+    wait(tracwait)
 
     beam:Destroy()
     startpart:Destroy()
@@ -1126,26 +1215,52 @@ local function choosetarget()
         "RightFoot"
     }
 
-    for _, pottar in ipairs(game.Players:GetPlayers()) do
-        if pottar ~= localplayer and pottar.Character then
-            local potroot = nil
-            local head = pottar.Character:FindFirstChild("Head")
-            local upperTorso = pottar.Character:FindFirstChild("UpperTorso")
-
-            if aimpart == "Head" then
-                potroot = head
-            elseif aimpart == "Torso" then
-                potroot = upperTorso
-            elseif aimpart == "Scripted" then
-                if not isvisible(pottar.Character, head) then
-                    potroot = upperTorso
-                else
-                    potroot = head
-                end
-            elseif aimpart == "Random" then
-                potroot = pottar.Character:FindFirstChild( bparts[math.random(1, #bparts)] )
+    local function chooseTpart(charact)
+        if aimpart == "Head" then
+            return charact:FindFirstChild("Head")
+        elseif aimpart == "Torso" then
+            return charact:FindFirstChild("UpperTorso")
+        elseif aimpart == "Scripted" then
+            local head = charact:FindFirstChild("Head")
+            local upperTorso = charact:FindFirstChild("UpperTorso")
+            if not isvisible(charact, head) then
+                return upperTorso
+            else
+                return head
             end
+        elseif aimpart == "Random" then
+            return charact:FindFirstChild(bparts[math.random(1, #bparts)])
+        end
+    end
 
+    
+    if aimbots then --priority 2 (bots)
+        for _, botfold in ipairs(workspace.AiZones:GetChildren()) do
+            for _, bot in ipairs(botfold:GetChildren()) do
+                if bot:IsA("Model") and bot:FindFirstChild("Humanoid") and bot.Humanoid.Health > 0 then
+                    local potroot = chooseTpart(bot)
+                    if potroot then
+                        local spoint = wcamera:WorldToViewportPoint(potroot.Position)
+                        local optpoint = Vector2.new(spoint.X, spoint.Y)
+                        local dist = (optpoint - cent).Magnitude
+                    
+                        if dist <= aimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < aimdistance then
+                            local canvis = isvisible(bot, potroot)
+                            if canvis and isonscreen(potroot) then
+                                cdist = dist
+                                ctar = bot
+                                cpart = potroot
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
+
+    for _, pottar in ipairs(game.Players:GetPlayers()) do --priority 1 (players)
+        if pottar ~= localplayer and pottar.Character and localplayer.Character.PrimaryPart ~= nil then
+            local potroot = chooseTpart(pottar.Character)
             if potroot then
                 local spoint = wcamera:WorldToViewportPoint(potroot.Position)
                 local optpoint = Vector2.new(spoint.X, spoint.Y)
@@ -1266,19 +1381,27 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             v_u_110.CollisionGroup = "WeaponRay"
             v_u_110.IgnoreWater = true
 
-            task.spawn(function()
-                for i=1, multitaps do
-                    if aimtype == "Instant Hit" then
-                        if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then
-                            game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
-                        end
-                    else
-                        if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()) then
-                            game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
+            v_u_106 += 1
+            if v_u_106 == 1 then
+                v_u_108 = 0
+                task.spawn(function()
+                    for i=1, multitaps do
+                        if aimtype == "Instant Hit" then
+                            if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then 
+                                game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
+                            end
+                        else
+                            if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()) then 
+                                game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
+                            end
                         end
                     end
+                end)
+            elseif 1 < v_u_106 then
+                for i=1, multitaps do
+                    v_u_6:FireServer(v_u_114, v_u_108)
                 end
-            end)
+            end
 
             local v_u_131 = nil
             local v_u_132 = 0
@@ -1396,7 +1519,6 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                                         newinst.Material = Enum.Material.Wood
 
                                         if bang2 ~= nil and 0 < bang1 then
-                                            print("double banged")
                                             v_u_2.Impact(unpack(bang3))
                                             v_u_115 = bang2  
                                             v_u_110.FilterDescendantsInstances = v_u_111
@@ -1404,13 +1526,6 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                                         end
                                     end
                                 end
-
-                                task.spawn(function()--debug
-                                    if tracbool == true then
-                                        local tooo = v140 + (newlookvector * 20)
-                                        runtracer(v140, tooo)
-                                    end
-                                end)
 
                                 if aimrecbang and aimtarget ~= nil and target_part ~= nil then
                                     recursivebang(v176, v177, v178)
@@ -1480,7 +1595,6 @@ penetratemodfunc = function(_, p226, p227, p228, p229)
 	return 0
 end
 
-
 --esp--
 
 local function setupesp(obj, dtype, otype1)
@@ -1536,12 +1650,18 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "Highlight" then
         dobj = Instance.new("Highlight")
-        dobj.Name = math.random(1114,999799)
+        dobj.Name = math.random(1111,99999)
         dobj.FillColor = espfillcolor
         dobj.OutlineColor = esplinecolor
         dobj.FillTransparency = espchamsfill
         dobj.OutlineTransparency = espchamsline
-        dobj.Parent = obj.Parent
+        if obj.Parent:IsA("Model") then
+            dobj.Parent = obj.Parent
+        else
+            dobj:Destroy()
+            return
+        end
+
         dobj.Enabled = esphigh
         tableinfo = {
             primary = obj,
@@ -1798,7 +1918,7 @@ local function inventoryCheckerFrame()
 	FooterLabel.Position = UDim2.new(0, 0, 1.046, 0)
 	FooterLabel.Size = UDim2.new(0, 178, 0, 17)
 	FooterLabel.Font = Enum.Font.Ubuntu
-	FooterLabel.Text = "Exothium.xyz"
+	FooterLabel.Text = "Exothium.xyz - Private"
 	FooterLabel.TextColor3 = TextColor
 	FooterLabel.TextSize = 14
 	FooterLabel.TextStrokeTransparency = 0.7
@@ -1895,6 +2015,92 @@ end
 uis.InputBegan:Connect(onInventoryCheckerPressed)
 uis.InputEnded:Connect(onInventoryCheckerReleased)
 
+--fly--
+
+local function fly_move(dir)
+    local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+	local newPos = hrp.CFrame + (dir * 1)
+	hrp.CFrame = newPos
+end
+local function fly_getclosestpoint()
+    local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+	local dirs = {
+        Vector3.new(1, 0, 0),
+        Vector3.new(-1, 0, 0),
+        Vector3.new(0, 1, 0),
+        Vector3.new(0, -1, 0),
+        Vector3.new(0, 0, 1),
+        Vector3.new(0, 0, -1),
+        Vector3.new(1, 1, 0),
+        Vector3.new(1, -1, 0),
+        Vector3.new(-1, 1, 0),
+        Vector3.new(-1, -1, 0),
+        Vector3.new(1, 0, 1),
+        Vector3.new(1, 0, -1),
+        Vector3.new(-1, 0, 1),
+        Vector3.new(-1, 0, -1),
+        Vector3.new(0, 1, 1),
+        Vector3.new(0, 1, -1),
+        Vector3.new(0, -1, 1),
+        Vector3.new(0, -1, -1),
+        Vector3.new(1, 1, 1),
+        Vector3.new(1, 1, -1),
+        Vector3.new(1, -1, 1),
+        Vector3.new(1, -1, -1),
+        Vector3.new(-1, 1, 1),
+        Vector3.new(-1, 1, -1),
+        Vector3.new(-1, -1, 1),
+        Vector3.new(-1, -1, -1)
+    }
+
+	local fcp = nil
+	local cd = math.huge
+
+    local playerslist = game.Players:GetPlayers()
+    local ignorl = {localplayer.Character, wcamera}
+
+    for _, player in ipairs(playerslist) do
+        if player.Character then
+            table.insert(ignorl, player.Character)
+        end
+    end
+
+	for _, dir in ipairs(dirs) do
+		local ray = Ray.new(hrp.Position, dir * 200)
+		local part, pos = workspace:FindPartOnRayWithIgnoreList(ray, ignorl)
+		if part and pos then
+			local d = (hrp.Position - pos).Magnitude
+			if d < cd then
+				cd = d
+				fcp = pos
+			end
+		end
+	end
+
+	return fcp
+end
+local function fly_getoffset(dir)
+	local offset = Vector3.new(0.1, 0.1, 0.1)
+	if dir.X > 0 then
+		offset = Vector3.new(0.1, 0, 0)
+	elseif dir.X < 0 then
+		offset = Vector3.new(-0.1, 0, 0)
+	elseif dir.Y > 0 then
+		offset = Vector3.new(0, 0.1, 0)
+	elseif dir.Y < 0 then
+		offset = Vector3.new(0, -0.1, 0)
+	elseif dir.Z > 0 then
+		offset = Vector3.new(0, 0, 0.1)
+	elseif dir.Z < 0 then
+		offset = Vector3.new(0, 0, -0.1)
+	end
+	return offset
+end
+
 --global cycle--
 
 spawn(function() -- very slow
@@ -1931,6 +2137,38 @@ spawn(function() -- slow
             for i,v in ipairs(inv:GetChildren()) do
                 local sett = require(v.SettingsModule)
                 sett.weaponOffSet = offset
+                if rapidfire then   
+                    sett.FireRate = 0.002
+                end
+                if unlockmodes then
+                    sett.FireModes = {"Auto", "Semi"}
+                end
+            end
+        end
+
+        if viewmodbool and wcamera:FindFirstChild("ViewModel") then
+            for _, obj in ipairs(wcamera.ViewModel:GetDescendants()) do
+                if obj:IsA("BasePart") then
+                    if not obj:FindFirstAncestor("Item") then
+                        local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
+                        if mb then
+                            mb:Destroy()
+                        end
+
+                        obj.Color = viewmodhandcolor
+                        obj.Material = viewmodhandmat
+                    else
+                        local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
+                        if mb then
+                            mb:Destroy()
+                        end
+
+                        obj.Color = viewmodguncolor
+                        obj.Material = viewmodgunmat
+                    end
+                elseif obj:IsA("Model") and obj:FindFirstChild("LL") then
+                    obj:Destroy()
+                end
             end
         end
 
@@ -1949,6 +2187,44 @@ end)
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
+
+    if charsemifly and localplayer.Character then --semifly
+        local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+        local dir = Vector3.new(0, 0, 0)
+
+		if uis:IsKeyDown(Enum.KeyCode.W) then
+			dir += wcamera.CFrame.LookVector
+		elseif uis:IsKeyDown(Enum.KeyCode.S) then
+			dir -= wcamera.CFrame.LookVector
+		end
+
+		if uis:IsKeyDown(Enum.KeyCode.A) then
+			dir -= wcamera.CFrame.RightVector
+		elseif uis:IsKeyDown(Enum.KeyCode.D) then
+			dir += wcamera.CFrame.RightVector
+		end
+
+		if uis:IsKeyDown(Enum.KeyCode.Space) then
+			dir += Vector3.new(0, 1, 0)
+		elseif uis:IsKeyDown(Enum.KeyCode.LeftShift) then
+			dir -= Vector3.new(0, 1, 0)
+		end
+
+		local closest = fly_getclosestpoint()
+		if closest then
+			local d = (hrp.Position - closest).Magnitude
+			if d > charsemiflydist then
+				local ldir = (hrp.Position - closest).Unit * charsemiflydist
+				local offset = fly_getoffset(ldir)
+				hrp.CFrame = CFrame.new(closest + ldir - offset)
+			else
+				fly_move(dir * charsemiflyspeed * runs.RenderStepped:Wait())
+			end
+		else
+			fly_move(dir * charsemiflyspeed * runs.RenderStepped:Wait())
+		end
+    end
 
     if changerbool and localplayer.Character ~= nil then -- humanoid changer
         localplayer.Character.Humanoid.WalkSpeed = changerspeed
@@ -2014,7 +2290,7 @@ end
         local otype = info.otype
         
         if info.primary == nil or info.primary.Parent == nil then
-            table.remove(esptable, table.find(esptable, dobj))
+            esptable[dobj] = nil
             if dtype == "Highlight" then
                 dobj.Enabled = false
                 dobj:Destroy()
@@ -2197,7 +2473,7 @@ local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(
         FrameCounter = 0;
     end;
 
-    LibraryVS:SetWatermark(('Exothium.xyz | Private | %s fps | %s ms'):format(
+    LibraryVS:SetWatermark(('Exothium.xyz - Private | %s fps | %s ms'):format(
         math.floor(FPS),
         math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
     ));
