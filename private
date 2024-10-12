@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3"
+local version = "V0.0.4"
 
 local notificationOffset = 45
 local notifications = {}
@@ -135,17 +135,17 @@ if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil th
     Notify("Exothium.xyz - Private", "".. exec .." is not supported", 10)
     return
 else
-    Notify("Exothium.xyz - Private|| Loading Script", " ".. exec .." ", 3.5)
+    Notify("Exothium.xyz - Private || Loading Script", " ".. exec .." ", 3.5)
     wait(0.01)
     Notify("Exothium.xyz - Private || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz - Private || " .. exec .." || " .. version .. " ]]")
 end
-if _G.exothiumrr then
+if _G.exothiumxyz then
     Notify("Exothium.xyz - Private", "Script is already loaded, therefore you cant execute it again", 4)
     return
 end
 
-_G.exothiumrr = true
+_G.exothiumxyz = true
 
 local wcamera = workspace.CurrentCamera
 local localplayer = game.Players.LocalPlayer
@@ -190,10 +190,6 @@ for i,v in ipairs(workspace:GetDescendants()) do
     end
 end
 
-local rapidfire = false
-local unlockmodes = false
-local multitaps = 1
-
 local esptextcolor = Color3.fromRGB(77, 210, 255)
 local esptable = {}
 --[[ esptable template
@@ -205,7 +201,7 @@ local esptable = {}
         spart = instance --(for skelet)
     }      
 ]] 
-local esptextsize = 17
+
 local espbool = false
 local espname = false
 local esphp = false
@@ -218,8 +214,10 @@ local esphotbar = false
 local esploot = false
 local espexit = false
 local esptextline = false
+local esprenderdist = 1800
 local espchamsfill = 1
 local espchamsline = 0
+local esptextsize = 17
 local espfillcolor = Color3.fromRGB(77, 210, 255)
 local esplinecolor = Color3.fromRGB(77, 210, 255)
 
@@ -285,6 +283,9 @@ local BulletTracer = false
 local InstaReload = true
 local GunDrag = false
 local NoProjectileDrop = false
+local RapidFire = false
+local UnlockFiremodes = false
+local BurstFire = 1
 
 local NoFallDamage = false
 local transparencyToggle = false
@@ -395,6 +396,7 @@ local other = library:AddWindow('Misc')
 local home = library:AddWindow('Settings')
 
 local mainhome = home:AddSection('Menu')
+local miscfeatures = home:AddSection('Extra Features')
 local aim = combat:AddSection('Aimbot')
 local gunmods = combat:AddSection('Gun Mods')
 local camzoom = other:AddSection('Zoom')
@@ -507,7 +509,7 @@ antiaim:AddToggle('Gnome', true, nil, function(v)
 end)
 
 gunmods:AddToggle('Rapid Fire', true, nil, function(v)
-    rapidfire = v
+    RapidFire = v
     if v == true then
         local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
         for i,v in ipairs(inv:GetChildren()) do
@@ -525,7 +527,7 @@ gunmods:AddToggle('Rapid Fire', true, nil, function(v)
     end
 end)
 gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
-    unlockmodes = v
+    UnlockFiremodes = v
 end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
@@ -636,11 +638,15 @@ gunmods:AddToggle('Bullet Tracer', true, nil, function(v)
 end)
 
 gunmods:AddSlider('Burstfire', 5, 1, 1,function(c)
-    multitaps = c
+    BurstFire = c
 end)
 
 tarinfo:AddToggle('Target Name', true, nil, function(v)
     aimtargetname.Visible = v
+end)
+
+miscfeatures:AddButton('Reset',function() 
+    game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
 
 semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v) 
@@ -658,6 +664,7 @@ semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v)
         charsemifly = false
     end
 end)
+semifly:AddSeparateBar()
 semifly:AddSlider('Distance', 6, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
@@ -1011,20 +1018,26 @@ speedh:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c)
     speedboost = c
 end)
 
-privatemods:AddToggle('Player Toggle', true, nil, function(v)
+privatemods:AddToggle('Toggle', true, nil, function(v)
     changerbool = v
 end)
-privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
-    changergrav = c
+
+privatemods:AddSeparateBar()
+
+privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
+    changerspeed = c
 end)
 privatemods:AddSlider('Player Jumppower', 25, 0, 1, function(c) 
     changerjump = c
 end)
-privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
-    changerspeed = c
-end)
+
+privatemods:AddSeparateBar()
+
 privatemods:AddSlider('Player Hipheight', 15, 0, 1, function(c) 
     changerheight = c
+end)
+privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
+    changergrav = c
 end)
 
 worldh:AddToggle('No Grass', true, nil, function(v)
@@ -1385,7 +1398,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             if v_u_106 == 1 then
                 v_u_108 = 0
                 task.spawn(function()
-                    for i=1, multitaps do
+                    for i=1, BurstFire do
                         if aimtype == "Instant Hit" then
                             if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then 
                                 game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
@@ -1398,7 +1411,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                     end
                 end)
             elseif 1 < v_u_106 then
-                for i=1, multitaps do
+                for i=1, BurstFire do
                     v_u_6:FireServer(v_u_114, v_u_108)
                 end
             end
@@ -1407,30 +1420,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             local v_u_132 = 0
             local v_u_133 = 0
 
-            if (aimtype == "Prediction" or aimfakewait) and target ~= nil then
-                local tpart = target.Character.HumanoidRootPart
-                local velocity = tpart.Velocity
-                local distance = (wcamera.CFrame.Position - tpart.CFrame.Position).Magnitude
-                local tth = (distance / bulletspeed)
-                task.wait(tth + 0.01)
 
-                if target ~= nil and aimtargetpart ~= nil then
-                    target_part = aimtargetpart
-                    if aimtype == "Prediction" then
-                        local buldrop = v65:GetAttribute("ProjectileDrop")
-                        local bulsp = v65:GetAttribute("MuzzleVelocity")
-                        target_part = predictpos(target_part, bulsp, buldrop)
-                        v_u_103 = CFrame.new(v_u_115, target_part).LookVector
-                    else
-                        v_u_103 = CFrame.new(v_u_115, target_part.Position).LookVector
-                    end
-                    v_u_114 = v_u_103
-                else
-                    target_part = p55
-                    v_u_103 = CFrame.new(v_u_115, v_u_15:GetMouse().Hit.Position).LookVector
-                    v_u_114 = v_u_103
-                end
-            end
 
             function v184(p134)
                 v_u_132 = v_u_132 + p134
@@ -1607,6 +1597,7 @@ local function setupesp(obj, dtype, otype1)
         dobj.Outline = true
         dobj.Size = esptextsize
         dobj.Color = esptextcolor
+        dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
             primary = obj,
             type = "Name",
@@ -1619,6 +1610,7 @@ local function setupesp(obj, dtype, otype1)
         dobj.Outline = true
         dobj.Size = esptextsize
         dobj.Color = esptextcolor
+        dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
             primary = obj,
             type = "HP",
@@ -1631,6 +1623,7 @@ local function setupesp(obj, dtype, otype1)
         dobj.Outline = true
         dobj.Size = esptextsize
         dobj.Color = esptextcolor
+        dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
             primary = obj,
             type = "Distance",
@@ -1643,6 +1636,7 @@ local function setupesp(obj, dtype, otype1)
         dobj.Outline = true
         dobj.Size = esptextsize
         dobj.Color = esptextcolor
+        dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
             primary = obj,
             type = "Hotbar",
@@ -1672,7 +1666,7 @@ local function setupesp(obj, dtype, otype1)
 
     if dobj == nil or tableinfo == nil then return end
 
-    local function selfdestruct() --destroy esp object
+    local function selfdestruct()
         if dtype == "Highlight" then
             dobj.Enabled = false
             dobj:Destroy()
@@ -1687,7 +1681,7 @@ local function setupesp(obj, dtype, otype1)
         return
     end
 
-    if esptable[dobj] ~= nil then --if in table then cancel
+    if esptable[dobj] ~= nil then
         selfdestruct()
         return
     else
@@ -1696,12 +1690,13 @@ local function setupesp(obj, dtype, otype1)
 
     removing = workspace.DescendantRemoving:Connect(function(what)
         if what == obj then
-            table.remove(esptable, table.find(esptable, dobj))
+            esptable[dobj] = nil
             selfdestruct()
         end
     end)
 end
-local function startesp(v, otype) --start esp for model
+local function startesp(v, otype)
+    wait(math.random(0.01, 0.05))
     task.spawn(function()
         if otype == "Extract" then
             setupesp(v, "Name", otype)
@@ -1711,11 +1706,15 @@ local function startesp(v, otype) --start esp for model
             local TotalPrice = 0
             local Value = 0
 
+            if v.Parent and v.Parent:FindFirstChild("Inventory") then else
+                return
+            end
+
             for _, i in ipairs(v.Parent.Inventory:GetChildren()) do
                 Amount = i.ItemProperties:GetAttribute("Amount") or 1
                 TotalPrice += i.ItemProperties:GetAttribute("Price") or 0
                 Value += (valcache[i.ItemProperties:GetAttribute("CallSign")] or 0) * Amount
-            end --original = https://rbxscript.com/post/ProjectDeltaLootEsp-P7xaS
+            end
 
             if Value >= 4 then
                 setupesp(v, "Name", otype)
@@ -1747,7 +1746,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
         elseif v:FindFirstAncestor("DroppedItems") then
             startesp(v, "Dead333")
         end
-    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
@@ -1757,7 +1756,7 @@ for i,v in ipairs(workspace:GetDescendants()) do
 end
 workspace.DescendantAdded:Connect(function(v)
     if v and v.Parent and v:IsA("BasePart") and v.Name == "Head" then
-        local hum = v.Parent:WaitForChild("Humanoid")
+        local hum = v.Parent:WaitForChild("Humanoid", 2)
         if hum and v.Parent ~= localplayer.Character then
             if game.Players:FindFirstChild(v.Parent.Name) and not v:FindFirstAncestor("DroppedItems") then
                 startesp(v.Parent, "Plr")
@@ -1767,7 +1766,7 @@ workspace.DescendantAdded:Connect(function(v)
                 startesp(v.Parent, "Dead333")
             end
         end
-    elseif v.Parent == game.Workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
+    elseif v.Parent == workspace:FindFirstChild("NoCollision"):FindFirstChild("ExitLocations") then
         startesp(v, "Extract")
     elseif v:FindFirstAncestor("Containers") and v:IsA("MeshPart") then
         if v.Parent:IsA("Model") then
@@ -2103,8 +2102,8 @@ end
 
 --global cycle--
 
-spawn(function() -- very slow
-    while wait(10) do
+task.spawn(function() -- very slow
+    while wait(10.5) do
         table.clear(aimignoreparts)
         for i,v in ipairs(workspace:GetDescendants()) do
             if v:GetAttribute("PassThrough") then
@@ -2114,7 +2113,7 @@ spawn(function() -- very slow
     end
 end)
 
-spawn(function() -- slow
+task.spawn(function() -- slow
     while wait(1) do
         if workspace:FindFirstChild("SpawnerZones") then
             for i,v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
@@ -2130,17 +2129,17 @@ spawn(function() -- slow
         
         do
             local x, y, z = viewmodX, viewmodY, viewmodZ
-            if not x or not y or not z then return end
             local offset = CFrame.new(Vector3.new(tonumber(x), tonumber(y), tonumber(z)))
             if not offset then return end
             local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
+            if not inv then return end
             for i,v in ipairs(inv:GetChildren()) do
                 local sett = require(v.SettingsModule)
                 sett.weaponOffSet = offset
-                if rapidfire then   
+                if RapidFire then   
                     sett.FireRate = 0.002
                 end
-                if unlockmodes then
+                if UnlockFiremodes then
                     sett.FireModes = {"Auto", "Semi"}
                 end
             end
@@ -2173,7 +2172,7 @@ spawn(function() -- slow
         end
 
         do
-            if rapidfire == true then
+            if RapidFire == true then
                 local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
                 for i,v in ipairs(inv:GetChildren()) do
                     local sett = require(v.SettingsModule)
@@ -2187,6 +2186,11 @@ end)
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
+
+    if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
+        --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
+        localplayer.Character.Humanoid.PlatformStand = false
+    end
 
     if charsemifly and localplayer.Character then --semifly
         local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
@@ -2233,6 +2237,15 @@ runs.RenderStepped:Connect(function() --  fast
         workspace.Gravity = changergrav
     end
 
+
+    if aimtarget ~= nil then
+        aimtargetname.Text = "[[ " .. aimtarget.Name .. " ]]"
+    else
+        aimtargetname.Text = " "
+    end
+    aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
+    aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+--[[
 if aimtarget ~= nil then
 
     
@@ -2246,17 +2259,18 @@ if aimtarget ~= nil then
         local screenPos, onScreen = camera:WorldToScreenPoint(character.PrimaryPart.Position)
 
         aimtargetname.Text = string.format(
-            "[[ %s | Health: %d ]]",
+            " %s | Health: %d ",
             aimtarget.Name, math.floor(health)
         )
 
         aimtargetname.Position = Vector2.new(screenPos.X, screenPos.Y)
     else
-        aimtargetname.Text = "[[ ".. aimtarget.Name .." | Health: N/A ]]"
+        aimtargetname.Text = " ".. aimtarget.Name .." | Health: N/A "
     end
 else
     aimtargetname.Text = " "
 end
+]]
 
 --[[
     if aimtarget ~= nil then --on screen stuff
@@ -2265,8 +2279,6 @@ end
         aimtargetname.Text = " "
     end
     ]]
-    aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
-    aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
     crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
 
     if aimdynamicfov then
@@ -2312,7 +2324,7 @@ end
         else
             obj = info.primary.Parent:FindFirstChild("UpperTorso")
             if not obj then
-                table.remove(esptable, table.find(esptable, dobj))
+                esptable[dobj] = nil
                 if dtype == "Highlight" then
                     dobj.Enabled = false
                     dobj:Destroy()
@@ -2347,7 +2359,9 @@ end
             info.otype = "Dead333"
         end
 
-        if espbool and isonscreen(obj) and isHumanoid then
+        local metersdist = math.floor((localplayer.Character.PrimaryPart.Position - obj.Position).Magnitude * 0.333)
+
+        if espbool and isonscreen(obj) and isHumanoid and metersdist < esprenderdist then
             local headpos = wcamera:WorldToViewportPoint(obj.Position)
             local resultpos = Vector2.new(headpos.X, headpos.Y)
     
@@ -2384,7 +2398,7 @@ end
             elseif dtype == "Distance" then
                 if espdistance then
                     resultpos = resultpos - Vector2.new(0, 45)
-                    dobj.Text = math.floor((localplayer.Character.PrimaryPart.Position - obj.Position).Magnitude * 0.333) .. "m"
+                    dobj.Text = metersdist .. "m"
                     dobj.Position = resultpos
                     dobj.Size = esptextsize
                     dobj.Color = esptextcolor
@@ -2419,16 +2433,16 @@ end
                         Amount = h.ItemProperties:GetAttribute("Amount") or 1
                         TotalPrice += h.ItemProperties:GetAttribute("Price") or 0
                         Value += (valcache[h.ItemProperties:GetAttribute("CallSign")] or 0) * Amount
-                    end --original = https://rbxscript.com/post/ProjectDeltaLootEsp-P7xaS
+                    end
 
                     if Value >= 20 then
-                        dobj.Text = "Rate: $$$$ || " .. TotalPrice .. "$"
+                        dobj.Text = "Loot: $$$$ / " .. TotalPrice .. "$"
                     elseif Value >= 12 then
-                        dobj.Text = "Rate: $$$ || " .. TotalPrice .. "$"
+                        dobj.Text = "Loot: $$$ / " .. TotalPrice .. "$"
                     elseif Value >= 8 then
-                        dobj.Text = "Rate: $$ || " .. TotalPrice .. "$"
+                        dobj.Text = "Loot: $$ / " .. TotalPrice .. "$"
                     elseif Value >= 4 then
-                        dobj.Text = "Rate: $ || " .. TotalPrice .. "$"
+                        dobj.Text = "Loot: $ / " .. TotalPrice .. "$"
                     end
                 else
                     dobj.Text = hotgun
@@ -2440,7 +2454,16 @@ end
             elseif dtype == "Highlight" then
 
                 if otype == "Dead333" then
-                    dobj.Visible = false
+                    esptable[dobj] = nil
+                    dobj.Enabled = false
+                    dobj:Destroy()
+                    continue
+                end
+
+                if obj.Parent == nil or not obj.Parent:IsA("Model") then
+                    esptable[dobj] = nil
+                    dobj.Enabled = false
+                    dobj:Destroy()
                     continue
                 end
 
