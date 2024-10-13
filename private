@@ -529,18 +529,8 @@ end)
 gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
     UnlockFiremodes = v
 end)
-gunmods:AddToggle('WallBang', true, nil, function(v)
+gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
-
-    for _, atype in ipairs(game.ReplicatedStorage.AmmoTypes:GetChildren()) do
-        if v then
-            atype:SetAttribute("ArmorPen", 9999)
-        else
-            if aimammot[atype.Name] then
-                atype:SetAttribute("ArmorPen", aimammot[atype.Name])
-            end
-        end
-    end
 end)
 
 --[[
@@ -674,15 +664,12 @@ semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v)
         charsemifly = false
     end
 end)
+semifly:AddSeparateBar()
 semifly:AddSlider('Distance', 6, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
 semifly:AddSlider('Speed', 80, 1, 22, function(c) 
     charsemiflyspeed = c
-end)
-semifly:AddSeparateBar()
-semifly:AddButton('Toggle PlatformStand',function() 
-    localplayer.Character.Humanoid.PlatformStand = not localplayer.Character.Humanoid.PlatformStand 
 end)
 
 wh:AddToggle('ESP Enabled', true, nil, function(v)
@@ -1031,20 +1018,26 @@ speedh:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c)
     speedboost = c
 end)
 
-privatemods:AddToggle('Player Toggle', true, nil, function(v)
+privatemods:AddToggle('Toggle', true, nil, function(v)
     changerbool = v
 end)
-privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
-    changergrav = c
+
+privatemods:AddSeparateBar()
+
+privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
+    changerspeed = c
 end)
 privatemods:AddSlider('Player Jumppower', 25, 0, 1, function(c) 
     changerjump = c
 end)
-privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
-    changerspeed = c
-end)
+
+privatemods:AddSeparateBar()
+
 privatemods:AddSlider('Player Hipheight', 15, 0, 1, function(c) 
     changerheight = c
+end)
+privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
+    changergrav = c
 end)
 
 worldh:AddToggle('No Grass', true, nil, function(v)
@@ -2193,6 +2186,11 @@ end)
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
+
+    if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
+        --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
+        localplayer.Character.Humanoid.PlatformStand = false
+    end
 
     if charsemifly and localplayer.Character then --semifly
         local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
