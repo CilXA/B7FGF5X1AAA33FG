@@ -649,7 +649,7 @@ miscfeatures:AddButton('Reset',function()
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
 
-semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v) 
+semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.RightAlt, function(v) 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if v == false then
 			semifly_bodyvel:Destroy()
