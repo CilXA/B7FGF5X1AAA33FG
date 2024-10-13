@@ -665,7 +665,7 @@ semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.B, function(v)
     end
 end)
 semifly:AddSeparateBar()
-semifly:AddSlider('Distance', 6, 0.1, 6, function(c) 
+semifly:AddSlider('Distance', 8, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
 semifly:AddSlider('Speed', 80, 1, 22, function(c) 
