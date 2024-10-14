@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.5"
+local version = "V0.0.5a"
 
 local notificationOffset = 45
 local notifications = {}
@@ -362,21 +362,18 @@ local somemethods = {
     "JumpHeight",
     "HipHeight"
 }
-for _,met in ipairs(somemethods) do
-    for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met))) do
+for _,met in somemethods do
+    for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
         v:Disable()
     end
 end
-
-for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded)) do
+for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
     v:Disable()
 end
-
-for i,v in pairs(getconnections(game.Players.LocalPlayer.Character.ChildRemoved)) do
+for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
     v:Disable()
 end
-
-for i,v in pairs(getconnections(game.Workspace:GetPropertyChangedSignal("Gravity"))) do
+for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
     v:Disable()
 end
 
@@ -2115,28 +2112,59 @@ end)
 
 task.spawn(function() -- slow
     while wait(1) do
-        if workspace:FindFirstChild("SpawnerZones") then
-            for i,v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
-                if v:FindFirstChildOfClass("SurfaceAppearance") then
-                    if worldleaves then
-                        v.Transparency = 1
-                    else
-                        v.Transparency = 0
+
+        local function handleClientAntiCheatBypass()
+            if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
+                while not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") do
+                    wait(0.1)
+                end
+            end
+
+            local somemethods = {
+                "WalkSpeed",
+                "JumpHeight",
+                "HipHeight"
+            }
+            for _,met in somemethods do
+                for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
+                    v:Disable()
+                end
+            end
+            for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
+                v:Disable()
+            end
+            for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
+                v:Disable()
+            end
+            for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
+                v:Disable()
+            end
+        end
+
+        local function handleFoliage()
+            if workspace:FindFirstChild("SpawnerZones") then
+                for i, v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
+                    if v:FindFirstChildOfClass("SurfaceAppearance") then
+                        if worldleaves then
+                            v.Transparency = 1
+                        else
+                            v.Transparency = 0
+                        end
                     end
                 end
             end
         end
-        
-        do
+
+        local function handleInventory()
             local x, y, z = viewmodX, viewmodY, viewmodZ
             local offset = CFrame.new(Vector3.new(tonumber(x), tonumber(y), tonumber(z)))
             if not offset then return end
             local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
             if not inv then return end
-            for i,v in ipairs(inv:GetChildren()) do
+            for i, v in ipairs(inv:GetChildren()) do
                 local sett = require(v.SettingsModule)
                 sett.weaponOffSet = offset
-                if RapidFire then   
+                if RapidFire then
                     sett.FireRate = 0.002
                 end
                 if UnlockFiremodes then
@@ -2145,44 +2173,40 @@ task.spawn(function() -- slow
             end
         end
 
-        if viewmodbool and wcamera:FindFirstChild("ViewModel") then
-            for _, obj in ipairs(wcamera.ViewModel:GetDescendants()) do
-                if obj:IsA("BasePart") then
-                    if not obj:FindFirstAncestor("Item") then
-                        local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
-                        if mb then
-                            mb:Destroy()
-                        end
+        local function handleViewModel()
+            if viewmodbool and wcamera:FindFirstChild("ViewModel") then
+                for _, obj in ipairs(wcamera.ViewModel:GetDescendants()) do
+                    if obj:IsA("BasePart") then
+                        if not obj:FindFirstAncestor("Item") then
+                            local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
+                            if mb then
+                                mb:Destroy()
+                            end
 
-                        obj.Color = viewmodhandcolor
-                        obj.Material = viewmodhandmat
-                    else
-                        local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
-                        if mb then
-                            mb:Destroy()
-                        end
+                            obj.Color = viewmodhandcolor
+                            obj.Material = viewmodhandmat
+                        else
+                            local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
+                            if mb then
+                                mb:Destroy()
+                            end
 
-                        obj.Color = viewmodguncolor
-                        obj.Material = viewmodgunmat
+                            obj.Color = viewmodguncolor
+                            obj.Material = viewmodgunmat
+                        end
+                    elseif obj:IsA("Model") and obj:FindFirstChild("LL") then
+                        obj:Destroy()
                     end
-                elseif obj:IsA("Model") and obj:FindFirstChild("LL") then
-                    obj:Destroy()
                 end
             end
         end
 
-        do
-            if RapidFire == true then
-                local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
-                for i,v in ipairs(inv:GetChildren()) do
-                    local sett = require(v.SettingsModule)
-                    sett.FireRate = 0.002
-                end
-            end
-        end
+        handleClientAntiCheatBypass()
+        handleFoliage()
+        handleInventory()
+        handleViewModel()
     end
 end)
-
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
