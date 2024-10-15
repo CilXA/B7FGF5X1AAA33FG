@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.5a"
+local version = "V0.0.6a"
 
 local notificationOffset = 45
 local notifications = {}
@@ -2113,34 +2113,6 @@ end)
 task.spawn(function() -- slow
     while wait(1) do
 
-        local function handleClientAntiCheatBypass()
-            if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
-                while not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") do
-                    wait(0.1)
-                end
-            end
-
-            local somemethods = {
-                "WalkSpeed",
-                "JumpHeight",
-                "HipHeight"
-            }
-            for _,met in somemethods do
-                for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
-                    v:Disable()
-                end
-            end
-            for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
-                v:Disable()
-            end
-            for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
-                v:Disable()
-            end
-            for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
-                v:Disable()
-            end
-        end
-
         local function handleFoliage()
             if workspace:FindFirstChild("SpawnerZones") then
                 for i, v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
@@ -2201,7 +2173,6 @@ task.spawn(function() -- slow
             end
         end
 
-        handleClientAntiCheatBypass()
         handleFoliage()
         handleInventory()
         handleViewModel()
@@ -2210,6 +2181,36 @@ end)
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
+
+            local function handleClientAntiCheatBypass()
+            if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
+                while not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") do
+                    wait(0.1)
+                end
+            end
+
+            local somemethods = {
+                "WalkSpeed",
+                "JumpHeight",
+                "HipHeight"
+            }
+            for _,met in somemethods do
+                for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
+                    v:Disable()
+                end
+            end
+            for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
+                v:Disable()
+            end
+            for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
+                v:Disable()
+            end
+            for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
+                v:Disable()
+            end
+        end
+
+        handleClientAntiCheatBypass()
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
