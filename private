@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.6a"
+local version = "V0.0.6b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -415,7 +415,7 @@ mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function()
     game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 end)
 
-aim:AddToggle('Silent Aim', true, nil, function(v)
+aim:AddToggle('Silent Aim', true, Enum.KeyCode.Home, function(v) 
     aimbool = v
     if v == true then
         require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
@@ -669,7 +669,7 @@ semifly:AddSlider('Speed', 80, 1, 22, function(c)
     charsemiflyspeed = c
 end)
 
-wh:AddToggle('ESP Enabled', true, nil, function(v)
+wh:AddToggle('ESP Enabled', true, Enum.KeyCode.Home, function(v)
     espbool = v
 end)
 wh:AddToggle('Bots', true, nil, function(v)
