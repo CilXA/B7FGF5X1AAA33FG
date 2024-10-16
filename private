@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.6b"
+local version = "V0.0.6b - test ver"
 
 local notificationOffset = 45
 local notifications = {}
@@ -162,6 +162,7 @@ local mouse = localplayer:GetMouse()
 local markvisible = true
 
 local aimbool = false
+local silentaimbind = Enum.KeyCode.Home
 local aimbots = false
 local aimvischeck = false
 local aimbang = false
@@ -203,6 +204,7 @@ local esptable = {}
 ]] 
 
 local espbool = false
+local esptogglebind = Enum.KeyCode.Home
 local espname = false
 local esphp = false
 local espdistance = false
@@ -260,6 +262,7 @@ local changerspeed = 18
 local changerheight = 2
 local changerjump = 5
 
+local charsemiflybind = Enum.KeyCode.RightAlt
 local charsemifly = false
 local charsemiflydist = 6
 local charsemiflyspeed = 22
@@ -410,12 +413,13 @@ local privatemods = player:AddSection('Player Stuff')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
 local worldh = other:AddSection('World')
+local keybinds = home:AddSection('Keybind List')
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
     game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 end)
 
-aim:AddToggle('Silent Aim', true, Enum.KeyCode.Home, function(v) 
+aim:AddToggle('Silent Aim', true, silentaimbind, function(v) 
     aimbool = v
     if v == true then
         require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
@@ -646,7 +650,7 @@ miscfeatures:AddButton('Reset',function()
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
 
-semifly:AddToggle('Fly Toggle', true, Enum.KeyCode.RightAlt, function(v) 
+semifly:AddToggle('Fly Toggle', true, charsemiflybind, function(v) 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if v == false then
 			semifly_bodyvel:Destroy()
@@ -669,7 +673,7 @@ semifly:AddSlider('Speed', 80, 1, 22, function(c)
     charsemiflyspeed = c
 end)
 
-wh:AddToggle('ESP Enabled', true, Enum.KeyCode.Home, function(v)
+wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
     espbool = v
 end)
 wh:AddToggle('Bots', true, nil, function(v)
@@ -894,6 +898,7 @@ camzoom:AddSlider('Zoom FOV', 80, 5, 5, function(c)
     zoomfov = c
 end)
 
+local zoomtoggle = false
 local zoombind = Enum.KeyCode.C
 
 camzoom:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function(g)
@@ -904,12 +909,14 @@ camzoom:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function(g)
 			ic3Connect:Disconnect()
 			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
 				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                zoomtoggle = false
 				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
 			end
 		end
 	end)
 	if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
 		local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+        zoomtoggle = true
 		settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
 	end
 end)
@@ -988,6 +995,219 @@ viewmod:AddSlider('Offset Y', 5, -5, -2, function(c)
 end)
 viewmod:AddSlider('Offset Z', 5, -5, -0.32, function(c) 
     viewmodZ = c
+end)
+
+local keybindmenuvisible = false
+
+local _2345426754327842387 = Instance.new("ScreenGui")
+local MainFrameKeybindss93942 = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local DecoIn = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local DecoLine = Instance.new("Frame")
+local UICorner_3 = Instance.new("UICorner")
+local SilentAim = Instance.new("TextLabel")
+local Toggle = Instance.new("Frame")
+local ESPToggle = Instance.new("TextLabel")
+local Toggle_2 = Instance.new("Frame")
+local Zoom = Instance.new("TextLabel")
+local Toggle_3 = Instance.new("Frame")
+local Fly = Instance.new("TextLabel")
+local Toggle_4 = Instance.new("Frame")
+
+_2345426754327842387.Name = "_2345426754327842387"
+_2345426754327842387.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+_2345426754327842387.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+MainFrameKeybindss93942.Name = "MainFrame"
+MainFrameKeybindss93942.Parent = _2345426754327842387
+MainFrameKeybindss93942.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrameKeybindss93942.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainFrameKeybindss93942.BackgroundTransparency = 0.3
+MainFrameKeybindss93942.BorderColor3 = Color3.fromRGB(0, 0, 0)
+MainFrameKeybindss93942.BorderSizePixel = 0
+MainFrameKeybindss93942.Position = UDim2.new(0.104013064, 0, 0.487762243, 0)
+MainFrameKeybindss93942.Size = UDim2.new(0, 225, 0, 132)
+MainFrameKeybindss93942.Visible = false
+
+    local uiStroke = Instance.new("UIStroke")
+    uiStroke.Parent = MainFrameKeybindss93942
+    uiStroke.Thickness = 1
+    uiStroke.Color = Color3.new(0, 255, 255)
+
+UICorner.CornerRadius = UDim.new(0, 5)
+UICorner.Parent = MainFrameKeybindss93942
+
+Title.Name = "Title"
+Title.Parent = MainFrameKeybindss93942
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title.BorderSizePixel = 0
+Title.Position = UDim2.new(0.00740719261, 0, 0.0075757578, 0)
+Title.Size = UDim2.new(0, 223, 0, 19)
+Title.ZIndex = 5
+Title.Font = Enum.Font.Arimo
+Title.Text = "Keybinds"
+Title.TextColor3 = Color3.fromRGB(0, 255, 255)
+Title.TextSize = 14
+Title.TextStrokeTransparency = 0.5
+
+DecoIn.Name = "DecoIn"
+DecoIn.Parent = MainFrameKeybindss93942
+DecoIn.AnchorPoint = Vector2.new(0.5, 0.5)
+DecoIn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+DecoIn.BackgroundTransparency = 0.3
+DecoIn.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DecoIn.BorderSizePixel = 0
+DecoIn.Position = UDim2.new(0.499672711, 0, 0.4936831, 0)
+DecoIn.Size = UDim2.new(0, 220, 0, 127)
+
+    local uiStroke22 = Instance.new("UIStroke")
+    uiStroke22.Parent = DecoIn
+    uiStroke22.Thickness = 1
+    uiStroke22.Color = Color3.new(0, 149, 149)
+
+UICorner_2.CornerRadius = UDim.new(0, 3)
+UICorner_2.Parent = DecoIn
+
+DecoLine.Name = "DecoLine"
+DecoLine.Parent = MainFrameKeybindss93942
+DecoLine.AnchorPoint = Vector2.new(0.5, 0.5)
+DecoLine.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+DecoLine.BackgroundTransparency = 0.3
+DecoLine.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DecoLine.BorderSizePixel = 0
+DecoLine.Position = UDim2.new(0.499672711, 0, 0.0816445798, 0)
+DecoLine.Size = UDim2.new(0, 220, 0, 18)
+
+    local uiStroke222 = Instance.new("UIStroke")
+    uiStroke222.Parent = DecoLine
+    uiStroke222.Thickness = 1
+    uiStroke222.Color = Color3.new(0, 149, 149)
+
+UICorner_3.CornerRadius = UDim.new(0, 2)
+UICorner_3.Parent = DecoLine
+
+SilentAim.Name = "SilentAim"
+SilentAim.Parent = MainFrameKeybindss93942
+SilentAim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+SilentAim.BackgroundTransparency = 1
+SilentAim.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SilentAim.BorderSizePixel = 0
+SilentAim.Position = UDim2.new(0.0074072266, 0, 0.151515156, 0)
+SilentAim.Size = UDim2.new(0, 223, 0, 19)
+SilentAim.Font = Enum.Font.Arimo
+SilentAim.TextColor3 = Color3.fromRGB(0, 255, 255)
+SilentAim.TextSize = 14
+SilentAim.TextStrokeTransparency = 0.5
+
+Toggle.Name = "Toggle"
+Toggle.Parent = SilentAim
+Toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+Toggle.BackgroundTransparency = 0.8
+Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle.BorderSizePixel = 0
+Toggle.Position = UDim2.new(0.00181518006, 0, -0.00589471124, 0)
+Toggle.Size = UDim2.new(0, 220, 0, 19)
+Toggle.Visible = true
+Toggle.ZIndex = 5
+
+ESPToggle.Name = "ESPToggle"
+ESPToggle.Parent = MainFrameKeybindss93942
+ESPToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ESPToggle.BackgroundTransparency = 1
+ESPToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ESPToggle.BorderSizePixel = 0
+ESPToggle.Position = UDim2.new(0.00700000022, 0, 0.310000002, 0)
+ESPToggle.Size = UDim2.new(0, 223, 0, 19)
+ESPToggle.Font = Enum.Font.Arimo
+ESPToggle.TextColor3 = Color3.fromRGB(0, 255, 255)
+ESPToggle.TextSize = 14
+ESPToggle.TextStrokeTransparency = 0.5
+
+Toggle_2.Name = "Toggle_2"
+Toggle_2.Parent = ESPToggle
+Toggle_2.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+Toggle_2.BackgroundTransparency = 0.8
+Toggle_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle_2.BorderSizePixel = 0
+Toggle_2.Position = UDim2.new(0.00181514584, 0, -0.00589471124, 0)
+Toggle_2.Size = UDim2.new(0, 220, 0, 19)
+Toggle_2.Visible = true
+Toggle_2.ZIndex = 5
+
+Zoom.Name = "Zoom"
+Zoom.Parent = MainFrameKeybindss93942
+Zoom.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Zoom.BackgroundTransparency = 1
+Zoom.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Zoom.BorderSizePixel = 0
+Zoom.Position = UDim2.new(0.00700000022, 0, 0.467999995, 0)
+Zoom.Size = UDim2.new(0, 223, 0, 19)
+Zoom.Font = Enum.Font.Arimo
+Zoom.TextColor3 = Color3.fromRGB(0, 255, 255)
+Zoom.TextSize = 14
+Zoom.TextStrokeTransparency = 0.5
+
+Toggle_3.Name = "Toggle_3"
+Toggle_3.Parent = Zoom
+Toggle_3.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+Toggle_3.BackgroundTransparency = 0.8
+Toggle_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle_3.BorderSizePixel = 0
+Toggle_3.Position = UDim2.new(0.00181516272, 0, -0.00589471124, 0)
+Toggle_3.Size = UDim2.new(0, 220, 0, 19)
+Toggle_3.Visible = true
+Toggle_3.ZIndex = 5
+
+Fly.Name = "Fly"
+Fly.Parent = MainFrameKeybindss93942
+Fly.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Fly.BackgroundTransparency = 1
+Fly.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fly.BorderSizePixel = 0
+Fly.Position = UDim2.new(0.00700000022, 0, 0.625, 0)
+Fly.Size = UDim2.new(0, 223, 0, 19)
+Fly.Font = Enum.Font.Arimo
+Fly.TextColor3 = Color3.fromRGB(0, 255, 255)
+Fly.TextSize = 14
+Fly.TextStrokeTransparency = 0.5
+
+Toggle_4.Name = "Toggle_4"
+Toggle_4.Parent = Fly
+Toggle_4.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
+Toggle_4.BackgroundTransparency = 0.8
+Toggle_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Toggle_4.BorderSizePixel = 0
+Toggle_4.Position = UDim2.new(0.00181515072, 0, -0.00589471124, 0)
+Toggle_4.Size = UDim2.new(0, 220, 0, 19)
+Toggle_4.Visible = true
+Toggle_4.ZIndex = 5
+
+local function getKeyName(key)
+    return tostring(key):match("%.(%w+)$")
+end
+--[[
+local function updateKeybindTexts()
+    SilentAim.Text = "Silent Aim [" .. getKeyName(silentaimbind) .. "]"
+    ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
+    Zoom.Text = "Zoom [" .. getKeyName(zoombind) .. "]"
+    Fly.Text = "Fly [" .. getKeyName(charsemiflybind) .. "]"
+end
+]]
+
+local function updateKeybindTexts()
+    SilentAim.Text = "Silent Aim"
+    ESPToggle.Text = "ESP Toggle"
+    Zoom.Text = "Zoom"
+    Fly.Text = "Fly"
+end
+updateKeybindTexts()
+
+keybinds:AddToggle('Keybind List', true, nil, function(v)
+    keybindmenuvisible = v
 end)
 
 --speedhack--
@@ -2113,6 +2333,12 @@ end)
 task.spawn(function() -- slow
     while wait(1) do
 
+        if keybindmenuvisible then
+            MainFrameKeybindss93942.Visible = true
+        elseif keybindmenuvisible == false then
+            MainFrameKeybindss93942.Visible = false
+        end
+
         local function handleFoliage()
             if workspace:FindFirstChild("SpawnerZones") then
                 for i, v in ipairs(workspace.SpawnerZones.Foliage:GetDescendants()) do
@@ -2181,6 +2407,12 @@ end)
 
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
+
+            Toggle.Visible = aimbool
+            Toggle_2.Visible = espbool
+            Toggle_4.Visible = charsemifly
+            Toggle_3.Visible = zoomtoggle
+
 
             local function handleClientAntiCheatBypass()
             if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
