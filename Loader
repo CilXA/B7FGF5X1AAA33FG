@@ -10,6 +10,7 @@ if privatebuild_v0x12 == true and script_key == "TdkJUwQvCmirGlPMIXlyGBMsZcasqMa
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/private"))()
 else
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
+game.ReplicatedStorage.Remotes.ProjectileInflict:FireServer(game.Players.LocalPlayer.Character.PrimaryPart, Vector3.new(-1, -1, -1), 7, tick())
 end
 
 
