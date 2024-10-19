@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.6b - test ver"
+local version = "V0.0.6c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -149,6 +149,8 @@ _G.exothiumxyz = true
 
 local wcamera = workspace.CurrentCamera
 local localplayer = game.Players.LocalPlayer
+local character = localplayer.Character or localplayer.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
 local stg = localplayer:WaitForChild("PlayerGui")
@@ -262,7 +264,7 @@ local changerspeed = 18
 local changerheight = 2
 local changerjump = 5
 
-local charsemiflybind = Enum.KeyCode.RightAlt
+local charsemiflybind = Enum.KeyCode.X
 local charsemifly = false
 local charsemiflydist = 6
 local charsemiflyspeed = 22
@@ -280,6 +282,9 @@ local worldjesus
 local worldvisualstoggle = false
 local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
+
+local charantiaim_underground = false
+local charantiaim_notorso = false
 
 local NoRecoil = false
 local BulletTracer = false
@@ -672,6 +677,10 @@ end)
 semifly:AddSlider('Speed', 80, 1, 22, function(c) 
     charsemiflyspeed = c
 end)
+semifly:AddSeparateBar()
+semifly:AddToggle('Flip Character', true, nil, function(v) 
+    charantiaim_underground = v
+end)
 
 wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
     espbool = v
@@ -1017,6 +1026,7 @@ local Fly = Instance.new("TextLabel")
 local Toggle_4 = Instance.new("Frame")
 
 _2345426754327842387.Name = "_2345426754327842387"
+_2345426754327842387.ResetOnSpawn = false
 _2345426754327842387.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 _2345426754327842387.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
@@ -2449,10 +2459,62 @@ runs.RenderStepped:Connect(function() --  fast
         localplayer.Character.Humanoid.PlatformStand = false
     end
 
+    local function flipCharacterUpsideDown()
+        local rootCFrame = humanoidRootPart.CFrame
+        local position = rootCFrame.Position
+        local forcedRotation = CFrame.Angles(math.rad(180), 0, 0)
+
+        humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
+    end
+
+local bodyparts = {
+    "FaceHitBox",
+    "Head",
+    "HeadTopHitBox",
+    "LeftFoot",
+    "LeftHand",
+    "LeftLowerArm",
+    "LeftLowerLeg",
+    "LeftUpperArm",
+    "LowerTorso",
+    "RightFoot",
+    "RightLowerArm",
+    "RightUpperArm"
+}
+
+local originalCollisions = {}
+
+local function enableNoclip(character)
+    for _, partName in pairs(bodyparts) do
+        local part = character:FindFirstChild(partName)
+        if part then
+            originalCollisions[partName] = part.CanCollide
+            part.CanCollide = false
+        end
+    end
+end
+
+local function disableNoclip(character)
+    for _, partName in pairs(bodyparts) do
+        local part = character:FindFirstChild(partName)
+        if part and originalCollisions[partName] ~= nil then
+            part.CanCollide = originalCollisions[partName]
+        end
+    end
+end
+
+if charsemifly and charantiaim_underground then
+    flipCharacterUpsideDown()
+    enableNoclip(character)
+else
+    disableNoclip(character)
+end
+
     if charsemifly and localplayer.Character then --semifly
         local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
         if not hrp then return end
         local dir = Vector3.new(0, 0, 0)
+        
 
 		if uis:IsKeyDown(Enum.KeyCode.W) then
 			dir += wcamera.CFrame.LookVector
