@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.6c"
+local version = "V0.0.7c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -164,7 +164,7 @@ local mouse = localplayer:GetMouse()
 local markvisible = true
 
 local aimbool = false
-local silentaimbind = Enum.KeyCode.Home
+local silentaimbind = Enum.KeyCode.H
 local aimbots = false
 local aimvischeck = false
 local aimbang = false
@@ -217,7 +217,7 @@ local espdead = false
 local esphotbar = false
 local esploot = false
 local espexit = false
-local esptextline = false
+local esptextline = true
 local esprenderdist = 1800
 local espchamsfill = 1
 local espchamsline = 0
@@ -412,9 +412,8 @@ local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
 local viewmod = visual:AddSection('Viewmodel')
-local speedh = player:AddSection('CFrame Speed')
-local semifly = player:AddSection('Semi Fly')
-local privatemods = player:AddSection('Player Stuff')
+local semifly = player:AddSection('Movement')
+local privatemods = player:AddSection('Character Modifications')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
 local worldh = other:AddSection('World')
@@ -460,7 +459,7 @@ end)
 
 aim:AddSeparateBar()
 
-aim:AddDropdown('Aim Part', {'Head', 'Torso', 'Scripted'}, 'Head', function(a)
+aim:AddDropdown('Aim Part', {'Head', 'Torso', 'Random', 'Scripted'}, 'Head', function(a)
     aimpart = a
 end)
 aim:AddDropdown('Aim Type', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
@@ -655,7 +654,7 @@ miscfeatures:AddButton('Reset',function()
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
 
-semifly:AddToggle('Fly Toggle', true, charsemiflybind, function(v) 
+semifly:AddToggle('Movement Toggle', true, charsemiflybind, function(v) 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if v == false then
 			semifly_bodyvel:Destroy()
@@ -671,7 +670,7 @@ semifly:AddToggle('Fly Toggle', true, charsemiflybind, function(v)
     end
 end)
 semifly:AddSeparateBar()
-semifly:AddSlider('Distance', 8, 0.1, 6, function(c) 
+semifly:AddSlider('Max Height Distance', 8, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
 semifly:AddSlider('Speed', 80, 1, 22, function(c) 
@@ -721,7 +720,7 @@ end)
 wh:AddSlider('Text Size', 35, 1, 17, function(c) 
     esptextsize = c
 end)
-wh:AddToggle('Text Outline', true, nil, function(v)
+wh:AddToggle('Text Outline', false, nil, function(v)
     esptextline = v
 end)
 
@@ -995,7 +994,6 @@ viewmod:AddColorPallete('Weapon Chams Color', Color3.fromRGB(77, 210, 255),funct
 end)
 
 viewmod:AddSeparateBar()
-
 viewmod:AddSlider('Offset X', 5, -5, 0.20, function(c) 
     viewmodX = c
 end)
@@ -1237,15 +1235,17 @@ function startspeedhack()
     end
 end
 
-speedh:AddToggle('Enabled', true, nil, function(v)
+privatemods:AddToggle('Enabled', true, nil, function(v)
     speedbool = v
     startspeedhack()
 end)
-speedh:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c) 
+privatemods:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c) 
     speedboost = c
 end)
 
-privatemods:AddToggle('Toggle', true, nil, function(v)
+privatemods:AddSeparateBar()
+
+privatemods:AddToggle('Main Toggle', true, nil, function(v)
     changerbool = v
 end)
 
@@ -1455,23 +1455,25 @@ local function choosetarget()
         "RightFoot"
     }
 
-    local function chooseTpart(charact)
-        if aimpart == "Head" then
-            return charact:FindFirstChild("Head")
-        elseif aimpart == "Torso" then
-            return charact:FindFirstChild("UpperTorso")
-        elseif aimpart == "Scripted" then
-            local head = charact:FindFirstChild("Head")
-            local upperTorso = charact:FindFirstChild("UpperTorso")
-            if not isvisible(charact, head) then
-                return upperTorso
-            else
-                return head
-            end
-        elseif aimpart == "Random" then
-            return charact:FindFirstChild(bparts[math.random(1, #bparts)])
+local function chooseTpart(charact)
+    if aimpart == "Head" then
+        return charact:FindFirstChild("Head")
+    elseif aimpart == "Torso" then
+        return charact:FindFirstChild("UpperTorso")
+    elseif aimpart == "Scripted" then
+        local head = charact:FindFirstChild("Head")
+        local upperTorso = charact:FindFirstChild("UpperTorso")
+        if not isvisible(charact, head) then
+            return upperTorso
+        else
+            return head
         end
+    elseif aimpart == "Random" then
+        return charact:FindFirstChild(bparts[math.random(1, #bparts)])
     end
+end
+
+
 
     
     if aimbots then --priority 2 (bots)
