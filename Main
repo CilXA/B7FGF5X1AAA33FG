@@ -1210,7 +1210,7 @@ local function updateKeybindTexts()
     SilentAim.Text = "Silent Aim"
     ESPToggle.Text = "ESP Toggle"
     Zoom.Text = "Zoom"
-    Fly.Text = "Fly"
+    Fly.Text = "Movement Toggle"
 end
 updateKeybindTexts()
 
