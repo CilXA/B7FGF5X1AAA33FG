@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.7c"
+local version = "V0.0.1a"
 
 local notificationOffset = 45
 local notifications = {}
@@ -132,16 +132,16 @@ function UpdateNotificationPositions()
 end
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
-    Notify("Exothium.xyz - Private", "".. exec .." is not supported", 10)
+    Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
 else
-    Notify("Exothium.xyz - Private || Loading Script", " ".. exec .." ", 3.5)
+    Notify("Exothium.xyz || Loading Script", " ".. exec .." ", 3.5)
     wait(0.01)
-    Notify("Exothium.xyz - Private || Loading Assets", " " .. version .. " ", 4)
-    print("[[ Exoguard V3 || Exothium.xyz - Private || " .. exec .." || " .. version .. " ]]")
+    Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
+    print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
 if _G.exothiumxyz then
-    Notify("Exothium.xyz - Private", "Script is already loaded, therefore you cant execute it again", 4)
+    Notify("Exothium.xyz", "Script is already loaded, therefore you cant execute it again", 4)
     return
 end
 
@@ -391,7 +391,7 @@ local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/Cil
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/UI%20LIB", true))()
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 
-library:ChangeWeb("Exothium.xyz - Private")
+library:ChangeWeb("Exothium.xyz")
 library:ChangeGame("Project Delta")
 
 local combat = library:AddWindow('Combat')
@@ -412,11 +412,11 @@ local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
 local viewmod = visual:AddSection('Viewmodel')
-local semifly = player:AddSection('Movement')
+local semifly = player:AddSection('Movement Manager')
 local privatemods = player:AddSection('Character Modifications')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
-local worldh = other:AddSection('World')
+local worldh = visual:AddSection('World')
 local keybinds = home:AddSection('Keybind List')
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
@@ -1170,7 +1170,7 @@ Toggle_3.Size = UDim2.new(0, 220, 0, 19)
 Toggle_3.Visible = true
 Toggle_3.ZIndex = 5
 
-Fly.Name = "Fly"
+Fly.Name = "Movement Toggle"
 Fly.Parent = MainFrameKeybindss93942
 Fly.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 Fly.BackgroundTransparency = 1
@@ -1210,7 +1210,7 @@ local function updateKeybindTexts()
     SilentAim.Text = "Silent Aim"
     ESPToggle.Text = "ESP Toggle"
     Zoom.Text = "Zoom"
-    Fly.Text = "Fly"
+    Fly.Text = "Movement Toggle"
 end
 updateKeybindTexts()
 
@@ -1301,6 +1301,13 @@ worldh:AddSeparateBar()
 worldh:AddSlider('Clock Time', 24, 0, 14, function(c) 
     worldclock = c
     game.Lighting.ClockTime = c
+end)
+
+worldh:AddToggle('No Fog', true, nil, function(v)
+	while v do task.wait()
+		game.Lighting.Atmosphere.Density = 0
+		game.Lighting.Atmosphere.Offset = 0
+	end
 end)
 
 local prevAmbient = game.Lighting.Ambient
@@ -2146,7 +2153,7 @@ local function inventoryCheckerFrame()
 	FooterLabel.Position = UDim2.new(0, 0, 1.046, 0)
 	FooterLabel.Size = UDim2.new(0, 178, 0, 17)
 	FooterLabel.Font = Enum.Font.Ubuntu
-	FooterLabel.Text = "Exothium.xyz - Private"
+	FooterLabel.Text = "Exothium.xyz"
 	FooterLabel.TextColor3 = TextColor
 	FooterLabel.TextSize = 14
 	FooterLabel.TextStrokeTransparency = 0.7
@@ -2817,11 +2824,11 @@ local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(
         FrameCounter = 0;
     end;
 
-    LibraryVS:SetWatermark(('Exothium.xyz - Private | %s fps | %s ms'):format(
+    LibraryVS:SetWatermark(('Exothium.xyz | %s fps | %s ms'):format(
         math.floor(FPS),
         math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
     ));
 end);
 
-Notify("Exothium.xyz - Private", "Script loaded")
+Notify("Exothium.xyz", "Script loaded")
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
