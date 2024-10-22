@@ -136,7 +136,6 @@ if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil th
     return
 else
     Notify("Exothium.xyz || Loading Script", " ".. exec .." ", 3.5)
-    wait(0.01)
     Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
@@ -282,7 +281,14 @@ local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
 
 local charantiaim_underground = false
-local charantiaim_notorso = false
+
+local flipback = false
+
+spinning = false -- yrot spin
+
+local xrot = 0
+local yrot = 0
+local zrot = 0
 
 local NoRecoil = false
 local BulletTracer = false
@@ -385,6 +391,26 @@ end
 
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
+
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+    FrameCounter += 1;
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter;
+        FrameTimer = tick();
+        FrameCounter = 0;
+    end;
+
+    LibraryVS:SetWatermark(('Exothium.xyz | %s fps | %s ms'):format(
+        math.floor(FPS),
+        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    ));
+end);
+
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/UI%20LIB", true))()
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
@@ -675,8 +701,47 @@ semifly:AddSlider('Speed', 80, 1, 22, function(c)
     charsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
-semifly:AddToggle('Flip Character', true, nil, function(v) 
+
+--semifly:AddToggle('Flip Character', true, nil, function(v) 
+--    charantiaim_underground = v
+--end)
+
+semifly:AddToggle('Use Rotation', true, nil, function(v) 
     charantiaim_underground = v
+end)
+
+semifly:AddSeparateBar()
+
+semifly:AddSlider('X Rotation', 360, 0, 0, function(c) 
+    xrot = c
+end)
+semifly:AddSlider('Y Rotation', 10, 0, 0, function(c) 
+    yrot = c
+end)
+semifly:AddSlider('Z Rotation', 10, 0, 0, function(c) 
+    zrot = c
+end)
+
+semifly:AddSeparateBar()
+
+spinspeed = 15
+
+semifly:AddToggle('Spin Y', true, nil, function(v)
+spinning = v
+if not spinning then
+    yrot = 0
+else
+    coroutine.wrap(function()
+        while spinning do
+            yrot = (yrot + spinspeed) % 360
+            wait()
+        end
+    end)()
+end
+end)
+
+semifly:AddSlider('Y Rotation Speed', 15, 0, 0, function(c) 
+    spinspeed = c
 end)
 
 wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
@@ -1243,6 +1308,31 @@ end)
 
 privatemods:AddSeparateBar()
 
+privatemods:AddToggle('Jesus', true, nil, function(v)
+    worldjesus = v
+    if v then
+        while worldjesus do
+            wait()
+            local hitPart = workspace:Raycast(localplayer.Character:FindFirstChild("HumanoidRootPart").Position, Vector3.new(0, -5, 0) + localplayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 5, RaycastParams.new())
+            if hitPart and hitPart.Material == Enum.Material.Water then
+                local clone = Instance.new("Part")
+                clone.Parent = waterplatforms
+                clone.Position = hitPart.Position
+                clone.Anchored = true
+                clone.CanCollide = true
+                clone.Size = Vector3.new(10,0.2,10)
+                clone.Transparency = 1
+            end
+        end
+    else
+        for i,v in ipairs(waterplatforms:GetChildren()) do
+            v:Destroy()
+        end
+    end
+end)
+
+privatemods:AddSeparateBar()
+
 privatemods:AddToggle('Main Toggle', true, nil, function(v)
     changerbool = v
 end)
@@ -1270,28 +1360,6 @@ worldh:AddToggle('No Grass', true, nil, function(v)
 end)
 worldh:AddToggle('No Leaves', true, nil, function(v)
     worldleaves = v
-end)
-worldh:AddToggle('Jesus', true, nil, function(v)
-    worldjesus = v
-    if v then
-        while worldjesus do
-            wait()
-            local hitPart = workspace:Raycast(localplayer.Character:FindFirstChild("HumanoidRootPart").Position, Vector3.new(0, -5, 0) + localplayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 5, RaycastParams.new())
-            if hitPart and hitPart.Material == Enum.Material.Water then
-                local clone = Instance.new("Part")
-                clone.Parent = waterplatforms
-                clone.Position = hitPart.Position
-                clone.Anchored = true
-                clone.CanCollide = true
-                clone.Size = Vector3.new(10,0.2,10)
-                clone.Transparency = 1
-            end
-        end
-    else
-        for i,v in ipairs(waterplatforms:GetChildren()) do
-            v:Destroy()
-        end
-    end
 end)
 
 worldh:AddSeparateBar()
@@ -2316,7 +2384,7 @@ local function fly_getclosestpoint()
 
 	return fcp
 end
-local function fly_getoffset(dir)
+function fly_getoffset(dir)
 	local offset = Vector3.new(0.1, 0.1, 0.1)
 	if dir.X > 0 then
 		offset = Vector3.new(0.1, 0, 0)
@@ -2471,7 +2539,7 @@ runs.RenderStepped:Connect(function() --  fast
             local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
             local rootCFrame = humanoidRootPart.CFrame
             local position = rootCFrame.Position
-            local forcedRotation = CFrame.Angles(math.rad(180), 0, 0)
+            local forcedRotation = CFrame.Angles(math.rad(xrot), yrot, zrot)
 
             humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
     end
@@ -2812,24 +2880,32 @@ end
     end
 end)
 
-local FrameTimer = tick()
-local FrameCounter = 0;
-local FPS = 60;
+Notify("Exothium.xyz", "Loaded script", 2.1)
+Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
-local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
-    FrameCounter += 1;
+game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
 
-    if (tick() - FrameTimer) >= 1 then
-        FPS = FrameCounter;
-        FrameTimer = tick();
-        FrameCounter = 0;
-    end;
+-- loading finished ^
 
-    LibraryVS:SetWatermark(('Exothium.xyz | %s fps | %s ms'):format(
-        math.floor(FPS),
-        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
-    ));
-end);
+function FlipBack()
+    local characterxx = localplayer.Character or localplayer.CharacterAdded:Wait()
+    local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
+    local rootCFrame = humanoidRootPart.CFrame
+    local position = rootCFrame.Position
+    local forcedRotation = CFrame.Angles(math.rad(0), 0, 0)
+    
+    localplayer.Character.Humanoid.PlatformStand = true
+    humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
+end
 
-Notify("Exothium.xyz", "Script loaded")
-game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
+while true do
+    wait(0.02)
+    if charsemifly and charantiaim_underground then
+    flipback = true
+    elseif charsemifly == false and charantiaim_underground and flipback then
+        localplayer.Character.Humanoid.PlatformStand = true
+        FlipBack()
+        localplayer.Character.Humanoid.PlatformStand = true
+        flipback = false
+    end
+end
