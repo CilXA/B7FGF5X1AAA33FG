@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1a"
+local version = "V0.0.1b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -128,6 +128,14 @@ function UpdateNotificationPositions()
         local tweenService = game:GetService("TweenService")
         local moveTween = tweenService:Create(notification, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0, 10, 0, targetYPos)})
         moveTween:Play()
+    end
+end
+
+if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
+    Notify("Exothium.xyz", "Character is missing, script will execute when spawned in", 5)
+    
+    while game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") do
+        wait(0.2)
     end
 end
 
