@@ -6,8 +6,9 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
-if privatebuild_v0x12 == true and script_key == "TdkJUwQvCmirGlPMIXlyGBMsZcasqMaw" or script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" then
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/private"))()
+if script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" then
+loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
+game.ReplicatedStorage.Remotes.ProjectileInflict:FireServer(game.Players.LocalPlayer.Character.PrimaryPart, Vector3.new(-1, -1, -1), 7, tick())
 else
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 end
