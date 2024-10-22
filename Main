@@ -139,6 +139,8 @@ if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Cha
     end
 end
 
+wait(0.6)
+
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
@@ -229,9 +231,6 @@ local espchamsline = 0
 local esptextsize = 17
 local espfillcolor = Color3.fromRGB(77, 210, 255)
 local esplinecolor = Color3.fromRGB(77, 210, 255)
-
-local invcheck = false
-local invchecktext = Drawing.new("Text")
 
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
@@ -369,13 +368,6 @@ aimtargetname.Color = Color3.fromRGB(77, 210, 255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
 aimtargetname.Outline = true
-invchecktext.Text = " "
-invchecktext.Position = Vector2.new(100, wcamera.ViewportSize.Y / 2)
-invchecktext.Size = 19
-invchecktext.Color = Color3.fromRGB(255,255,255)
-invchecktext.Visible = true
-invchecktext.Center = true
-invchecktext.Outline = true
 
 local somemethods = {
     "WalkSpeed",
@@ -482,7 +474,7 @@ end)
 aim:AddToggle('Dynamic FOV', true, nil, function(v)
     aimdynamicfov = v
 end)
-aim:AddSlider('FOV Radius', 250, 10, 150, function(c) 
+aim:AddSlider('FOV Radius', 350, 10, 150, function(c) 
     aimfov = c
 end)
 aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
@@ -685,6 +677,66 @@ end)
 miscfeatures:AddButton('Reset',function() 
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
+miscfeatures:AddButton('Spawn UAZ',function() 
+local player = game.Players.LocalPlayer
+local plr = player
+
+if not plr.Character or not plr.Character:FindFirstChildOfClass("Humanoid") then 
+    return Notify("Exothium.xyz", "Error: No character", 3) 
+end
+
+local uaz, dist = nil, math.huge
+for i, v in pairs(workspace:WaitForChild("Vehicles"):GetChildren()) do
+    if v:FindFirstChild("Body") and v.Body:FindFirstChildOfClass("MeshPart") then
+        local vehiclePos = v.Body:FindFirstChildOfClass("MeshPart").Position
+        local camPos = workspace.CurrentCamera.CFrame.p
+        local distance = (vehiclePos - camPos).Magnitude
+        if dist > distance then
+            dist = distance
+            uaz = v
+        end
+    end
+end
+
+if not uaz then 
+    return Notify("Exothium.xyz", "Error: No car found", 3) 
+end
+
+local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+if humanoid then
+    for i, v in ipairs(uaz:GetDescendants()) do
+        if v:IsA('Seat') and v.Name == 'SeatFR' then
+            v:Sit(humanoid)
+        end
+    end
+end
+
+wait(0.2)
+
+for i = 1, 2 do
+    game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
+        ["Vehicle"] = uaz,
+        ["Action"] = "Enter",
+        ["Door"] = uaz.Body.FRdoor.FR_Door
+    })
+    wait(0.2)
+end
+
+uaz.Remotes.ExitSeat:FireServer()
+wait(0.1)
+
+game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
+    ["Vehicle"] = uaz,
+    ["Action"] = "Exit",
+    ["Door"] = uaz.Body.FRdoor.FR_Door
+})
+
+uaz.Remotes.ExitSeat:FireServer()
+wait(1)
+
+player.Character:FindFirstChildOfClass('Humanoid'):Move(Vector3.new(0, 10, 0))
+Notify("Exothium.xyz", "Spawned UAZ", 3) 
+end)
 
 semifly:AddToggle('Movement Toggle', true, charsemiflybind, function(v) 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
@@ -732,7 +784,7 @@ end)
 
 semifly:AddSeparateBar()
 
-spinspeed = 15
+spinspeed = 0
 
 semifly:AddToggle('Spin Y', true, nil, function(v)
 spinning = v
@@ -748,7 +800,7 @@ else
 end
 end)
 
-semifly:AddSlider('Y Rotation Speed', 15, 0, 0, function(c) 
+semifly:AddSlider('Y Rotation Speed', 20, 0, 0, function(c) 
     spinspeed = c
 end)
 
