@@ -6,12 +6,7 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
-if script_key == "NTEQCddrFpsbibRkSHNnNwrWwnVUHsTP" then
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
-else
-loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
-end
-
 
 if oldbuild_v0x21 == true then
     print("[[ Exoguard V3 || Exothium.xyz || Loading old script ]]")
