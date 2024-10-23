@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1b"
+local version = "V0.0.1c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -212,32 +212,32 @@ local esptable = {}
     }      
 ]] 
 
-local espbool = false
-local esptogglebind = Enum.KeyCode.Home
-local espname = false
-local esphp = false
-local espdistance = false
-local espbots = false
-local esphigh = false
-local espskelet = false
-local espdead = false
-local esphotbar = false
-local esploot = false
-local espexit = false
-local esptextline = true
-local esprenderdist = 1800
-local espchamsfill = 1
-local espchamsline = 0
-local esptextsize = 17
-local espfillcolor = Color3.fromRGB(77, 210, 255)
-local esplinecolor = Color3.fromRGB(77, 210, 255)
+espbool = false
+esptogglebind = Enum.KeyCode.Home
+espname = false
+esphp = false
+espdistance = false
+espbots = false
+esphigh = false
+espskelet = false
+espdead = false
+esphotbar = false
+esploot = false
+espexit = false
+esptextline = true
+esprenderdist = 1800
+espchamsfill = 1
+espchamsline = 0
+esptextsize = 17
+espfillcolor = Color3.fromRGB(77, 210, 255)
+esplinecolor = Color3.fromRGB(77, 210, 255)
 
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
-local tracbool = false
-local tracwait = 1
-local traccolor = Color3.fromRGB(77, 210, 255)
+tracbool = false
+tracwait = 1
+traccolor = Color3.fromRGB(77, 210, 255)
 
 local crosshair = Drawing.new("Circle")
 
@@ -250,14 +250,22 @@ local viewmod_materials = {
     ["Neon"] = Enum.Material.Neon,
     ["Plastic"] = Enum.Material.SmoothPlastic
 }
-local viewmodbool = false
-local viewmodhandmat = Enum.Material.ForceField
-local viewmodgunmat = Enum.Material.ForceField
-local viewmodhandcolor = Color3.fromRGB(77, 210, 255)
-local viewmodguncolor = Color3.fromRGB(77, 210, 255)
-local viewmodX = 0.2
-local viewmodY = -2
-local viewmodZ = -0.32
+viewmodbool = false
+viewmodhandmat = Enum.Material.ForceField
+viewmodgunmat = Enum.Material.ForceField
+viewmodhandcolor = Color3.fromRGB(77, 210, 255)
+viewmodguncolor = Color3.fromRGB(77, 210, 255)
+viewmodX = 0.2
+viewmodY = -2
+viewmodZ = -0.32
+
+viewmodhighlightchams = false
+
+viewmodhighlightfillcolor = Color3.fromRGB(77, 210, 255)
+viewmodhighlightoutlinecolor = Color3.fromRGB(77, 210, 255)
+
+viewmodhighlightfilltransparency = 1
+viewmodhighlightoutlinetransparency = 0
 
 local speedbool = false
 local speedboost = 1.2
@@ -766,11 +774,9 @@ semifly:AddSeparateBar()
 --    charantiaim_underground = v
 --end)
 
-semifly:AddToggle('Use Rotation', true, nil, function(v) 
+semifly:AddToggle('Custom Rotation', true, nil, function(v) 
     charantiaim_underground = v
 end)
-
-semifly:AddSeparateBar()
 
 semifly:AddSlider('X Rotation', 360, 0, 0, function(c) 
     xrot = c
@@ -1117,6 +1123,27 @@ viewmod:AddColorPallete('Weapon Chams Color', Color3.fromRGB(77, 210, 255),funct
 end)
 
 viewmod:AddSeparateBar()
+
+viewmod:AddToggle('Viewmodel Outline Chams', true, nil, function(v)
+    viewmodhighlightchams = v
+end)
+
+viewmod:AddColorPallete('Outline Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
+    viewmodhighlightfillcolor = a
+end)
+viewmod:AddSlider('Outline Fill Transparency', 1, 0, 1, function(c) 
+    viewmodhighlightfilltransparency = c
+end)
+
+viewmod:AddColorPallete('Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
+    viewmodhighlightoutlinecolor = a
+end)
+viewmod:AddSlider('Outline Transparency', 1, 0, 0, function(c) 
+    viewmodhighlightoutlinetransparency = c
+end)
+
+viewmod:AddSeparateBar()
+
 viewmod:AddSlider('Offset X', 5, -5, 0.20, function(c) 
     viewmodX = c
 end)
@@ -1331,10 +1358,11 @@ end
 
 local function updateKeybindTexts()
     SilentAim.Text = "Silent Aim"
-    ESPToggle.Text = "ESP Toggle"
+    ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
     Zoom.Text = "Zoom"
     Fly.Text = "Movement Toggle"
 end
+
 updateKeybindTexts()
 
 keybinds:AddToggle('Keybind List', true, nil, function(v)
@@ -2516,6 +2544,23 @@ task.spawn(function() -- slow
             end
         end
 
+        local function handleViewModelHighlight()
+            if viewmodhighlightchams and wcamera:FindFirstChild("ViewModel") then
+                local vmhighlight = Instance.new("Highlight")
+                vmhighlight.Parent = wcamera:FindFirstChild("ViewModel")
+                vmhighlight.DepthMode = Enum.HighlightDepthMode.Occluded
+
+                vmhighlight.FillColor = viewmodhighlightfillcolor
+                vmhighlight.OutlineColor = viewmodhighlightoutlinecolor
+
+                vmhighlight.FillTransparency = viewmodhighlightfilltransparency
+                vmhighlight.OutlineTransparency = viewmodhighlightoutlinetransparency
+            elseif viewmodhighlightchams == false and wcamera:FindFirstChild("ViewModel") and wcamera:FindFirstChild("ViewModel"):FindFirstAncestorWhichIsA("Highlight") then
+                local temporaryhighlight = wcamera:FindFirstChild("ViewModel"):FindFirstChildWhichIsA("Highlight")
+                temporaryhighlight:Destroy()
+            end
+        end
+
         local function handleViewModel()
             if viewmodbool and wcamera:FindFirstChild("ViewModel") then
                 for _, obj in ipairs(wcamera.ViewModel:GetDescendants()) do
@@ -2544,9 +2589,11 @@ task.spawn(function() -- slow
             end
         end
 
+        updateKeybindTexts()
         handleFoliage()
         handleInventory()
         handleViewModel()
+        handleViewModelHighlight()
     end
 end)
 
