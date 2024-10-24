@@ -3057,3 +3057,17 @@ while true do
         flipback = false
     end
 end
+
+--[[
+local libraryxxt = pcall(function()
+    local drawing199 = Drawing.new("Square")
+    drawing199.Visible = false
+    drawing199:Destroy()
+end)
+
+if libraryxxt == false then
+    Notify("Exothium.xyz", "DL-F", 0.6)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
+    Notify("Exothium.xyz", "DL-T", 0.3)
+end
+]]
