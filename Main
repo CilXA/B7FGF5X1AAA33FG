@@ -141,6 +141,18 @@ end
 
 wait(0.6)
 
+local libraryxxt = pcall(function()
+    local drawing199 = Drawing.new("Square")
+    drawing199.Visible = false
+    drawing199:Destroy()
+end)
+
+if libraryxxt == false then
+    Notify("Exothium.xyz", "DL-F", 0.6)
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
+    Notify("Exothium.xyz", "DL-T", 0.3)
+end
+
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
@@ -889,7 +901,7 @@ wh:AddSeparateBar()
 wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
     esptextcolor = a
 end)
-wh:AddSlider('Text Size', 35, 1, 17, function(c) 
+wh:AddSlider('Text Size', 35, 1, xesptextsize, function(c) 
     xesptextsize = c
 end)
 wh:AddToggle('Text Outline', false, nil, function(v)
