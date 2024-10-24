@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1c"
+local version = "V0.0.1c 0"
 
 local notificationOffset = 45
 local notifications = {}
@@ -1474,7 +1474,7 @@ privatemods:AddSlider('Player Walkspeed', 50, 0, 18, function(c: number)
     xchangerspeed = c
 end)
 privatemods:AddSlider('Player Jumppower', 25, 0, 4, function(c) 
-     = c
+    xchangerjump = c
 end)
 
 privatemods:AddSeparateBar()
