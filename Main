@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1c 0"
+local version = "V0.0.1c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -213,7 +213,7 @@ local xesptable = {}
 ]] 
 
 xespbool = false
-esptogglebind = Enum.KeyCode.Home
+esptogglebind = Enum.KeyCode.xxhome
 espname = false
 xesphp = false
 xespdistance = false
@@ -308,7 +308,7 @@ yspinning = false -- yrot spin
 zspinspeed = 0
 zspinning = false -- zrot spin
 
-local xrot = 0
+local xrot = 180
 local yrot = 0
 local zrot = 0
 
@@ -435,28 +435,28 @@ library:ChangeGame("Project Delta")
 
 local combat = library:AddWindow('Combat')
 local player = library:AddWindow('Player')
-local visual = library:AddWindow('Visuals')
-local other = library:AddWindow('Misc')
-local home = library:AddWindow('Settings')
+local xvisual = library:AddWindow('Visuals')
+local xother = library:AddWindow('Misc')
+local xxhome = library:AddWindow('Settings')
 
-local mainhome = home:AddSection('Menu')
-local miscfeatures = home:AddSection('Extra Features')
+local mainhome = xxhome:AddSection('Menu')
+local miscfeatures = xother:AddSection('Extra Features')
 local aim = combat:AddSection('Aimbot')
 local gunmods = combat:AddSection('Gun Mods')
-local camzoom = other:AddSection('Zoom')
+local camzoom = xother:AddSection('Zoom')
 local tarinfo = combat:AddSection('Target')
-local wh = visual:AddSection('Player Visuals')
-local cross = visual:AddSection('Crosshair')
-local inventorychecker = other:AddSection('Inventory Checker')
-local tracers = visual:AddSection('Bullet Tracers')
-local camer = other:AddSection('Effects')
-local viewmod = visual:AddSection('Viewmodel')
+local wh = xvisual:AddSection('Player Visuals')
+local cross = xvisual:AddSection('Crosshair')
+local inventorychecker = xother:AddSection('Inventory Checker')
+local tracers = xvisual:AddSection('Bullet Tracers')
+local camer = xvisual:AddSection('Effects')
+local viewmod = xvisual:AddSection('Viewmodel')
 local semifly = player:AddSection('Movement Manager')
 local privatemods = player:AddSection('Character Modifications')
 local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
-local worldh = visual:AddSection('World')
-local keybinds = home:AddSection('Keybind List')
+local worldh = xvisual:AddSection('World')
+local keybinds = xxhome:AddSection('Keybind List')
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
     game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
@@ -785,7 +785,7 @@ semifly:AddToggle('Custom Rotation', true, nil, function(v)
     charantiaim_underground = v
 end)
 
-semifly:AddSlider('X Rotation', 360, 0, 0, function(c) 
+semifly:AddSlider('X Rotation', 360, 0, 180, function(c) 
     xrot = c
 end)
 semifly:AddSlider('Y Rotation', 10, 0, 0, function(c) 
@@ -1057,7 +1057,7 @@ local function fireCharacterCreation()
     end
 end
 
-camer:AddToggle('Appearance Switcher', true, nil, function(v)
+miscfeatures:AddToggle('Appearance Switcher', true, nil, function(v)
     toggleActive = v
     if toggleActive then
         runningThread = coroutine.create(fireCharacterCreation)
@@ -1401,7 +1401,7 @@ end
 
 local function updateKeybindTexts()
     SilentAim.Text = "Silent Aim"
-    ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
+    ESPToggle.Text = "ESP Toggle"
     Zoom.Text = "Zoom"
     Fly.Text = "Movement Toggle"
 end
