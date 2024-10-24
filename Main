@@ -156,7 +156,7 @@ end
 
 _G.exothiumxyz = true
 
-local wcamera = workspace.CurrentCamera
+local xwcamera = workspace.CurrentCamera
 local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
@@ -170,39 +170,39 @@ local mouse = localplayer:GetMouse()
 
 local markvisible = true
 
-local aimbool = false
-local silentaimbind = Enum.KeyCode.H
-local aimbots = false
-local aimvischeck = false
-local aimbang = false
-local aimrecbang = false
-local aimtrigger = false
-local aiminfrange = false
-local aimtarget = nil
-local aimtargetpart = nil
-local aimdynamicfov = false
-local aimpart = "Head"
-local aimtype = "Instant Hit"
-local aimfov = 150
-local aimdistance = 1800
-local aimchance = 100
-local aimfakewait = 0
-local aimfovcircle = Drawing.new("Circle")
-local aimtargetname = Drawing.new("Text")
-local aimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
-local penetrateogfunc = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration
-local penetratemodfunc
-local aimmodfunc
-local aimignoreparts = {}
+local xaimbool = false
+local xsilentaimbind = Enum.KeyCode.H
+local xaimbots = false
+local xaimvischeck = false
+local xaimbang = false
+local xaimrecbang = false
+local xaimtrigger = false
+local xaiminfrange = false
+local xaimtarget = nil
+local xaimtargetpart = nil
+local xaimdynamicfov = false
+local xaimpart = "Head"
+local xaimtype = "Instant Hit"
+local xaimfov = 150
+local xaimdistance = 1800
+local xaimchance = 100
+local xaimfakewait = 0
+local xaimfovcircle = Drawing.new("Circle")
+local xaimtargetname = Drawing.new("Text")
+local xaimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
+local xpenetrateogfunc = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration
+local xpenetratemodfunc
+local xaimmodfunc
+local xaimignoreparts = {}
 for i,v in ipairs(workspace:GetDescendants()) do
     if v:GetAttribute("PassThrough") then
-        table.insert(aimignoreparts, v)
+        table.insert(xaimignoreparts, v)
     end
 end
 
 local esptextcolor = Color3.fromRGB(77, 210, 255)
-local esptable = {}
---[[ esptable template
+local xesptable = {}
+--[[ xesptable template
     drawingobj = {
         primary = instance
         type = string --(highlight, name, hp, hotbar, distance, skelet)
@@ -212,32 +212,32 @@ local esptable = {}
     }      
 ]] 
 
-espbool = false
+xespbool = false
 esptogglebind = Enum.KeyCode.Home
 espname = false
-esphp = false
-espdistance = false
+xesphp = false
+xespdistance = false
 espbots = false
 esphigh = false
-espskelet = false
+xespskelet = false
 espdead = false
-esphotbar = false
-esploot = false
+xesphotbar = false
+xesploot = false
 espexit = false
-esptextline = true
-esprenderdist = 1800
+xesptextline = true
+xesprenderdist = 1800
 espchamsfill = 1
 espchamsline = 0
-esptextsize = 17
-espfillcolor = Color3.fromRGB(77, 210, 255)
-esplinecolor = Color3.fromRGB(77, 210, 255)
+xesptextsize = 17
+xespfillcolor = Color3.fromRGB(77, 210, 255)
+xesplinecolor = Color3.fromRGB(77, 210, 255)
 
 local inventoryCheckerToggle = true
 local inventoryCheckerBind = Enum.KeyCode.Backquote
 
-tracbool = false
-tracwait = 1
-traccolor = Color3.fromRGB(77, 210, 255)
+xtracbool = false
+xtracwait = 1
+xtraccolor = Color3.fromRGB(77, 210, 255)
 
 local crosshair = Drawing.new("Circle")
 
@@ -251,10 +251,10 @@ local viewmod_materials = {
     ["Plastic"] = Enum.Material.SmoothPlastic
 }
 viewmodbool = false
-viewmodhandmat = Enum.Material.ForceField
-viewmodgunmat = Enum.Material.ForceField
-viewmodhandcolor = Color3.fromRGB(77, 210, 255)
-viewmodguncolor = Color3.fromRGB(77, 210, 255)
+xviewmodhandmat = Enum.Material.ForceField
+xviewmodgunmat = Enum.Material.ForceField
+xviewmodhandcolor = Color3.fromRGB(77, 210, 255)
+xviewmodguncolor = Color3.fromRGB(77, 210, 255)
 viewmodX = 0.2
 viewmodY = -2
 viewmodZ = -0.32
@@ -267,29 +267,29 @@ viewmodhighlightoutlinecolor = Color3.fromRGB(77, 210, 255)
 viewmodhighlightfilltransparency = 1
 viewmodhighlightoutlinetransparency = 0
 
-local speedbool = false
-local speedboost = 1.2
+xspeedbool = false
+xspeedboost = 1.2
 
 local changerbool = false
-local changergrav = 95
-local changerspeed = 18
-local changerheight = 2
-local changerjump = 5
+local xchangergrav = 95
+local xchangerspeed = 18
+local xchangerheight = 2
+local xchangerjump = 4
 
-local charsemiflybind = Enum.KeyCode.X
-local charsemifly = false
-local charsemiflydist = 6
-local charsemiflyspeed = 22
-local semifly_bodyvel = nil
+local xcharsemiflybind = Enum.KeyCode.X
+local xcharsemifly = false
+local xcharsemiflydist = 6
+local xcharsemiflyspeed = 22
+local xsemifly_bodyvel = nil
 
 local bunnyhop = false
 
 local worldleaves = false
 local worldclock = 14
 
-local waterplatforms = Instance.new("Folder", workspace)
-waterplatforms.Name = "WaterPlatforms"
-local worldjesus
+local xwaterplatforms = Instance.new("Folder", workspace)
+xwaterplatforms.Name = "xwaterplatforms"
+local xworldjesus
 
 local worldvisualstoggle = false
 local worldambient = Color3.fromRGB(255,255,255)
@@ -299,7 +299,14 @@ local charantiaim_underground = false
 
 local flipback = false
 
-spinning = false -- yrot spin
+xspinspeed = 0
+xspinning = false -- xrot spin
+
+yspinspeed = 0
+yspinning = false -- yrot spin
+
+zspinspeed = 0
+zspinning = false -- zrot spin
 
 local xrot = 0
 local yrot = 0
@@ -355,27 +362,27 @@ local valcache = {
 
 --drawing setup--
 
-aimfovcircle.Visible = false
-aimfovcircle.Radius = aimfov
-aimfovcircle.Thickness = 2
-aimfovcircle.Filled = false
-aimfovcircle.Transparency = 1
-aimfovcircle.Color = Color3.fromRGB(77, 210, 255)
-aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+xaimfovcircle.Visible = false
+xaimfovcircle.Radius = xaimfov
+xaimfovcircle.Thickness = 2
+xaimfovcircle.Filled = false
+xaimfovcircle.Transparency = 1
+xaimfovcircle.Color = Color3.fromRGB(77, 210, 255)
+xaimfovcircle.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2)
 crosshair.Visible = false
 crosshair.Radius = 2
 crosshair.Thickness = 1
 crosshair.Filled = true
 crosshair.Transparency = 1
 crosshair.Color = Color3.fromRGB(77, 210, 255)
-crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
-aimtargetname.Text = " "
-aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
-aimtargetname.Size = 20
-aimtargetname.Color = Color3.fromRGB(77, 210, 255)
-aimtargetname.Visible = false
-aimtargetname.Center = true
-aimtargetname.Outline = true
+crosshair.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2)
+xaimtargetname.Text = " "
+xaimtargetname.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2 + xaimfov + 20) 
+xaimtargetname.Size = 20
+xaimtargetname.Color = Color3.fromRGB(77, 210, 255)
+xaimtargetname.Visible = false
+xaimtargetname.Center = true
+xaimtargetname.Outline = true
 
 local somemethods = {
     "WalkSpeed",
@@ -455,47 +462,47 @@ mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function()
     game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
 end)
 
-aim:AddToggle('Silent Aim', true, silentaimbind, function(v) 
-    aimbool = v
+aim:AddToggle('Silent Aim', true, xsilentaimbind, function(v) 
+    xaimbool = v
     if v == true then
-        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
+        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = xaimmodfunc
     else
-        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
+        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = xaimogfunc
     end
 end)
 aim:AddToggle('Target AI', true, nil, function(v)
-    aimbots = v
+    xaimbots = v
 end)
 aim:AddToggle('Only Visible', true, nil, function(v)
-    aimvischeck = v
+    xaimvischeck = v
 end)
 
 aim:AddToggle('Auto Shoot', true, nil, function(v)
-    aimtrigger = v
+    xaimtrigger = v
 end)
 
 aim:AddSeparateBar()
 
 aim:AddToggle('FOV Visible', true, nil, function(v)
-    aimfovcircle.Visible = v
+    xaimfovcircle.Visible = v
 end)
 aim:AddToggle('Dynamic FOV', true, nil, function(v)
-    aimdynamicfov = v
+    xaimdynamicfov = v
 end)
 aim:AddSlider('FOV Radius', 350, 10, 150, function(c) 
-    aimfov = c
+    xaimfov = c
 end)
 aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
-   aimfovcircle.Color = a
+   xaimfovcircle.Color = a
 end)
 
 aim:AddSeparateBar()
 
 aim:AddDropdown('Aim Part', {'Head', 'Torso', 'Random', 'Scripted'}, 'Head', function(a)
-    aimpart = a
+    xaimpart = a
 end)
 aim:AddDropdown('Aim Type', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
-    aimtype = a
+    xaimtype = a
 end)
 
 local loadedAnim2 = nil
@@ -567,16 +574,16 @@ gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
     UnlockFiremodes = v
 end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
-    aimbang = v
+    xaimbang = v
 end)
 
 --[[
 gunmods:AddToggle('Wallbang v2', true, nil, function(v) -- нужно в modules.fps чекнуть updatebulletlist, может быть тогда разгадаю как это сделать...
-    aimrecbang = v
+    xaimrecbang = v
     if v == true then
-        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetratemodfunc
+        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = xpenetratemodfunc
     else
-        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetrateogfunc
+        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = xpenetrateogfunc
     end
 end)
 ]]
@@ -679,7 +686,7 @@ gunmods:AddSlider('Burstfire', 5, 1, 1,function(c)
 end)
 
 tarinfo:AddToggle('Target Name', true, nil, function(v)
-    aimtargetname.Visible = v
+    xaimtargetname.Visible = v
 end)
 
 miscfeatures:AddButton('Reset',function() 
@@ -746,27 +753,27 @@ player.Character:FindFirstChildOfClass('Humanoid'):Move(Vector3.new(0, 10, 0))
 Notify("Exothium.xyz", "Spawned UAZ", 3) 
 end)
 
-semifly:AddToggle('Movement Toggle', true, charsemiflybind, function(v) 
+semifly:AddToggle('Movement Toggle', true, xcharsemiflybind, function(v) 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if v == false then
-			semifly_bodyvel:Destroy()
+			xsemifly_bodyvel:Destroy()
 		elseif v == true then
-			semifly_bodyvel = Instance.new("BodyVelocity", localplayer.Character.HumanoidRootPart)
-			semifly_bodyvel.Velocity = Vector3.new(0,0,0)
+			xsemifly_bodyvel = Instance.new("BodyVelocity", localplayer.Character.HumanoidRootPart)
+			xsemifly_bodyvel.Velocity = Vector3.new(0,0,0)
 		end
 
 		localplayer.Character.Humanoid.PlatformStand = not localplayer.Character.Humanoid.PlatformStand 
-        charsemifly = v
+        xcharsemifly = v
     else
-        charsemifly = false
+        xcharsemifly = false
     end
 end)
 semifly:AddSeparateBar()
 semifly:AddSlider('Max Height Distance', 8, 0.1, 6, function(c) 
-    charsemiflydist = c
+    xcharsemiflydist = c
 end)
 semifly:AddSlider('Speed', 80, 1, 22, function(c) 
-    charsemiflyspeed = c
+    xcharsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
 
@@ -790,28 +797,64 @@ end)
 
 semifly:AddSeparateBar()
 
-spinspeed = 0
-
-semifly:AddToggle('Spin Y', true, nil, function(v)
-spinning = v
-if not spinning then
-    yrot = 0
+semifly:AddToggle('Spin X', true, nil, function(v)
+xspinning = v
+if not xspinning then
+    xrot = 0
 else
     coroutine.wrap(function()
-        while spinning do
-            yrot = (yrot + spinspeed) % 360
+        while xspinning do
+            xrot = (xrot + xspinspeed) % 360
             wait()
         end
     end)()
 end
 end)
 
-semifly:AddSlider('Y Rotation Speed', 20, 0, 0, function(c) 
-    spinspeed = c
+semifly:AddSlider('X Spin Speed', 20, 0, 0, function(c) 
+    xspinspeed = c
 end)
 
+semifly:AddToggle('Spin Y', true, nil, function(v)
+yspinning = v
+if not yspinning then
+    yrot = 0
+else
+    coroutine.wrap(function()
+        while yspinning do
+            yrot = (yrot + yspinspeed) % 360
+            wait()
+        end
+    end)()
+end
+end)
+
+semifly:AddSlider('Y Spin Speed', 20, 0, 0, function(c) 
+    yspinspeed = c
+end)
+
+semifly:AddToggle('Spin Z', true, nil, function(v)
+zspinning = v
+if not zspinning then
+    zrot = 0
+else
+    coroutine.wrap(function()
+        while xspinning do
+            zrot = (zrot + zspinspeed) % 360
+            wait()
+        end
+    end)()
+end
+end)
+
+semifly:AddSlider('Z Spin Speed', 20, 0, 0, function(c) 
+    zspinspeed = c
+end)
+
+--esp
+
 wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
-    espbool = v
+    xespbool = v
 end)
 wh:AddToggle('Bots', true, nil, function(v)
     espbots = v
@@ -820,23 +863,23 @@ wh:AddToggle('Name', true, nil, function(v)
     espname = v
 end)
 wh:AddToggle('Health', true, nil, function(v)
-    esphp = v
+    xesphp = v
 end)
 wh:AddToggle('Distance', true, nil, function(v)
-    espdistance = v
+    xespdistance = v
 end)
 wh:AddToggle('Chams', true, nil, function(v)
     esphigh = v
 end)
 wh:AddToggle('Equipped Tool', true, nil, function(v)
-    esphotbar = v
+    xesphotbar = v
 end)
 wh:AddToggle('Body', true, nil, function(v)
     espdead = v
 end)
-wh:AddToggle('Loot', true, nil, function(v)
-    esploot = v
-end)
+--wh:AddToggle('Loot', true, nil, function(v)
+--    xesploot = v
+--end)
 wh:AddToggle('Extract', true, nil, function(v)
     espexit = v
 end)
@@ -847,10 +890,10 @@ wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a)
     esptextcolor = a
 end)
 wh:AddSlider('Text Size', 35, 1, 17, function(c) 
-    esptextsize = c
+    xesptextsize = c
 end)
 wh:AddToggle('Text Outline', false, nil, function(v)
-    esptextline = v
+    xesptextline = v
 end)
 
 wh:AddSeparateBar()
@@ -859,14 +902,14 @@ wh:AddSlider('Chams Outline Transparency', 1, 0, 0, function(c)
     espchamsline = c
 end)
 wh:AddColorPallete('Chams Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
-    esplinecolor = a
+    xesplinecolor = a
 end)
 
 wh:AddSlider('Chams Fill Transparency', 1, 0, 0.5, function(c) 
     espchamsfill = c
 end)
 wh:AddColorPallete('Chams Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
-    espfillcolor = a
+    xespfillcolor = a
 end)
 
 
@@ -879,13 +922,13 @@ end)
 
 
 tracers:AddToggle('Enabled', true, nil, function(v)
-    tracbool = v
+    xtracbool = v
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
-    traccolor.Color = Color3.fromRGB(a)
+    xtraccolor.Color = Color3.fromRGB(a)
 end)
 tracers:AddSlider('Tracer Lifetime', 20, 0, 1, function(c) 
-    tracwait = c
+    xtracwait = c
 end)
 
 function isFalling()
@@ -1103,23 +1146,23 @@ viewmod:AddToggle('Viewmodel Chams', true, nil, function(v)
 end)
 viewmod:AddDropdown('Arm Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
     if viewmod_materials[a] then
-        viewmodhandmat = viewmod_materials[a]
+        xviewmodhandmat = viewmod_materials[a]
     else
 
     end
 end)
 viewmod:AddDropdown('Weapon Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
     if viewmod_materials[a] then
-        viewmodgunmat = viewmod_materials[a]
+        xviewmodgunmat = viewmod_materials[a]
     else
 
     end
 end)
 viewmod:AddColorPallete('Arm Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodhandcolor = a
+    xviewmodhandcolor = a
 end)
 viewmod:AddColorPallete('Weapon Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodguncolor = a
+    xviewmodguncolor = a
 end)
 
 viewmod:AddSeparateBar()
@@ -1349,10 +1392,10 @@ local function getKeyName(key)
 end
 --[[
 local function updateKeybindTexts()
-    SilentAim.Text = "Silent Aim [" .. getKeyName(silentaimbind) .. "]"
+    SilentAim.Text = "Silent Aim [" .. getKeyName(xsilentaimbind) .. "]"
     ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
     Zoom.Text = "Zoom [" .. getKeyName(zoombind) .. "]"
-    Fly.Text = "Fly [" .. getKeyName(charsemiflybind) .. "]"
+    Fly.Text = "Fly [" .. getKeyName(xcharsemiflybind) .. "]"
 end
 ]]
 
@@ -1376,10 +1419,10 @@ function startspeedhack()
     local chr = speaker.Character
     local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
     local hb = game:GetService("RunService").Heartbeat
-    while speedbool and chr and hum and hum.Parent do
+    while xspeedbool and chr and hum and hum.Parent do
         local delta = hb:Wait()
         if hum.MoveDirection.Magnitude > 0 then
-            chr:TranslateBy(hum.MoveDirection * tonumber(speedboost) * delta * 10)
+            chr:TranslateBy(hum.MoveDirection * tonumber(xspeedboost) * delta * 10)
         else
             chr:TranslateBy(hum.MoveDirection * delta * 10)
         end
@@ -1387,24 +1430,24 @@ function startspeedhack()
 end
 
 privatemods:AddToggle('Enabled', true, nil, function(v)
-    speedbool = v
+    xspeedbool = v
     startspeedhack()
 end)
 privatemods:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c) 
-    speedboost = c
+    xspeedboost = c
 end)
 
 privatemods:AddSeparateBar()
 
 privatemods:AddToggle('Jesus', true, nil, function(v)
-    worldjesus = v
+    xworldjesus = v
     if v then
-        while worldjesus do
+        while xworldjesus do
             wait()
             local hitPart = workspace:Raycast(localplayer.Character:FindFirstChild("HumanoidRootPart").Position, Vector3.new(0, -5, 0) + localplayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 5, RaycastParams.new())
             if hitPart and hitPart.Material == Enum.Material.Water then
                 local clone = Instance.new("Part")
-                clone.Parent = waterplatforms
+                clone.Parent = xwaterplatforms
                 clone.Position = hitPart.Position
                 clone.Anchored = true
                 clone.CanCollide = true
@@ -1413,7 +1456,7 @@ privatemods:AddToggle('Jesus', true, nil, function(v)
             end
         end
     else
-        for i,v in ipairs(waterplatforms:GetChildren()) do
+        for i,v in ipairs(xwaterplatforms:GetChildren()) do
             v:Destroy()
         end
     end
@@ -1427,20 +1470,20 @@ end)
 
 privatemods:AddSeparateBar()
 
-privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
-    changerspeed = c
+privatemods:AddSlider('Player Walkspeed', 50, 0, 18, function(c: number) 
+    xchangerspeed = c
 end)
-privatemods:AddSlider('Player Jumppower', 25, 0, 1, function(c) 
-    changerjump = c
+privatemods:AddSlider('Player Jumppower', 25, 0, 4, function(c) 
+     = c
 end)
 
 privatemods:AddSeparateBar()
 
-privatemods:AddSlider('Player Hipheight', 15, 0, 1, function(c) 
-    changerheight = c
+privatemods:AddSlider('Player Hipheight', 15, 0, 2, function(c) 
+    xchangerheight = c
 end)
-privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
-    changergrav = c
+privatemods:AddSlider('Player Gravity', 300, 0, 95, function(c) 
+    xchangergrav = c
 end)
 
 worldh:AddToggle('No Grass', true, nil, function(v)
@@ -1511,14 +1554,14 @@ local function runtracer(start, endp)
     endpart.Size = Vector3.new(0.01, 0.01, 0.01)
     beam.Attachment0 = Instance.new("Attachment", startpart)
     beam.Attachment1 = Instance.new("Attachment", endpart)
-    beam.Color = ColorSequence.new(traccolor,  traccolor)
+    beam.Color = ColorSequence.new(xtraccolor,  xtraccolor)
     beam.Width0 = 0.05
     beam.Width1 = 0.05
     beam.FaceCamera = true
     beam.Transparency = NumberSequence.new(0)
     beam.LightEmission = 1
 
-    wait(tracwait)
+    wait(xtracwait)
 
     beam:Destroy()
     startpart:Destroy()
@@ -1528,7 +1571,7 @@ end
 --silent aim--
 
 local function isonscreen(object)
-    local p, bool = wcamera:WorldToScreenPoint(object.Position)
+    local p, bool = xwcamera:WorldToScreenPoint(object.Position)
     return bool
 end
 local v311 = require(game.ReplicatedStorage.Modules:WaitForChild("UniversalTables"))
@@ -1538,11 +1581,11 @@ local function isvisible(char, object)
         return false
     end
 
-    if aimvischeck == false then
+    if xaimvischeck == false then
         return true
     end
 
-    local origin = wcamera.CFrame.Position
+    local origin = xwcamera.CFrame.Position
     local pos = object.Position
     local dir = pos - origin
     local dist = dir.Magnitude + 5
@@ -1553,13 +1596,13 @@ local function isvisible(char, object)
     params.CollisionGroup = "WeaponRay"
     params.FilterDescendantsInstances = {
         localplayer.Character:GetChildren(),
-        wcamera:GetChildren(),
+        xwcamera:GetChildren(),
         globalist11,
-        aimignoreparts
+        xaimignoreparts
     }
 
     local ray = workspace:Raycast(origin, dir * dist, params)
-    if aimbang then
+    if xaimbang then
         if ray and ray.Instance:IsDescendantOf(char) then
             return true
         elseif ray and ray.Instance.Name ~= "Terrain" then
@@ -1579,7 +1622,7 @@ local function isvisible(char, object)
 end
 local function predictpos(tpart, bulletspeed, bulletdrop)
     local velocity = tpart.Velocity
-    local distance = (wcamera.CFrame.Position - tpart.CFrame.Position).Magnitude
+    local distance = (xwcamera.CFrame.Position - tpart.CFrame.Position).Magnitude
     local tth = (distance / bulletspeed)
     local predict1 = tpart.CFrame.Position + (velocity * tth)
     local delta = (predict1 - tpart.CFrame.Position).Magnitude
@@ -1593,7 +1636,7 @@ local function predictpos(tpart, bulletspeed, bulletdrop)
     return predictres1 -- + Vector3.new(0,predictres2,0)
 end
 local function choosetarget()
-    local cent = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+    local cent = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2)
     local cdist = math.huge
     local ctar = nil
     local cpart = nil
@@ -1617,11 +1660,11 @@ local function choosetarget()
     }
 
 local function chooseTpart(charact)
-    if aimpart == "Head" then
+    if xaimpart == "Head" then
         return charact:FindFirstChild("Head")
-    elseif aimpart == "Torso" then
+    elseif xaimpart == "Torso" then
         return charact:FindFirstChild("UpperTorso")
-    elseif aimpart == "Scripted" then
+    elseif xaimpart == "Scripted" then
         local head = charact:FindFirstChild("Head")
         local upperTorso = charact:FindFirstChild("UpperTorso")
         if not isvisible(charact, head) then
@@ -1629,7 +1672,7 @@ local function chooseTpart(charact)
         else
             return head
         end
-    elseif aimpart == "Random" then
+    elseif xaimpart == "Random" then
         return charact:FindFirstChild(bparts[math.random(1, #bparts)])
     end
 end
@@ -1637,17 +1680,17 @@ end
 
 
     
-    if aimbots then --priority 2 (bots)
+    if xaimbots then --priority 2 (bots)
         for _, botfold in ipairs(workspace.AiZones:GetChildren()) do
             for _, bot in ipairs(botfold:GetChildren()) do
                 if bot:IsA("Model") and bot:FindFirstChild("Humanoid") and bot.Humanoid.Health > 0 then
                     local potroot = chooseTpart(bot)
                     if potroot then
-                        local spoint = wcamera:WorldToViewportPoint(potroot.Position)
+                        local spoint = xwcamera:WorldToViewportPoint(potroot.Position)
                         local optpoint = Vector2.new(spoint.X, spoint.Y)
                         local dist = (optpoint - cent).Magnitude
                     
-                        if dist <= aimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < aimdistance then
+                        if dist <= xaimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < xaimdistance then
                             local canvis = isvisible(bot, potroot)
                             if canvis and isonscreen(potroot) then
                                 cdist = dist
@@ -1665,11 +1708,11 @@ end
         if pottar ~= localplayer and pottar.Character and localplayer.Character.PrimaryPart ~= nil then
             local potroot = chooseTpart(pottar.Character)
             if potroot then
-                local spoint = wcamera:WorldToViewportPoint(potroot.Position)
+                local spoint = xwcamera:WorldToViewportPoint(potroot.Position)
                 local optpoint = Vector2.new(spoint.X, spoint.Y)
                 local dist = (optpoint - cent).Magnitude
             
-                if dist <= aimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < aimdistance then
+                if dist <= xaimfovcircle.Radius and dist < cdist and ((localplayer.Character.PrimaryPart.Position - potroot.Position).Magnitude * 0.333) < xaimdistance then
                     local canvis = isvisible(pottar.Character, potroot)
                     if canvis and isonscreen(potroot) then
                         cdist = dist
@@ -1682,20 +1725,20 @@ end
     end
 
     if ctar == nil then
-        aimtarget = nil
-        aimtargetpart = nil
+        xaimtarget = nil
+        xaimtargetpart = nil
     else
-        aimtarget = ctar
-        aimtargetpart = cpart
+        xaimtarget = ctar
+        xaimtargetpart = cpart
     end
 end
 
-aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
+xaimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     local v_u_6 = game.ReplicatedStorage.Remotes.VisualProjectile
     local v_u_108 = 0
     local v_u_106 = 0
     local v_u_7 = game.ReplicatedStorage.Remotes.FireProjectile
-    local target = aimtarget
+    local target = xaimtarget
     local target_part
     local v_u_4 = require(game.ReplicatedStorage.Modules:WaitForChild("FunctionLibraryExtension"))
     local v9 = game:GetService("Players")
@@ -1759,9 +1802,9 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
             local _ = p50.Barrel
         end
 
-        if target ~= nil and aimtargetpart ~= nil then
-            target_part = aimtargetpart
-            if aimtype == "Prediction" then
+        if target ~= nil and xaimtargetpart ~= nil then
+            target_part = xaimtargetpart
+            if xaimtype == "Prediction" then
                 local buldrop = v65:GetAttribute("ProjectileDrop")
                 local bulsp = v65:GetAttribute("MuzzleVelocity")
                 target_part = predictpos(target_part, bulsp, buldrop)
@@ -1779,7 +1822,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
         function v185()
             local v_u_110 = RaycastParams.new()
             v_u_110.FilterType = Enum.RaycastFilterType.Exclude
-            local v_u_111 = { v_u_56, p_u_51, v_u_18, aimignoreparts}
+            local v_u_111 = { v_u_56, p_u_51, v_u_18, xaimignoreparts}
             v_u_110.FilterDescendantsInstances = v_u_111
             v_u_110.CollisionGroup = "WeaponRay"
             v_u_110.IgnoreWater = true
@@ -1789,7 +1832,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                 v_u_108 = 0
                 task.spawn(function()
                     for i=1, BurstFire do
-                        if aimtype == "Instant Hit" then
+                        if xaimtype == "Instant Hit" then
                             if not v_u_7:InvokeServer(v_u_114, v_u_108, tick()-10) then 
                                 game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
                             end
@@ -1830,7 +1873,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         v140 = v_u_115 + v_u_114 * v135
                     end
                     task.spawn(function()
-                        if tracbool == true then
+                        if xtracbool == true then
                             runtracer(v60.Position, v140)
                         end
                     end)
@@ -1843,7 +1886,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                     local v171 = v_u_4:FindDeepAncestor(v137, "Model")
                     if v171:FindFirstChild("Humanoid") then
                         local ran = math.random(1, 100)
-                        local ranbool = ran <= aimchance
+                        local ranbool = ran <= xaimchance
                         if ranbool then
                             local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
                             v_u_5:FireServer(v137, v175, v_u_108, tick())
@@ -1858,12 +1901,12 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         v_u_5:FireServer(v137, v175, v_u_108, tick())
                         v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
                     else
-                        if aimbang then --wallbang
+                        if xaimbang then --wallbang
                             local ogmat = v137.Material
                             v137.Material = Enum.Material.Wood
                             v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
                             local newlookvector
-                            if target_part ~= nil and aimtarget ~= nil then
+                            if target_part ~= nil and xaimtarget ~= nil then
                                 newlookvector = CFrame.new(v140, target_part.Position).LookVector
                             else
                                 newlookvector = v_u_114
@@ -1879,11 +1922,11 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                                 v_u_110.FilterDescendantsInstances = v_u_111
 
                                 local function recursivebang(arg1, arg2, arg3)
-                                    if forinstanceray and forinstanceray.Instance:IsDescendantOf(aimtarget) then
+                                    if forinstanceray and forinstanceray.Instance:IsDescendantOf(xaimtarget) then
                                         return
                                     else
                                         task.spawn(function()--debug
-                                            if tracbool == true then
+                                            if xtracbool == true then
                                                 local tooo = v140 + (newlookvector * 100)
                                                 runtracer(v140, tooo)
                                             end
@@ -1907,14 +1950,14 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                                     end
                                 end
 
-                                if aimrecbang and aimtarget ~= nil and target_part ~= nil then
+                                if xaimrecbang and xaimtarget ~= nil and target_part ~= nil then
                                     recursivebang(v176, v177, v178)
                                 end
                             end
                             v137.Material = ogmat
                         else    
                             local ran = math.random(1, 100)
-                            local ranbool = ran <= aimchance
+                            local ranbool = ran <= xaimchance
                             if ranbool then
                                 local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
                                 v_u_5:FireServer(v137, v175, v_u_108, tick())
@@ -1944,7 +1987,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
         return v83, v82, v81, v79
     end
 end
-penetratemodfunc = function(_, p226, p227, p228, p229)
+xpenetratemodfunc = function(_, p226, p227, p228, p229)
 	if true then
 		local v230 = RaycastParams.new()
 		v230.FilterType = Enum.RaycastFilterType.Include
@@ -1977,15 +2020,15 @@ end
 
 --esp--
 
-local function setupesp(obj, dtype, otype1)
+local function xsetupesp(obj, dtype, otype1)
     local dobj
     local tableinfo
     if dtype == "Name" then
         dobj = Drawing.new("Text")
-        dobj.Visible = espbool
+        dobj.Visible = xespbool
         dobj.Center = true
         dobj.Outline = true
-        dobj.Size = esptextsize
+        dobj.Size = xesptextsize
         dobj.Color = esptextcolor
         dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
@@ -1995,10 +2038,10 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "HP" then
         dobj = Drawing.new("Text")
-        dobj.Visible = espbool
+        dobj.Visible = xespbool
         dobj.Center = true
         dobj.Outline = true
-        dobj.Size = esptextsize
+        dobj.Size = xesptextsize
         dobj.Color = esptextcolor
         dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
@@ -2008,10 +2051,10 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "Distance" then
         dobj = Drawing.new("Text")
-        dobj.Visible = espbool
+        dobj.Visible = xespbool
         dobj.Center = true
         dobj.Outline = true
-        dobj.Size = esptextsize
+        dobj.Size = xesptextsize
         dobj.Color = esptextcolor
         dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
@@ -2021,10 +2064,10 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "Hotbar" then
         dobj = Drawing.new("Text")
-        dobj.Visible = espbool
+        dobj.Visible = xespbool
         dobj.Center = true
         dobj.Outline = true
-        dobj.Size = esptextsize
+        dobj.Size = xesptextsize
         dobj.Color = esptextcolor
         dobj.OutlineColor = Color3.new(0, 0, 0)
         tableinfo = {
@@ -2035,8 +2078,8 @@ local function setupesp(obj, dtype, otype1)
     elseif dtype == "Highlight" then
         dobj = Instance.new("Highlight")
         dobj.Name = math.random(1111,99999)
-        dobj.FillColor = espfillcolor
-        dobj.OutlineColor = esplinecolor
+        dobj.FillColor = xespfillcolor
+        dobj.OutlineColor = xesplinecolor
         dobj.FillTransparency = espchamsfill
         dobj.OutlineTransparency = espchamsline
         if obj.Parent:IsA("Model") then
@@ -2071,16 +2114,16 @@ local function setupesp(obj, dtype, otype1)
         return
     end
 
-    if esptable[dobj] ~= nil then
+    if xesptable[dobj] ~= nil then
         selfdestruct()
         return
     else
-        esptable[dobj] = tableinfo
+        xesptable[dobj] = tableinfo
     end
 
     removing = workspace.DescendantRemoving:Connect(function(what)
         if what == obj then
-            esptable[dobj] = nil
+            xesptable[dobj] = nil
             selfdestruct()
         end
     end)
@@ -2089,8 +2132,8 @@ local function startesp(v, otype)
     wait(math.random(0.01, 0.05))
     task.spawn(function()
         if otype == "Extract" then
-            setupesp(v, "Name", otype)
-            setupesp(v, "Distance", otype)
+            xsetupesp(v, "Name", otype)
+            xsetupesp(v, "Distance", otype)
         elseif otype == "Loot" then
             local Amount
             local TotalPrice = 0
@@ -2107,23 +2150,23 @@ local function startesp(v, otype)
             end
 
             if Value >= 4 then
-                setupesp(v, "Name", otype)
-                setupesp(v, "Hotbar", otype)
-                setupesp(v, "Distance", otype)
+                xsetupesp(v, "Name", otype)
+                xsetupesp(v, "Hotbar", otype)
+                xsetupesp(v, "Distance", otype)
             end
         elseif otype == "Dead333" then
             local hd = v:WaitForChild("Head",1)
             if hd == nil then return end
-            setupesp(hd, "Name", otype)
-            setupesp(hd, "Distance", otype)
+            xsetupesp(hd, "Name", otype)
+            xsetupesp(hd, "Distance", otype)
         else
             local hd = v:WaitForChild("Head",1)
             if hd == nil then return end
-            setupesp(hd, "Name", otype)
-            setupesp(hd, "HP", otype)
-            setupesp(hd, "Distance", otype)
-            setupesp(hd, "Hotbar", otype)
-            setupesp(hd, "Highlight", otype) 
+            xsetupesp(hd, "Name", otype)
+            xsetupesp(hd, "HP", otype)
+            xsetupesp(hd, "Distance", otype)
+            xsetupesp(hd, "Hotbar", otype)
+            xsetupesp(hd, "Highlight", otype) 
         end
     end)
 end
@@ -2343,12 +2386,12 @@ local function inventoryChecker()
         for _, player in ipairs(game.Players:GetPlayers()) do
             if player ~= localplayer and player.Character and player.Character.PrimaryPart then
                 local part = player.Character.PrimaryPart
-                local vector, onscreen = wcamera:WorldToScreenPoint(part.Position)
+                local vector, onscreen = xwcamera:WorldToScreenPoint(part.Position)
                 local screenpoint = Vector2.new(vector.X, vector.Y)
                 local mousePos = Vector2.new(mouse.X, mouse.Y)
                 local distance = (screenpoint - mousePos).Magnitude
 
-                if onscreen and distance < aimfov and distance < closestDistance then
+                if onscreen and distance < xaimfov and distance < closestDistance then
                     closestDistance = distance
                     closestPlayerTemp = player
                 end
@@ -2450,7 +2493,7 @@ local function fly_getclosestpoint()
 	local cd = math.huge
 
     local playerslist = game.Players:GetPlayers()
-    local ignorl = {localplayer.Character, wcamera}
+    local ignorl = {localplayer.Character, xwcamera}
 
     for _, player in ipairs(playerslist) do
         if player.Character then
@@ -2494,10 +2537,10 @@ end
 
 task.spawn(function() -- very slow
     while wait(10.5) do
-        table.clear(aimignoreparts)
+        table.clear(xaimignoreparts)
         for i,v in ipairs(workspace:GetDescendants()) do
             if v:GetAttribute("PassThrough") then
-                table.insert(aimignoreparts, v)
+                table.insert(xaimignoreparts, v)
             end
         end
     end
@@ -2545,9 +2588,9 @@ task.spawn(function() -- slow
         end
 
         local function handleViewModelHighlight()
-            if viewmodhighlightchams and wcamera:FindFirstChild("ViewModel") then
+            if viewmodhighlightchams and xwcamera:FindFirstChild("ViewModel") then
                 local vmhighlight = Instance.new("Highlight")
-                vmhighlight.Parent = wcamera:FindFirstChild("ViewModel")
+                vmhighlight.Parent = xwcamera:FindFirstChild("ViewModel")
                 vmhighlight.DepthMode = Enum.HighlightDepthMode.Occluded
 
                 vmhighlight.FillColor = viewmodhighlightfillcolor
@@ -2555,15 +2598,15 @@ task.spawn(function() -- slow
 
                 vmhighlight.FillTransparency = viewmodhighlightfilltransparency
                 vmhighlight.OutlineTransparency = viewmodhighlightoutlinetransparency
-            elseif viewmodhighlightchams == false and wcamera:FindFirstChild("ViewModel") and wcamera:FindFirstChild("ViewModel"):FindFirstAncestorWhichIsA("Highlight") then
-                local temporaryhighlight = wcamera:FindFirstChild("ViewModel"):FindFirstChildWhichIsA("Highlight")
+            elseif viewmodhighlightchams == false and xwcamera:FindFirstChild("ViewModel") and xwcamera:FindFirstChild("ViewModel"):FindFirstAncestorWhichIsA("Highlight") then
+                local temporaryhighlight = xwcamera:FindFirstChild("ViewModel"):FindFirstChildWhichIsA("Highlight")
                 temporaryhighlight:Destroy()
             end
         end
 
         local function handleViewModel()
-            if viewmodbool and wcamera:FindFirstChild("ViewModel") then
-                for _, obj in ipairs(wcamera.ViewModel:GetDescendants()) do
+            if viewmodbool and xwcamera:FindFirstChild("ViewModel") then
+                for _, obj in ipairs(xwcamera.ViewModel:GetDescendants()) do
                     if obj:IsA("BasePart") then
                         if not obj:FindFirstAncestor("Item") then
                             local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
@@ -2571,16 +2614,16 @@ task.spawn(function() -- slow
                                 mb:Destroy()
                             end
 
-                            obj.Color = viewmodhandcolor
-                            obj.Material = viewmodhandmat
+                            obj.Color = xviewmodhandcolor
+                            obj.Material = xviewmodhandmat
                         else
                             local mb = obj:FindFirstChildOfClass("SurfaceAppearance")
                             if mb then
                                 mb:Destroy()
                             end
 
-                            obj.Color = viewmodguncolor
-                            obj.Material = viewmodgunmat
+                            obj.Color = xviewmodguncolor
+                            obj.Material = xviewmodgunmat
                         end
                     elseif obj:IsA("Model") and obj:FindFirstChild("LL") then
                         obj:Destroy()
@@ -2600,9 +2643,9 @@ end)
 runs.RenderStepped:Connect(function() --  fast
     runs.RenderStepped:Wait()
 
-            Toggle.Visible = aimbool
-            Toggle_2.Visible = espbool
-            Toggle_4.Visible = charsemifly
+            Toggle.Visible = xaimbool
+            Toggle_2.Visible = xespbool
+            Toggle_4.Visible = xcharsemifly
             Toggle_3.Visible = zoomtoggle
 
 
@@ -2636,8 +2679,8 @@ runs.RenderStepped:Connect(function() --  fast
 
         handleClientAntiCheatBypass()
 
-    if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
-        --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
+    if xcharsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
+        --print("Line 2189 - Toggled platformstand to false \\ xcharsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
         localplayer.Character.Humanoid.PlatformStand = false
     end
 
@@ -2688,29 +2731,29 @@ local function disableNoclip(character)
     end
 end
 
-if charsemifly and charantiaim_underground then
+if xcharsemifly and charantiaim_underground then
     flipCharacterUpsideDown()
     enableNoclip(character)
 else
     disableNoclip(character)
 end
 
-    if charsemifly and localplayer.Character then --semifly
+    if xcharsemifly and localplayer.Character then --semifly
         local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
         if not hrp then return end
         local dir = Vector3.new(0, 0, 0)
         
 
 		if uis:IsKeyDown(Enum.KeyCode.W) then
-			dir += wcamera.CFrame.LookVector
+			dir += xwcamera.CFrame.LookVector
 		elseif uis:IsKeyDown(Enum.KeyCode.S) then
-			dir -= wcamera.CFrame.LookVector
+			dir -= xwcamera.CFrame.LookVector
 		end
 
 		if uis:IsKeyDown(Enum.KeyCode.A) then
-			dir -= wcamera.CFrame.RightVector
+			dir -= xwcamera.CFrame.RightVector
 		elseif uis:IsKeyDown(Enum.KeyCode.D) then
-			dir += wcamera.CFrame.RightVector
+			dir += xwcamera.CFrame.RightVector
 		end
 
 		if uis:IsKeyDown(Enum.KeyCode.Space) then
@@ -2722,39 +2765,39 @@ end
 		local closest = fly_getclosestpoint()
 		if closest then
 			local d = (hrp.Position - closest).Magnitude
-			if d > charsemiflydist then
-				local ldir = (hrp.Position - closest).Unit * charsemiflydist
+			if d > xcharsemiflydist then
+				local ldir = (hrp.Position - closest).Unit * xcharsemiflydist
 				local offset = fly_getoffset(ldir)
 				hrp.CFrame = CFrame.new(closest + ldir - offset)
 			else
-				fly_move(dir * charsemiflyspeed * runs.RenderStepped:Wait())
+				fly_move(dir * xcharsemiflyspeed * runs.RenderStepped:Wait())
 			end
 		else
-			fly_move(dir * charsemiflyspeed * runs.RenderStepped:Wait())
+			fly_move(dir * xcharsemiflyspeed * runs.RenderStepped:Wait())
 		end
     end
 
     if changerbool and localplayer.Character ~= nil then -- humanoid changer
-        localplayer.Character.Humanoid.WalkSpeed = changerspeed
-        localplayer.Character.Humanoid.JumpHeight = changerjump
-        localplayer.Character.Humanoid.HipHeight = changerheight
-        workspace.Gravity = changergrav
+        localplayer.Character.Humanoid.WalkSpeed = xchangerspeed
+        localplayer.Character.Humanoid.JumpHeight = xchangerjump
+        localplayer.Character.Humanoid.HipHeight = xchangerheight
+        workspace.Gravity = xchangergrav
     end
 
 
-    if aimtarget ~= nil then
-        aimtargetname.Text = "[[ " .. aimtarget.Name .. " ]]"
+    if xaimtarget ~= nil then
+        xaimtargetname.Text = "[[ " .. xaimtarget.Name .. " ]]"
     else
-        aimtargetname.Text = " "
+        xaimtargetname.Text = " "
     end
-    aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
-    aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+    xaimtargetname.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2 + xaimfov + 20) 
+    xaimfovcircle.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2)
 --[[
-if aimtarget ~= nil then
+if xaimtarget ~= nil then
 
     
 
-    local character = aimtarget.Character
+    local character = xaimtarget.Character
     local humanoid = character and character:FindFirstChildOfClass("Humanoid")
     
     if humanoid then
@@ -2762,36 +2805,36 @@ if aimtarget ~= nil then
         local camera = workspace.CurrentCamera
         local screenPos, onScreen = camera:WorldToScreenPoint(character.PrimaryPart.Position)
 
-        aimtargetname.Text = string.format(
+        xaimtargetname.Text = string.format(
             " %s | Health: %d ",
-            aimtarget.Name, math.floor(health)
+            xaimtarget.Name, math.floor(health)
         )
 
-        aimtargetname.Position = Vector2.new(screenPos.X, screenPos.Y)
+        xaimtargetname.Position = Vector2.new(screenPos.X, screenPos.Y)
     else
-        aimtargetname.Text = " ".. aimtarget.Name .." | Health: N/A "
+        xaimtargetname.Text = " ".. xaimtarget.Name .." | Health: N/A "
     end
 else
-    aimtargetname.Text = " "
+    xaimtargetname.Text = " "
 end
 ]]
 
 --[[
-    if aimtarget ~= nil then --on screen stuff
-        aimtargetname.Text = " ".. aimtarget.Name .." "
+    if xaimtarget ~= nil then --on screen stuff
+        xaimtargetname.Text = " ".. xaimtarget.Name .." "
     else
-        aimtargetname.Text = " "
+        xaimtargetname.Text = " "
     end
     ]]
-    crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+    crosshair.Position = Vector2.new(xwcamera.ViewportSize.X / 2, xwcamera.ViewportSize.Y / 2)
 
-    if aimdynamicfov then
-        aimfovcircle.Radius = aimfov * (90 / wcamera.FieldOfView )
+    if xaimdynamicfov then
+        xaimfovcircle.Radius = xaimfov * (90 / xwcamera.FieldOfView )
     else
-        aimfovcircle.Radius = aimfov
+        xaimfovcircle.Radius = xaimfov
     end
 
-    if aimtrigger and aimtarget ~= nil then
+    if xaimtrigger and xaimtarget ~= nil then
         task.spawn(function()
             mouse1press()
             wait()
@@ -2801,12 +2844,12 @@ end
 
     choosetarget() -- aim part
 
-    for dobj, info in esptable do --esp part
+    for dobj, info in xesptable do --esp part
         local dtype = info.type
         local otype = info.otype
         
         if info.primary == nil or info.primary.Parent == nil then
-            esptable[dobj] = nil
+            xesptable[dobj] = nil
             if dtype == "Highlight" then
                 dobj.Enabled = false
                 dobj:Destroy()
@@ -2828,7 +2871,7 @@ end
         else
             obj = info.primary.Parent:FindFirstChild("UpperTorso")
             if not obj then
-                esptable[dobj] = nil
+                xesptable[dobj] = nil
                 if dtype == "Highlight" then
                     dobj.Enabled = false
                     dobj:Destroy()
@@ -2841,7 +2884,7 @@ end
             isHumanoid = obj.Parent:FindFirstChild("Humanoid")
         end
 
-        if (otype == "Bot333" and espbots == false) or (otype == "Dead333" and espdead == false) or (otype == "Extract" and espexit == false) or (otype == "Loot" and esploot == false) then
+        if (otype == "Bot333" and espbots == false) or (otype == "Dead333" and espdead == false) or (otype == "Extract" and espexit == false) or (otype == "Loot" and xesploot == false) then
             if dtype == "Highlight" then
                 dobj.Enabled = false
             else
@@ -2865,8 +2908,8 @@ end
 
         local metersdist = math.floor((localplayer.Character.PrimaryPart.Position - obj.Position).Magnitude * 0.333)
 
-        if espbool and isonscreen(obj) and isHumanoid and metersdist < esprenderdist then
-            local headpos = wcamera:WorldToViewportPoint(obj.Position)
+        if xespbool and isonscreen(obj) and isHumanoid and metersdist < xesprenderdist then
+            local headpos = xwcamera:WorldToViewportPoint(obj.Position)
             local resultpos = Vector2.new(headpos.X, headpos.Y)
     
             if dtype == "Name" then
@@ -2878,9 +2921,9 @@ end
                         dobj.Text = obj.Parent.Name
                     end
                     dobj.Position = resultpos
-                    dobj.Size = esptextsize
+                    dobj.Size = xesptextsize
                     dobj.Color = esptextcolor
-                    dobj.Outline = esptextline
+                    dobj.Outline = xesptextline
                     dobj.Visible = true
                 else
                     dobj.Visible = false
@@ -2895,18 +2938,18 @@ end
                 resultpos = resultpos - Vector2.new(0, 30)
                 dobj.Text = math.floor(obj.Parent.Humanoid.Health) .. "HP"
                 dobj.Position = resultpos
-                dobj.Size = esptextsize
+                dobj.Size = xesptextsize
                 dobj.Color = esptextcolor
-                dobj.Visible = esphp
-                dobj.Outline = esptextline
+                dobj.Visible = xesphp
+                dobj.Outline = xesptextline
             elseif dtype == "Distance" then
-                if espdistance then
+                if xespdistance then
                     resultpos = resultpos - Vector2.new(0, 45)
                     dobj.Text = metersdist .. "m"
                     dobj.Position = resultpos
-                    dobj.Size = esptextsize
+                    dobj.Size = xesptextsize
                     dobj.Color = esptextcolor
-                    dobj.Outline = esptextline
+                    dobj.Outline = xesptextline
                     dobj.Visible = true
                 else
                     dobj.Visible = false
@@ -2927,7 +2970,7 @@ end
                     end
                 end
 
-                dobj.Visible = esphotbar
+                dobj.Visible = xesphotbar
                 if otype == "Loot" then
                     local Amount
                     local TotalPrice = 0
@@ -2952,27 +2995,27 @@ end
                     dobj.Text = hotgun
                 end
                 dobj.Position = resultpos
-                dobj.Size = esptextsize
-                dobj.Outline = esptextline
+                dobj.Size = xesptextsize
+                dobj.Outline = xesptextline
                 dobj.Color = esptextcolor
             elseif dtype == "Highlight" then
 
                 if otype == "Dead333" then
-                    esptable[dobj] = nil
+                    xesptable[dobj] = nil
                     dobj.Enabled = false
                     dobj:Destroy()
                     continue
                 end
 
                 if obj.Parent == nil or not obj.Parent:IsA("Model") then
-                    esptable[dobj] = nil
+                    xesptable[dobj] = nil
                     dobj.Enabled = false
                     dobj:Destroy()
                     continue
                 end
 
-                dobj.FillColor = espfillcolor
-                dobj.OutlineColor = esplinecolor
+                dobj.FillColor = xespfillcolor
+                dobj.OutlineColor = xesplinecolor
                 dobj.FillTransparency = espchamsfill
                 dobj.OutlineTransparency = espchamsline
                 dobj.Enabled = esphigh
@@ -3007,9 +3050,9 @@ end
 
 while true do
     wait(0.02)
-    if charsemifly and charantiaim_underground then
+    if xcharsemifly and charantiaim_underground then
     flipback = true
-    elseif charsemifly == false and charantiaim_underground and flipback then
+    elseif xcharsemifly == false and charantiaim_underground and flipback then
         localplayer.Character.Humanoid.PlatformStand = true
         FlipBack()
         localplayer.Character.Humanoid.PlatformStand = true
