@@ -213,7 +213,7 @@ local xesptable = {}
 ]] 
 
 xespbool = false
-esptogglebind = Enum.KeyCode.xxhome
+esptogglebind = Enum.KeyCode.Home
 espname = false
 xesphp = false
 xespdistance = false
