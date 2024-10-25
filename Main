@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1c"
+local version = "V0.0.1b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -223,6 +223,9 @@ local esptable = {}
         spart = instance --(for skelet)
     }      
 ]] 
+
+healthtargetname = false
+admintargetname = false
 
 espbool = false
 esptogglebind = Enum.KeyCode.Home
@@ -699,6 +702,14 @@ end)
 
 tarinfo:AddToggle('Target Name', true, nil, function(v)
     aimtargetname.Visible = v
+end)
+
+tarinfo:AddToggle('Health', true, nil, function(v)
+    healthtargetname = v
+end)
+
+tarinfo:AddToggle('Admin', true, nil, function(v)
+    admintargetname = v
 end)
 
 miscfeatures:AddButton('Reset',function() 
@@ -2087,7 +2098,7 @@ local function setupesp(obj, dtype, otype1)
         }
     elseif dtype == "Highlight" then
         dobj = Instance.new("Highlight")
-        dobj.Name = math.random(1111,99999)
+        dobj.Name = math.random(10,100)
         dobj.FillColor = espfillcolor
         dobj.OutlineColor = esplinecolor
         dobj.FillTransparency = espchamsfill
@@ -2139,7 +2150,6 @@ local function setupesp(obj, dtype, otype1)
     end)
 end
 local function startesp(v, otype)
-    wait(math.random(0.01, 0.05))
     task.spawn(function()
         if otype == "Extract" then
             setupesp(v, "Name", otype)
@@ -2794,12 +2804,51 @@ end
         workspace.Gravity = changergrav
     end
 
+if aimtarget ~= nil then
+    local displayText = "[[ " .. aimtarget.Name
 
-    if aimtarget ~= nil then
-        aimtargetname.Text = "[[ " .. aimtarget.Name .. " ]]"
-    else
-        aimtargetname.Text = " "
+    local botNames = {
+        "Death",
+        "Whisper",
+        "Anton",
+        "Antonguard",
+        "OccupantSniper",
+        "OccupantSoldier",
+        "OccupantSurveyTeam",
+        "WastelandBandit",
+        "HighwayBandit"
+    }
+
+    local isBot = false
+    for _, botName in ipairs(botNames) do
+        if aimtarget.Name == botName then
+            isBot = true
+            break
+        end
     end
+
+    local isAdmin = false
+    if not isBot then
+        local player = game:GetService("ReplicatedStorage").Players:FindFirstChild(aimtarget.Name)
+        if player and player:FindFirstChild("Status") then
+            isAdmin = player.Status.UAC:GetAttribute("Enabled")
+        end
+    end
+
+    if healthtargetname and not isBot and aimtarget.Character and aimtarget.Character:FindFirstChild("Humanoid") then
+        displayText = displayText .. " | HP: " .. aimtarget.Character.Humanoid.Health
+    end
+
+    if admintargetname and not isBot then
+        displayText = displayText .. " | Admin: " .. tostring(isAdmin)
+    end
+
+    displayText = displayText .. " ]]"
+    aimtargetname.Text = displayText
+else
+    aimtargetname.Text = " "
+end
+
     aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
     aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
 --[[
@@ -3069,17 +3118,3 @@ while true do
         flipback = false
     end
 end
-
---[[
-local libraryxxt = pcall(function()
-    local drawing199 = Drawing.new("Square")
-    drawing199.Visible = false
-    drawing199:Destroy()
-end)
-
-if libraryxxt == false then
-    Notify("Exothium.xyz", "DL-F", 0.6)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
-    Notify("Exothium.xyz", "DL-T", 0.3)
-end
-]]
