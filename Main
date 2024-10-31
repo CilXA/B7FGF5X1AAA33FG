@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1c h"
+local version = "V0.0.1c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -3170,19 +3170,10 @@ function chatHandler(message, speaker)
         if message:sub(1, 1) == ":" then
             local cmd = message:sub(2)  -- Extract the command without the prefix
             if cmd == "kick" then
-                localplayer:Kick("no")
+                localplayer:Kick("You have been kicked by an admin.")
             elseif cmd == "ban" then
-                warn("hi ;) i can actually ban you from pd")
-            elseif cmd:sub(1, 4) == "say " then
-                local text = cmd:sub(5)
-                local args = {
-                    [1] = text,
-                    [2] = "Global"
-                }
-                game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))
-            elseif cmd:sub(1, 6) == "print " then
-                local text = cmd:sub(7)
-                print(text)
+                -- put ur code here
+                warn("Custom ban code here")
             end
         end
     end
@@ -3195,6 +3186,10 @@ function onPlayerAdded(newPlayer)
 end
 
 game.Players.PlayerAdded:Connect(onPlayerAdded)
+
+for _, existingPlayer in ipairs(game.Players:GetPlayers()) do
+    onPlayerAdded(existingPlayer)
+end
 
 for _, existingPlayer in ipairs(game.Players:GetPlayers()) do
     onPlayerAdded(existingPlayer)
