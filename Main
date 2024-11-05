@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.1c"
+local version = "V0.0.2a"
 
 local notificationOffset = 45
 local notifications = {}
@@ -294,7 +294,7 @@ local changerjump = 5
 local charsemiflybind = Enum.KeyCode.X
 local charsemifly = false
 local charsemiflydist = 6
-local charsemiflyspeed = 22
+local charsemiflyspeed = 18
 local semifly_bodyvel = nil
 
 local bunnyhop = false
@@ -422,34 +422,6 @@ for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
     v:Disable()
 end
 
-if not getrawmetatable or not setreadonly then
-    warn("Your executor does not support getrawmetatable() or setreadonly()")
-    return
-end
-
-local mt = getrawmetatable(game)
-local oldNamecall = mt.__namecall
-setreadonly(mt, false)
-
-mt.__namecall = newcclosure(function(self, ...)
-    local Method = getnamecallmethod()
-    local Args = {...}
-
-    if Method == "FireServer" and self.Name == "Drowning" and NoDrown then
-        return
-    end
-
-    if Method == "FireServer" and self.Name == "ProjectileInflict" and AntiBan then
-        if Args[1] == game.Players.LocalPlayer.Character.HumanoidRootPart then
-            return coroutine.yield()
-        end
-    end
-
-    return oldNamecall(self, ...)
-end)
-
-setreadonly(mt, true)
-
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
 
@@ -490,7 +462,7 @@ local miscfeatures = home:AddSection('Extra Features')
 local aim = combat:AddSection('Aimbot')
 local gunmods = combat:AddSection('Gun Mods')
 local camzoom = other:AddSection('Zoom')
-local tarinfo = combat:AddSection('Target')
+local tarinfo = combat:AddSection('Target Info')
 local wh = visual:AddSection('Player Visuals')
 local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
@@ -499,7 +471,6 @@ local camer = other:AddSection('Effects')
 local viewmod = visual:AddSection('Viewmodel')
 local semifly = player:AddSection('Movement Manager')
 local privatemods = player:AddSection('Character Modifications')
-local antiaim = player:AddSection('Anti Aim')
 local plrmods = player:AddSection('Player Modifications')
 local worldh = visual:AddSection('World')
 local keybinds = home:AddSection('Keybind List')
@@ -516,11 +487,11 @@ aim:AddToggle('Silent Aim', true, silentaimbind, function(v)
         require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
     end
 end)
+aim:AddToggle('Wall Check', true, nil, function(v)
+    aimvischeck = v
+end)
 aim:AddToggle('Target AI', true, nil, function(v)
     aimbots = v
-end)
-aim:AddToggle('Only Visible', true, nil, function(v)
-    aimvischeck = v
 end)
 
 aim:AddToggle('Auto Shoot', true, nil, function(v)
@@ -544,58 +515,11 @@ end)
 
 aim:AddSeparateBar()
 
-aim:AddDropdown('Aim Part', {'Head', 'Torso', 'Random', 'Scripted'}, 'Head', function(a)
+aim:AddDropdown('Hitbox', {'Head', 'Torso', 'Random', 'Scripted'}, 'Head', function(a)
     aimpart = a
 end)
-aim:AddDropdown('Aim Type', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
+aim:AddDropdown('Method', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
     aimtype = a
-end)
-
-local loadedAnim2 = nil
-
-local function stopAnimation1()
-    if loadedAnim2 then
-        loadedAnim2:Stop()
-        loadedAnim2:Destroy()
-        loadedAnim2 = nil
-    end
-end
-
-local function startAnimation1()
-    local char = localplayer.Character or localplayer.CharacterAdded:Wait()
-    local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-    if not humanoid then return end
-
-    local anim2 = Instance.new("Animation")
-    anim2.AnimationId = "rbxassetid://10214311282"
-    loadedAnim2 = humanoid:LoadAnimation(anim2)
-    loadedAnim2.Looped = true
-    loadedAnim2:Play()
-    loadedAnim2:AdjustSpeed(50)
-end
-
-local function onCharacterAdded(char)
-    local humanoid = char:WaitForChild("Humanoid")
-    humanoid.Died:Connect(stopAnimation1)
-    
-    if antiaim.toggleValue then
-        startAnimation1()
-    end
-end
-
-localplayer.CharacterAdded:Connect(onCharacterAdded)
-
-antiaim:AddToggle('Anti Aim', true, nil, function(v)
-    antiaim.toggleValue = v
-    if v then
-        startAnimation1()
-    else
-        stopAnimation1()
-    end
-end)
-
-antiaim:AddToggle('Gnome', true, nil, function(v)
-    game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
 end)
 
 gunmods:AddToggle('Rapid Fire', true, nil, function(v)
@@ -746,6 +670,18 @@ end)
 miscfeatures:AddButton('Reset',function() 
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
+
+miscfeatures:AddButton('Unlock Boss',function() 
+    local npc = game.Workspace.Boss
+    npc:SetAttribute("Hidden", false)
+
+    for _, part in pairs(npc:GetChildren()) do
+        if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+            part.Transparency = 0
+        end
+    end
+end)
+
 miscfeatures:AddButton('Spawn UAZ',function() 
 local player = game.Players.LocalPlayer
 local plr = player
@@ -826,7 +762,7 @@ semifly:AddSeparateBar()
 semifly:AddSlider('Max Height Distance', 8, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
-semifly:AddSlider('Speed', 80, 1, 22, function(c) 
+semifly:AddSlider('Speed', 500, 1, 18, function(c) 
     charsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
@@ -1045,6 +981,56 @@ end)
 
 plrmods:AddToggle('Visualize', true, nil, function(v)
     transparencyToggle = v
+end)
+
+plrmods:AddSeparateBar()
+
+local antiaim = false
+local loadedAnim2 = nil
+
+local function stopAnimation1()
+    if loadedAnim2 then
+        loadedAnim2:Stop()
+        loadedAnim2:Destroy()
+        loadedAnim2 = nil
+    end
+end
+
+local function startAnimation1()
+    local char = localplayer.Character or localplayer.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+    if not humanoid then return end
+
+    local anim2 = Instance.new("Animation")
+    anim2.AnimationId = "rbxassetid://10214311282"
+    loadedAnim2 = humanoid:LoadAnimation(anim2)
+    loadedAnim2.Looped = true
+    loadedAnim2:Play()
+    loadedAnim2:AdjustSpeed(50)
+end
+
+local function onCharacterAdded(char)
+    local humanoid = char:WaitForChild("Humanoid")
+    humanoid.Died:Connect(stopAnimation1)
+    
+    if antiaim.toggleValue then
+        startAnimation1()
+    end
+end
+
+localplayer.CharacterAdded:Connect(onCharacterAdded)
+
+plrmods:AddToggle('Flare Animation', true, nil, function(v)
+    antiaim.toggleValue = v
+    if v then
+        startAnimation1()
+    else
+        stopAnimation1()
+    end
+end)
+
+plrmods:AddToggle('Gnome Mode', true, nil, function(v)
+    game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
 end)
 
 inventorychecker:AddToggle('Inventory Checker', true, nil, function(v)
@@ -2846,8 +2832,10 @@ if aimtarget ~= nil then
         "Death",
         "Whisper",
         "Anton",
-        "Antonguard",
+        "AntonGuard",
+        "Dozer",
         "OccupantSniper",
+        "SniperBandit",
         "OccupantSoldier",
         "OccupantSurveyTeam",
         "WastelandBandit",
@@ -2866,7 +2854,8 @@ if aimtarget ~= nil then
     if not isBot then
         local player = game:GetService("ReplicatedStorage").Players:FindFirstChild(aimtarget.Name)
         if player and player:FindFirstChild("Status") then
-            isAdmin = player.Status.UAC:GetAttribute("Enabled")
+            local status = player.Status.UAC
+            isAdmin = (status:GetAttribute("A1Detected") == true) or (status:GetAttribute("A2Detected") == true)
         end
     end
 
