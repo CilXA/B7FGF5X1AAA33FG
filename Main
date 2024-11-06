@@ -422,6 +422,34 @@ for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
     v:Disable()
 end
 
+if not getrawmetatable or not setreadonly then
+    warn("Error: 426 getrawmetatable is not a available function")
+    return
+end
+
+local mt = getrawmetatable(game)
+local oldNamecall = mt.__namecall
+setreadonly(mt, false)
+
+mt.__namecall = newcclosure(function(self, ...)
+    local Method = getnamecallmethod()
+    local Args = {...}
+
+    if Method == "FireServer" and self.Name == "Drowning" and AntiDrown then
+        return
+    end
+
+    if Method == "FireServer" and self.Name == "ProjectileInflict" and AntiProjectile then
+        if Args[1] == game.Players.LocalPlayer.Character.HumanoidRootPart then
+            return coroutine.yield()
+        end
+    end
+
+    return oldNamecall(self, ...)
+end)
+
+setreadonly(mt, true)
+
 --gui setup--
 local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
 
@@ -3142,3 +3170,5 @@ while true do
         flipback = false
     end
 end
+
+print("V0")
