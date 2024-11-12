@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2a"
+local version = "V0.0.2b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -153,7 +153,7 @@ if libraryxxt == false then
     Notify("Exothium.xyz", "DL-T", 0.3)
 end
 
-if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil then
+if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
 else
@@ -3170,5 +3170,3 @@ while true do
         flipback = false
     end
 end
-
-print("V0")
