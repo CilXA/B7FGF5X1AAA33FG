@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2b"
+local version = "V0.0.2b t"
 
 local notificationOffset = 45
 local notifications = {}
@@ -140,7 +140,7 @@ if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Cha
 end
 
 wait(0.6)
-
+--[[
 local libraryxxt = pcall(function()
     local drawing199 = Drawing.new("Square")
     drawing199.Visible = false
@@ -152,7 +152,7 @@ if libraryxxt == false then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
     Notify("Exothium.xyz", "DL-T", 0.3)
 end
-
+]]
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
@@ -243,12 +243,12 @@ esptextline = true
 esprenderdist = 1800
 espchamsfill = 1
 espchamsline = 0
-esptextsize = 17
+esptextsize = 15
 espfillcolor = Color3.fromRGB(77, 210, 255)
 esplinecolor = Color3.fromRGB(77, 210, 255)
 
-local inventoryCheckerToggle = true
-local inventoryCheckerBind = Enum.KeyCode.Backquote
+inventoryCheckerToggle = true
+inventoryCheckerBind = Enum.KeyCode.Backquote
 
 tracbool = false
 tracwait = 1
@@ -336,11 +336,11 @@ local RapidFire = false
 local UnlockFiremodes = false
 local BurstFire = 1
 
-local NoDrown = false
-local AntiBan = true
+AntiDrown = false
+AntiProjectile = true
 
-local NoFallDamage = false
-local transparencyToggle = false
+NoFallDamage = false
+transparencyToggle = false
 
 local valcache = {
     ["6B45"] = 16,
@@ -905,7 +905,7 @@ wh:AddSeparateBar()
 wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
     esptextcolor = a
 end)
-wh:AddSlider('Text Size', 35, 1, 17, function(c) 
+wh:AddSlider('Text Size', 35, 1, 15, function(c) 
     esptextsize = c
 end)
 wh:AddToggle('Text Outline', false, nil, function(v)
@@ -1208,7 +1208,12 @@ camer:AddToggle('Third Person', true, nil, function(isToggled)
 end)
 
 camer:AddToggle('No Drown', true, nil, function(v)
-    NoDrown = v
+    AntiDrown = v
+    if AntiDrown then
+        game.Lighting.WaterBlur.Size = 0
+    else
+        game.Lighting.WaterBlur.Size = 24
+    end
 end)
 
 viewmod:AddToggle('Viewmodel Chams', true, nil, function(v)
@@ -2516,6 +2521,18 @@ end
 uis.InputBegan:Connect(onInventoryCheckerPressed)
 uis.InputEnded:Connect(onInventoryCheckerReleased)
 
+-- anti aim
+function FlipBack()
+    local characterxx = localplayer.Character or localplayer.CharacterAdded:Wait()
+    local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
+    local rootCFrame = humanoidRootPart.CFrame
+    local position = rootCFrame.Position
+    local forcedRotation = CFrame.Angles(math.rad(0), 0, 0)
+    
+    localplayer.Character.Humanoid.PlatformStand = true
+    humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
+end
+
 --fly--
 
 local function fly_move(dir)
@@ -2751,6 +2768,15 @@ runs.RenderStepped:Connect(function() --  fast
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
         localplayer.Character.Humanoid.PlatformStand = false
+    end
+
+    if charsemifly and charantiaim_underground then
+        flipback = true
+    elseif charsemifly == false and charantiaim_underground and flipback then
+        localplayer.Character.Humanoid.PlatformStand = true
+        FlipBack()
+        localplayer.Character.Humanoid.PlatformStand = true
+        flipback = false
     end
 
     local function flipCharacterUpsideDown()
@@ -3147,26 +3173,3 @@ Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
 
 -- loading finished ^
-
-function FlipBack()
-    local characterxx = localplayer.Character or localplayer.CharacterAdded:Wait()
-    local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
-    local rootCFrame = humanoidRootPart.CFrame
-    local position = rootCFrame.Position
-    local forcedRotation = CFrame.Angles(math.rad(0), 0, 0)
-    
-    localplayer.Character.Humanoid.PlatformStand = true
-    humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
-end
-
-while true do
-    wait(0.02)
-    if charsemifly and charantiaim_underground then
-    flipback = true
-    elseif charsemifly == false and charantiaim_underground and flipback then
-        localplayer.Character.Humanoid.PlatformStand = true
-        FlipBack()
-        localplayer.Character.Humanoid.PlatformStand = true
-        flipback = false
-    end
-end
