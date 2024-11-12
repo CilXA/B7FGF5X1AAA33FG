@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2b t"
+local version = "V0.0.2b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -160,6 +160,9 @@ else
     Notify("Exothium.xyz || Loading Script", " ".. exec .." ", 3.5)
     Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
+end
+if exec == "Seliware" then
+    Notify("Exothium.xyz", "".. exec .." is semi-supported, script might cause errors", 7)
 end
 if _G.exothiumxyz then
     Notify("Exothium.xyz", "Script is already loaded, therefore you cant execute it again", 4)
@@ -326,6 +329,25 @@ zspinning = false -- zrot spin
 local xrot = 0
 local yrot = 0
 local zrot = 0
+
+local hitMarkers = game:GetService("ReplicatedStorage").SFX.Hits.HitMarkers
+local originalSounds = {
+    BodyArmor = hitMarkers.BodyArmor.SoundId,
+    Bodyshot = hitMarkers.Bodyshot.SoundId,
+    Headshot = hitMarkers.Headshot.SoundId,
+    Helmet = hitMarkers.Helmet.SoundId,
+    Kill = hitMarkers.Kill.SoundId
+}
+local HitmarkerSounds = {
+    ["Rust"] = "rbxassetid://1255040462",
+    ["Gamesense"] = "rbxassetid://4817809188",
+    ["CSGO"] = "rbxassetid://6937353691",
+    ["Neverlose"] = "rbxassetid://8726881116",
+    ["Minecraft"] = "rbxassetid://4018616850",
+}
+
+local currenthitsound = ""  
+local hitsounds_enabled = false
 
 local NoRecoil = false
 local BulletTracer = false
@@ -496,6 +518,7 @@ local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
+local hitsounds = other:AddSection('Hitsounds')
 local viewmod = visual:AddSection('Viewmodel')
 local semifly = player:AddSection('Movement Manager')
 local privatemods = player:AddSection('Character Modifications')
@@ -867,6 +890,14 @@ end)
 
 semifly:AddSlider('Z Rotation Speed', 20, 0, 0, function(c) 
     zspeedspin = c
+end)
+
+hitsounds:AddDropdown('Hitsound', {"None", "Neverlose", "Gamesense", "CSGO", "Rust", "Minecraft"}, 'None', function(v)
+    currenthitsound = v == "None" and "" or HitmarkerSounds[v]
+end)
+
+hitsounds:AddToggle('Enable Hitsounds', true, nil, function(v)
+    hitsounds_enabled = v
 end)
 
 wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
@@ -2768,6 +2799,20 @@ runs.RenderStepped:Connect(function() --  fast
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
         localplayer.Character.Humanoid.PlatformStand = false
+    end
+
+    if hitsounds_enabled and currenthitsound ~= "" then
+        hitMarkers.BodyArmor.SoundId = currenthitsound
+        hitMarkers.Bodyshot.SoundId = currenthitsound
+        hitMarkers.Headshot.SoundId = currenthitsound
+        hitMarkers.Helmet.SoundId = currenthitsound
+        hitMarkers.Kill.SoundId = currenthitsound
+    else
+        hitMarkers.BodyArmor.SoundId = originalSounds.BodyArmor
+        hitMarkers.Bodyshot.SoundId = originalSounds.Bodyshot
+        hitMarkers.Headshot.SoundId = originalSounds.Headshot
+        hitMarkers.Helmet.SoundId = originalSounds.Helmet
+        hitMarkers.Kill.SoundId = originalSounds.Kill
     end
 
     if charsemifly and charantiaim_underground then
