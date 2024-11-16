@@ -246,7 +246,7 @@ esptextline = true
 esprenderdist = 1800
 espchamsfill = 1
 espchamsline = 0
-esptextsize = 15
+esptextsize = 17
 espfillcolor = Color3.fromRGB(77, 210, 255)
 esplinecolor = Color3.fromRGB(77, 210, 255)
 
@@ -722,6 +722,10 @@ miscfeatures:AddButton('Reset',function()
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
 
+miscfeatures:AddButton('Quick Use',function() 
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Consume"):FireServer()
+end)
+
 miscfeatures:AddButton('Unlock Boss',function() 
     local npc = game.Workspace.Boss
     npc:SetAttribute("Hidden", false)
@@ -936,7 +940,7 @@ wh:AddSeparateBar()
 wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
     esptextcolor = a
 end)
-wh:AddSlider('Text Size', 35, 1, 15, function(c) 
+wh:AddSlider('Text Size', 35, 1, 17, function(c) 
     esptextsize = c
 end)
 wh:AddToggle('Text Outline', false, nil, function(v)
