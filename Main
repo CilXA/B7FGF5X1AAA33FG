@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2b"
+local version = "V0.0.2c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -329,7 +329,7 @@ zspinning = false -- zrot spin
 local xrot = 0
 local yrot = 0
 local zrot = 0
-
+--[[
 local hitMarkers = game:GetService("ReplicatedStorage").SFX.Hits.HitMarkers
 local originalSounds = {
     BodyArmor = hitMarkers.BodyArmor.SoundId,
@@ -348,7 +348,7 @@ local HitmarkerSounds = {
 
 local currenthitsound = ""  
 local hitsounds_enabled = false
-
+]]
 local NoRecoil = false
 local BulletTracer = false
 local InstaReload = true
@@ -518,7 +518,7 @@ local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
-local hitsounds = other:AddSection('Hitsounds')
+--local hitsounds = other:AddSection('Hitsounds')
 local viewmod = visual:AddSection('Viewmodel')
 local semifly = player:AddSection('Movement Manager')
 local privatemods = player:AddSection('Character Modifications')
@@ -895,7 +895,7 @@ end)
 semifly:AddSlider('Z Rotation Speed', 20, 0, 0, function(c) 
     zspeedspin = c
 end)
-
+--[[
 hitsounds:AddDropdown('Hitsound', {"None", "Neverlose", "Gamesense", "CSGO", "Rust", "Minecraft"}, 'None', function(v)
     currenthitsound = v == "None" and "" or HitmarkerSounds[v]
 end)
@@ -903,7 +903,7 @@ end)
 hitsounds:AddToggle('Enable Hitsounds', true, nil, function(v)
     hitsounds_enabled = v
 end)
-
+]]
 wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
     espbool = v
 end)
@@ -1047,50 +1047,6 @@ plrmods:AddToggle('Visualize', true, nil, function(v)
 end)
 
 plrmods:AddSeparateBar()
-
-local antiaim = false
-local loadedAnim2 = nil
-
-local function stopAnimation1()
-    if loadedAnim2 then
-        loadedAnim2:Stop()
-        loadedAnim2:Destroy()
-        loadedAnim2 = nil
-    end
-end
-
-local function startAnimation1()
-    local char = localplayer.Character or localplayer.CharacterAdded:Wait()
-    local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-    if not humanoid then return end
-
-    local anim2 = Instance.new("Animation")
-    anim2.AnimationId = "rbxassetid://10214311282"
-    loadedAnim2 = humanoid:LoadAnimation(anim2)
-    loadedAnim2.Looped = true
-    loadedAnim2:Play()
-    loadedAnim2:AdjustSpeed(50)
-end
-
-local function onCharacterAdded(char)
-    local humanoid = char:WaitForChild("Humanoid")
-    humanoid.Died:Connect(stopAnimation1)
-    
-    if antiaim.toggleValue then
-        startAnimation1()
-    end
-end
-
-localplayer.CharacterAdded:Connect(onCharacterAdded)
-
-plrmods:AddToggle('Flare Animation', true, nil, function(v)
-    antiaim.toggleValue = v
-    if v then
-        startAnimation1()
-    else
-        stopAnimation1()
-    end
-end)
 
 plrmods:AddToggle('Gnome Mode', true, nil, function(v)
     game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
@@ -1511,7 +1467,7 @@ end
 
 local function updateKeybindTexts()
     SilentAim.Text = "Silent Aim"
-    ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
+    ESPToggle.Text = "ESP Toggle"
     Zoom.Text = "Zoom"
     Fly.Text = "Movement Toggle"
 end
@@ -2804,7 +2760,7 @@ runs.RenderStepped:Connect(function() --  fast
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
         localplayer.Character.Humanoid.PlatformStand = false
     end
-
+--[[
     if hitsounds_enabled and currenthitsound ~= "" then
         hitMarkers.BodyArmor.SoundId = currenthitsound
         hitMarkers.Bodyshot.SoundId = currenthitsound
@@ -2818,7 +2774,7 @@ runs.RenderStepped:Connect(function() --  fast
         hitMarkers.Helmet.SoundId = originalSounds.Helmet
         hitMarkers.Kill.SoundId = originalSounds.Kill
     end
-
+]]
     if charsemifly and charantiaim_underground then
         flipback = true
     elseif charsemifly == false and charantiaim_underground and flipback then
