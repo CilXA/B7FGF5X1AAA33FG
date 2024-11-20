@@ -928,9 +928,13 @@ end)
 wh:AddToggle('Body', true, nil, function(v)
     espdead = v
 end)
+--[[
+
 wh:AddToggle('Loot', true, nil, function(v)
     esploot = v
 end)
+
+]]
 wh:AddToggle('Extract', true, nil, function(v)
     espexit = v
 end)
@@ -2977,11 +2981,13 @@ end
     end
 
     if aimtrigger and aimtarget ~= nil then
-        task.spawn(function()
-            mouse1press()
-            wait()
-            mouse1release()
-        end)
+        if not uis.MouseIconEnabled then
+            task.spawn(function()
+                mouse1press()
+                wait()
+                mouse1release()
+            end)
+        end
     end
 
     choosetarget() -- aim part
