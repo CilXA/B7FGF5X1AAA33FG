@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3a"
 
 local notificationOffset = 45
 local notifications = {}
@@ -139,7 +139,7 @@ if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Cha
     end
 end
 
-wait(0.6)
+wait(0.5)
 --[[
 local libraryxxt = pcall(function()
     local drawing199 = Drawing.new("Square")
@@ -257,6 +257,17 @@ tracbool = false
 tracwait = 1
 traccolor = Color3.fromRGB(77, 210, 255)
 
+tracbool = false
+tracwait = 1
+traccolor = Color3.fromRGB(77, 210, 255)
+tracertexture = nil
+local tracertextures = {
+    ["None"] = nil,
+    ["Neon"] = "http://www.roblox.com/asset/?id=71799812889976",
+    ["Lightning"] = "http://www.roblox.com/asset/?id=77261843796788",
+    ["Star"] = "http://www.roblox.com/asset/?id=75056325012653",
+}
+
 local crosshair = Drawing.new("Circle")
 
 local defaultfirerate = {}
@@ -316,6 +327,9 @@ local worldoutdoor = Color3.fromRGB(255,255,255)
 local charantiaim_underground = false
 
 local flipback = false
+
+upangletoggle = false
+upangleY = 0 -- 0.03070496954023838
 
 xspeedspin = 0
 xspinning = false -- xrot spin
@@ -538,11 +552,12 @@ aim:AddToggle('Silent Aim', true, silentaimbind, function(v)
         require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
     end
 end)
-aim:AddToggle('Wall Check', true, nil, function(v)
-    aimvischeck = v
-end)
 aim:AddToggle('Target AI', true, nil, function(v)
     aimbots = v
+end)
+
+aim:AddToggle('Wall Check', true, nil, function(v)
+    aimvischeck = v
 end)
 
 aim:AddToggle('Auto Shoot', true, nil, function(v)
@@ -830,6 +845,14 @@ semifly:AddToggle('Custom Rotation', true, nil, function(v)
     charantiaim_underground = v
 end)
 
+semifly:AddToggle('UpAngle Toggle', true, nil, function(v) 
+    upangletoggle = v
+end)
+
+semifly:AddSlider('UpAngle Value', 1, 0, 0, function(c) 
+    upangleY = c
+end)
+semifly:AddSeparateBar()
 semifly:AddSlider('X Rotation', 360, 0, 0, function(c) 
     xrot = c
 end)
@@ -843,17 +866,17 @@ end)
 semifly:AddSeparateBar()
 
 semifly:AddToggle('Spin X', true, nil, function(v)
-xspinning = v
-if not xspinning then
-    xrot = 0
-else
-    coroutine.wrap(function()
-        while xspinning do
-            xrot = (xrot + xspeedspin) % 360
-            wait()
-        end
-    end)()
-end
+    xspinning = v
+    if not xspinning then
+        xrot = 0
+    else
+        coroutine.wrap(function()
+            while xspinning do
+                xrot = (xrot + xspeedspin * 2) % 360
+                runs.RenderStepped:Wait()
+            end
+        end)()
+    end
 end)
 
 semifly:AddSlider('X Rotation Speed', 20, 0, 0, function(c) 
@@ -861,17 +884,17 @@ semifly:AddSlider('X Rotation Speed', 20, 0, 0, function(c)
 end)
 
 semifly:AddToggle('Spin Y', true, nil, function(v)
-yspinning = v
-if not yspinning then
-    yrot = 0
-else
-    coroutine.wrap(function()
-        while yspinning do
-            yrot = (yrot + yspeedspin) % 360
-            wait()
-        end
-    end)()
-end
+    yspinning = v
+    if not yspinning then
+        yrot = 0
+    else
+        coroutine.wrap(function()
+            while yspinning do
+                yrot = (yrot + yspeedspin * 2) % 360
+                runs.RenderStepped:Wait()
+            end
+        end)()
+    end
 end)
 
 semifly:AddSlider('Y Rotation Speed', 20, 0, 0, function(c) 
@@ -879,17 +902,17 @@ semifly:AddSlider('Y Rotation Speed', 20, 0, 0, function(c)
 end)
 
 semifly:AddToggle('Spin Z', true, nil, function(v)
-zspinning = v
-if not yspinning then
-    zrot = 0
-else
-    coroutine.wrap(function()
-        while yspinning do
-            zrot = (zrot + zspeedspin) % 360
-            wait()
-        end
-    end)()
-end
+    zspinning = v
+    if not zspinning then
+        zrot = 0
+    else
+        coroutine.wrap(function()
+            while zspinning do
+                zrot = (zrot + zspeedspin * 2) % 360
+                runs.RenderStepped:Wait()
+            end
+        end)()
+    end
 end)
 
 semifly:AddSlider('Z Rotation Speed', 20, 0, 0, function(c) 
@@ -978,6 +1001,9 @@ end)
 
 tracers:AddToggle('Enabled', true, nil, function(v)
     tracbool = v
+end)
+tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Star"}, 'Lightning', function(a)
+    tracertexture = tracertextures[a]
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
     traccolor.Color = Color3.fromRGB(a)
@@ -1631,12 +1657,28 @@ local function runtracer(start, endp)
     beam.Transparency = NumberSequence.new(0)
     beam.LightEmission = 1
 
+    if tracertexture ~= nil then
+        beam.Texture = tracertexture
+        if tracertexture == "http://www.roblox.com/asset/?id=77261843796788" then
+            beam.TextureSpeed = 3
+            beam.TextureLength = (endp - start).Magnitude
+            beam.Width0 = 0.3
+            beam.Width1 = 0.3
+        elseif tracertexture == "http://www.roblox.com/asset/?id=75056325012653" then
+            beam.TextureSpeed = 2
+            beam.TextureLength = (endp - start).Magnitude
+            beam.Width0 = 0.25
+            beam.Width1 = 0.25
+        end
+    end
+
     wait(tracwait)
 
     beam:Destroy()
     startpart:Destroy()
     endpart:Destroy()
 end
+
 
 --silent aim--
 
@@ -2789,58 +2831,67 @@ runs.RenderStepped:Connect(function() --  fast
     end
 
     local function flipCharacterUpsideDown()
-            local characterxx = localplayer.Character or localplayer.CharacterAdded:Wait()
-            local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
-            local rootCFrame = humanoidRootPart.CFrame
-            local position = rootCFrame.Position
-            local forcedRotation = CFrame.Angles(math.rad(xrot), yrot, zrot)
+        local characterxx = localplayer.Character or localplayer.CharacterAdded:Wait()
+        local humanoidRootPart = characterxx:WaitForChild("HumanoidRootPart")
+        local rootCFrame = humanoidRootPart.CFrame
+        local position = rootCFrame.Position
+        local forcedRotation = CFrame.Angles(math.rad(xrot), yrot, zrot)
 
-            humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
+        humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
     end
 
-local bodyparts = {
-    "FaceHitBox",
-    "Head",
-    "HeadTopHitBox",
-    "LeftFoot",
-    "LeftHand",
-    "LeftLowerArm",
-    "LeftLowerLeg",
-    "LeftUpperArm",
-    "LowerTorso",
-    "RightFoot",
-    "RightLowerArm",
-    "RightUpperArm"
-}
+    local bodyparts = {
+        "FaceHitBox",
+        "Head",
+        "HeadTopHitBox",
+        "LeftFoot",
+        "LeftHand",
+        "LeftLowerArm",
+        "LeftLowerLeg",
+        "LeftUpperArm",
+        "LowerTorso",
+        "RightFoot",
+        "RightLowerArm",
+        "RightUpperArm"
+    }
 
-local character = localplayer.Character or localplayer.CharacterAdded:Wait()
-local originalCollisions = {}
+    local character = localplayer.Character or localplayer.CharacterAdded:Wait()
+    local originalCollisions = {}
 
-local function enableNoclip(character)
-    for _, partName in pairs(bodyparts) do
-        local part = character:FindFirstChild(partName)
-        if part then
-            originalCollisions[partName] = part.CanCollide
-            part.CanCollide = false
+    local function enableNoclip(character)
+        for _, partName in pairs(bodyparts) do
+            local part = character:FindFirstChild(partName)
+            if part then
+                originalCollisions[partName] = part.CanCollide
+                part.CanCollide = false
+            end
         end
     end
-end
 
-local function disableNoclip(character)
-    for _, partName in pairs(bodyparts) do
-        local part = character:FindFirstChild(partName)
-        if part and originalCollisions[partName] ~= nil then
-            part.CanCollide = originalCollisions[partName]
+    local function disableNoclip(character)
+        for _, partName in pairs(bodyparts) do
+            local part = character:FindFirstChild(partName)
+            if part and originalCollisions[partName] ~= nil then
+                part.CanCollide = originalCollisions[partName]
+            end
         end
     end
-end
 
-if charsemifly and charantiaim_underground then
-    flipCharacterUpsideDown()
-    enableNoclip(character)
-else
-    disableNoclip(character)
-end
+    if charsemifly and charantiaim_underground then
+        flipCharacterUpsideDown()
+        enableNoclip(character)
+    else
+        disableNoclip(character)
+    end
+
+    if upangletoggle and wcamera.CameraSubject then
+        local camPosition = wcamera.CFrame.Position
+        local lookVector = wcamera.CFrame.LookVector
+        local correctedLookVector = Vector3.new(lookVector.X, upangleY, lookVector.Z).Unit
+        local correctedCFrame = CFrame.lookAt(camPosition, camPosition + correctedLookVector)
+
+        wcamera.CFrame = correctedCFrame
+    end
 
     if charsemifly and localplayer.Character then --semifly
         local hrp = localplayer.Character:FindFirstChild("HumanoidRootPart")
@@ -3184,7 +3235,7 @@ Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
 
 -- loading finished ^
-if _G.autotp == true then
+if _G.AutoExecute == true then
     local qre3732eijdzxcnj0xa = 'https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Loader'
     queue_on_teleport("loadstring(game:HttpGet('" .. qre3732eijdzxcnj0xa .. "'))()")
     Notify("Exothium.xyz", "Script will automatically execute", 3.5)
