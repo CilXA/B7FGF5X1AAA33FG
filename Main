@@ -1002,7 +1002,7 @@ end)
 tracers:AddToggle('Enabled', true, nil, function(v)
     tracbool = v
 end)
-tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Star"}, 'Lightning', function(a)
+tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Star"}, 'Neon', function(a)
     tracertexture = tracertextures[a]
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
