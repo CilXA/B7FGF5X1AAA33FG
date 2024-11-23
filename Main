@@ -265,7 +265,7 @@ local tracertextures = {
     ["None"] = nil,
     ["Neon"] = "http://www.roblox.com/asset/?id=71799812889976",
     ["Lightning"] = "http://www.roblox.com/asset/?id=77261843796788",
-    ["Star"] = "http://www.roblox.com/asset/?id=75056325012653",
+    ["Star"] = "http://www.roblox.com/asset/?id=75056325012653"
 }
 
 local crosshair = Drawing.new("Circle")
