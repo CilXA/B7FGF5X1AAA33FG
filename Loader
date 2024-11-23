@@ -8,10 +8,6 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
-if script_key == "srMaXOCJWwtFfMRjEwyqAwImxWRGGOIy" then
-game:GetService("ReplicatedStorage").Remotes.GodMode:FireServer(true)
-end
-
 if oldbuild_v0x21 == true then
     print("[[ Exoguard V3 || Exothium.xyz || Loading old script ]]")
     loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/oldscript"))()
