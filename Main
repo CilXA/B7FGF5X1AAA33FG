@@ -1665,10 +1665,10 @@ local function runtracer(start, endp)
             beam.Width0 = 0.3
             beam.Width1 = 0.3
         elseif tracertexture == "http://www.roblox.com/asset/?id=75056325012653" then
-            beam.TextureSpeed = 2
+            beam.TextureSpeed = 3
             beam.TextureLength = (endp - start).Magnitude
-            beam.Width0 = 0.25
-            beam.Width1 = 0.25
+            beam.Width0 = 0.3
+            beam.Width1 = 0.3
         end
     end
 
