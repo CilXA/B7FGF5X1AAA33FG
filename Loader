@@ -9,7 +9,7 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
 if script_key == "srMaXOCJWwtFfMRjEwyqAwImxWRGGOIy" then
- game.Players.LocalPlayer:Kick("kys nigga")
+ game.Players.LocalPlayer:Kick("yea its automatic bro")
 end
 
 if oldbuild_v0x21 == true then
