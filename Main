@@ -3248,10 +3248,3 @@ Notify("Exothium.xyz", "Loaded script", 2.1)
 Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
-
--- loading finished ^
-if _G.AutoExecute == true then
-    local qre3732eijdzxcnj0xa = 'https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Loader'
-    queue_on_teleport("loadstring(game:HttpGet('" .. qre3732eijdzxcnj0xa .. "'))()")
-    Notify("Exothium.xyz", "Script will automatically execute", 3.5)
-end
