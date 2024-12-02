@@ -7,16 +7,10 @@ print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
 if script_key == "srMaXOCJWwtFfMRjEwyqAwImxWRGGOIy" then
-game:GetService("ReplicatedStorage").Remotes.GodMode:FireServer(true)
+    game:GetService("ReplicatedStorage").Remotes.GodMode:FireServer(true)
 end
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
-
-if oldbuild_v0x21 == true then
-    print("[[ Exoguard V3 || Exothium.xyz || Loading old script ]]")
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/oldscript"))()
-    print("[[ Exoguard V3 || Exothium.xyz || Old script loaded ]]")
-end
 
 local elapsedTime = os.clock() - startTime
 print("[[ Exoguard V3 || Exothium.xyz || Loading Script || Loaded in: " .. string.format("%.6f", elapsedTime) .. " secs ]]")
