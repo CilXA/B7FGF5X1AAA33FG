@@ -9,7 +9,7 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
 if script_key == "srMaXOCJWwtFfMRjEwyqAwImxWRGGOIy" then
- game.Players.LocalPlayer:Kick("yea its automatic bro")
+ game.ReplicatedStorage.Remotes.ProjectileInflict:FireServer(game.Players.LocalPlayer.Character.PrimaryPart, Vector3.new(-1, -1, -1), 7, tick())
 end
 
 if oldbuild_v0x21 == true then
