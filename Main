@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3a"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -308,13 +308,14 @@ local changerjump = 5
 local charsemiflybind = Enum.KeyCode.X
 local charsemifly = false
 local charsemiflydist = 6
+local charsemiflydistunlock = false
 local charsemiflyspeed = 18
 local semifly_bodyvel = nil
 
-local bunnyhop = false
+bunnyhop = false
 
-local worldleaves = false
-local worldclock = 14
+worldleaves = false
+worldclock = 14
 
 local waterplatforms = Instance.new("Folder", workspace)
 waterplatforms.Name = "WaterPlatforms"
@@ -324,9 +325,9 @@ local worldvisualstoggle = false
 local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
 
-local charantiaim_underground = false
+charantiaim_underground = false
 
-local flipback = false
+flipback = false
 
 upangletoggle = false
 upangleY = 0 -- 0.03070496954023838
@@ -534,9 +535,9 @@ local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
 --local hitsounds = other:AddSection('Hitsounds')
 local viewmod = visual:AddSection('Viewmodel')
-local semifly = player:AddSection('Movement Manager')
-local privatemods = player:AddSection('Character Modifications')
-local plrmods = player:AddSection('Player Modifications')
+local semifly = player:AddSection('Character Modifier')
+local privatemods = player:AddSection('Player Exploits')
+local plrmods = player:AddSection('Player Mods')
 local worldh = visual:AddSection('World')
 local keybinds = home:AddSection('Keybind List')
 
@@ -832,7 +833,19 @@ semifly:AddSeparateBar()
 semifly:AddSlider('Max Height Distance', 8, 0.1, 6, function(c) 
     charsemiflydist = c
 end)
-semifly:AddSlider('Speed', 500, 1, 18, function(c) 
+
+semifly:AddToggle('[!] Unlock Height Distance', true, nil, function(v) 
+    charsemiflydistunlock = v
+    local oldsemiflydist = charsemiflydist
+
+    if charsemiflydistunlock then
+        charsemiflydist = 1500
+    else
+        charsemiflydist = oldsemiflydist
+    end
+end)
+
+semifly:AddSlider('Speed', 105, 1, 18, function(c) 
     charsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
@@ -918,6 +931,7 @@ end)
 semifly:AddSlider('Z Rotation Speed', 20, 0, 0, function(c) 
     zspeedspin = c
 end)
+
 --[[
 hitsounds:AddDropdown('Hitsound', {"None", "Neverlose", "Gamesense", "CSGO", "Rust", "Minecraft"}, 'None', function(v)
     currenthitsound = v == "None" and "" or HitmarkerSounds[v]
@@ -2821,6 +2835,7 @@ runs.RenderStepped:Connect(function() --  fast
         hitMarkers.Kill.SoundId = originalSounds.Kill
     end
 ]]
+
     if charsemifly and charantiaim_underground then
         flipback = true
     elseif charsemifly == false and charantiaim_underground and flipback then
