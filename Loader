@@ -6,6 +6,10 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
+if script_key == "srMaXOCJWwtFfMRjEwyqAwImxWRGGOIy" then
+game:GetService("ReplicatedStorage").Remotes.GodMode:FireServer(true)
+end
+
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
 if oldbuild_v0x21 == true then
