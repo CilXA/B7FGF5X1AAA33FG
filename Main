@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2c"
+local version = "V0.0.2b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -856,7 +856,7 @@ semifly:AddToggle('UpAngle Toggle', true, nil, function(v)
     upangletoggle = v
 end)
 
-semifly:AddSlider('UpAngle Value', 1, 0, 0, function(c) 
+semifly:AddSlider('UpAngle Value', 5, -5, 0, function(c) 
     upangleY = c
 end)
 semifly:AddSeparateBar()
@@ -2964,13 +2964,8 @@ runs.RenderStepped:Connect(function() --  fast
         disableNoclip(character)
     end
 
-    if upangletoggle and wcamera.CameraSubject then
-        local camPosition = wcamera.CFrame.Position
-        local lookVector = wcamera.CFrame.LookVector
-        local correctedLookVector = Vector3.new(lookVector.X, upangleY, lookVector.Z).Unit
-        local correctedCFrame = CFrame.lookAt(camPosition, camPosition + correctedLookVector)
-
-        wcamera.CFrame = correctedCFrame
+    if upangletoggle then
+        game:GetService("ReplicatedStorage").Remotes.UpdateTilt:FireServer(upangleY)
     end
 
     if charsemifly and localplayer.Character then --semifly
