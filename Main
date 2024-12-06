@@ -1,10 +1,11 @@
 local exec = identifyexecutor()
-local version = "V0.0.3b"
+local version = "V0.0.2c"
 
 local notificationOffset = 45
 local notifications = {}
+local detectedAdmins = {}
 
-function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerStroke1, darkerStroke2, fillColor)
+function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerStroke1, darkerStroke2, fillColor, textColor)
     duration = duration or 5
     rounding = rounding or 5
     strokeColor1 = strokeColor1 or Color3.fromRGB(77, 210, 255)
@@ -12,9 +13,10 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
     darkerStroke1 = darkerStroke1 or Color3.fromRGB(66, 180, 245)
     darkerStroke2 = darkerStroke2 or Color3.fromRGB(55, 170, 235)
     fillColor = fillColor or Color3.fromRGB(3, 3, 3)
+    textColor = textColor or Color3.new(1, 1, 1)
 
     local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "_328325987432908859812491480"
+    screenGui.Name = "_3247968012979470"
     screenGui.Parent = game:GetService("CoreGui")
     screenGui.ResetOnSpawn = false
 
@@ -26,7 +28,7 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
     frame.Position = UDim2.new(0, 10, 0, yPos)
     frame.AnchorPoint = Vector2.new(0, 0)
     frame.BackgroundColor3 = fillColor
-    frame.BackgroundTransparency = 1
+    frame.BackgroundTransparency = 0.4
     frame.BorderSizePixel = 0
 
     table.insert(notifications, frame)
@@ -38,7 +40,7 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
     local uiStroke = Instance.new("UIStroke")
     uiStroke.Parent = frame
     uiStroke.Thickness = 1.1
-    uiStroke.Color = Color3.new(1, 1, 1)
+    uiStroke.Color = strokeColor1
 
     local gradient = Instance.new("UIGradient")
     gradient.Color = ColorSequence.new({
@@ -59,8 +61,7 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
     title.TextSize = 18
     title.Size = UDim2.new(1, 0, 0.5, 0)
     title.BackgroundTransparency = 1
-    title.TextColor3 = Color3.new(1, 1, 1)
-    title.TextTransparency = 1
+    title.TextColor3 = textColor
 
     local body = Instance.new("TextLabel")
     body.Parent = frame
@@ -70,8 +71,7 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
     body.Size = UDim2.new(1, 0, 0.5, 0)
     body.Position = UDim2.new(0, 0, 0.5, 0)
     body.BackgroundTransparency = 1
-    body.TextColor3 = Color3.new(1, 1, 1)
-    body.TextTransparency = 1
+    body.TextColor3 = textColor
 
     local progressBar = Instance.new("Frame")
     progressBar.Parent = frame
@@ -105,13 +105,7 @@ function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerSt
 
     local function fadeOut()
         local fadeOutTween = tweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-        local titleFadeOutTween = tweenService:Create(title, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 1})
-        local bodyFadeOutTween = tweenService:Create(body, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {TextTransparency = 1})
-
         fadeOutTween:Play()
-        titleFadeOutTween:Play()
-        bodyFadeOutTween:Play()
-
         fadeOutTween.Completed:Connect(function()
             frame:Destroy()
             table.remove(notifications, table.find(notifications, frame))
@@ -172,6 +166,7 @@ end
 _G.exothiumxyz = true
 
 local wcamera = workspace.CurrentCamera
+local Players = game:GetService("Players")
 local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
@@ -645,8 +640,7 @@ gunmods:AddToggle('No Recoil', true, nil, function(v)
 			end
 end)
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local reloadRemote = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Reload")
+local reloadRemote = rp:WaitForChild("Remotes"):WaitForChild("Reload")
 
 gunmods:AddToggle('Insta Reload', true, nil, function(v)
     InstaReload = v
@@ -1293,18 +1287,6 @@ viewmod:AddColorPallete('Outline Color', Color3.fromRGB(77, 210, 255),function(a
 end)
 viewmod:AddSlider('Outline Transparency', 1, 0, 0, function(c) 
     viewmodhighlightoutlinetransparency = c
-end)
-
-viewmod:AddSeparateBar()
-
-viewmod:AddSlider('Offset X', 5, -5, 0.20, function(c) 
-    viewmodX = c
-end)
-viewmod:AddSlider('Offset Y', 5, -5, -2, function(c) 
-    viewmodY = c
-end)
-viewmod:AddSlider('Offset Z', 5, -5, -0.32, function(c) 
-    viewmodZ = c
 end)
 
 local keybindmenuvisible = false
@@ -2669,6 +2651,89 @@ function fly_getoffset(dir)
 	end
 	return offset
 end
+
+-- admin detector --
+
+local function CheckAdminStatus(player)
+    local replicatedPlayers = rp:FindFirstChild("Players")
+    if replicatedPlayers then
+        local playerData = replicatedPlayers:FindFirstChild(player.Name)
+        if playerData then
+            local status = playerData:FindFirstChild("Status")
+            if status then
+                local UAC = status:FindFirstChild("UAC")
+                if UAC then
+                    return UAC:GetAttribute("A1Detected") or UAC:GetAttribute("A2Detected")
+                end
+            end
+        end
+    end
+    return false
+end
+
+task.spawn(function()
+    while true do
+        for _, player in ipairs(Players:GetPlayers()) do
+            local isAdmin = CheckAdminStatus(player)
+            if isAdmin and not detectedAdmins[player.Name] then
+                detectedAdmins[player.Name] = true
+                Notify(
+                    "Exothium.xyz",
+                    "Admin detected: " .. player.Name,
+                    5,
+                    5,
+                    Color3.fromRGB(77, 210, 255),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(55, 170, 235),
+                    Color3.fromRGB(3, 3, 3),
+                    Color3.fromRGB(77, 210, 255)
+                )
+            elseif not isAdmin and detectedAdmins[player.Name] then
+                detectedAdmins[player.Name] = nil
+            end
+        end
+        task.wait(1)
+    end
+end)
+
+Players.PlayerAdded:Connect(function(player)
+    task.delay(1, function()
+        if CheckAdminStatus(player) then
+            Notify(
+                "Exothium.xyz",
+                "Admin detected: " .. player.Name,
+                5,
+                5,
+                    Color3.fromRGB(77, 210, 255),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(55, 170, 235),
+                    Color3.fromRGB(3, 3, 3),
+                    Color3.fromRGB(77, 210, 255)
+            )
+            detectedAdmins[player.Name] = true
+        end
+    end)
+end)
+
+Players.PlayerRemoving:Connect(function(player)
+    if detectedAdmins[player.Name] then
+        Notify(
+            "Exothium.xyz",
+            "Admin left: " .. player.Name,
+            5,
+            10,
+                    Color3.fromRGB(77, 210, 255),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(55, 170, 235),
+                    Color3.fromRGB(3, 3, 3),
+                    Color3.fromRGB(77, 210, 255)
+        )
+        detectedAdmins[player.Name] = nil
+    end
+end)
 
 --global cycle--
 
