@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2b"
+local version = "V0.0.2c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -839,7 +839,7 @@ semifly:AddToggle('[!] Unlock Height Distance', true, nil, function(v)
     end
 end)
 
-semifly:AddSlider('Speed', 105, 1, 18, function(c) 
+semifly:AddSlider('Speed', 80, 1, 18, function(c) 
     charsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
