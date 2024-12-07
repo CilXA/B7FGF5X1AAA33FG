@@ -839,7 +839,7 @@ semifly:AddToggle('[!] Unlock Height Distance', true, nil, function(v)
     end
 end)
 
-semifly:AddSlider('Speed', 80, 1, 18, function(c) 
+semifly:AddSlider('Speed', 90, 1, 18, function(c) 
     charsemiflyspeed = c
 end)
 semifly:AddSeparateBar()
