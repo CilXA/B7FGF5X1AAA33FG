@@ -170,7 +170,8 @@ local Players = game:GetService("Players")
 local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
-local whisperZone = workspace:WaitForChild("AiZones"):WaitForChild("Whisper")
+local aiZones = workspace:FindFirstChild("AiZones")
+local whisperZone = aiZones and aiZones:FindFirstChild("Whisper")
 local stg = localplayer:WaitForChild("PlayerGui")
 local sg = stg:FindFirstChild("Exothium.xyz") or Instance.new("ScreenGui", stg); sg.Name = "Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 local uis = game:GetService("UserInputService")
@@ -2562,7 +2563,7 @@ uis.InputBegan:Connect(onInventoryCheckerPressed)
 uis.InputEnded:Connect(onInventoryCheckerReleased)
 
 -- whisper notifications
-
+if whisperZone then
 whisperZone.DescendantAdded:Connect(function(descendant)
     if whisperNotificationToggle then
         Notify("Exothium.xyz", "Whisper has spawned", 5)
@@ -2574,7 +2575,7 @@ whisperZone.DescendantRemoving:Connect(function(descendant)
         Notify("Exothium.xyz", "Whisper has despawned", 5)
     end
 end)
-
+end
 
 -- anti aim
 
