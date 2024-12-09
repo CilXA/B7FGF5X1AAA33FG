@@ -581,7 +581,7 @@ end)
 
 aim:AddSeparateBar()
 
-aim:AddDropdown('Hitbox', {'Head', 'Torso', 'Random', 'Scripted'}, 'Head', function(a)
+aim:AddDropdown('Hitbox', {'Head', 'Torso', 'Legs', 'Random', 'Scripted'}, 'Head', function(a)
     aimpart = a
 end)
 aim:AddDropdown('Method', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
@@ -1760,6 +1760,15 @@ local function choosetarget()
     local ctar = nil
     local cpart = nil
 
+    local Xbparts = {
+        "LeftUpperLeg",
+        "RightUpperLeg",
+        "LeftLowerLeg",
+        "RightLowerLeg",
+        "LeftFoot",
+        "RightFoot"
+    }
+
     local bparts = {
         "Head",
         "UpperTorso",
@@ -1783,6 +1792,8 @@ local function chooseTpart(charact)
         return charact:FindFirstChild("Head")
     elseif aimpart == "Torso" then
         return charact:FindFirstChild("UpperTorso")
+    elseif aimpart == "Legs" then
+        return charact:FindFirstChild(Xbparts[math.random(1, #Xbparts)])
     elseif aimpart == "Scripted" then
         local head = charact:FindFirstChild("Head")
         local upperTorso = charact:FindFirstChild("UpperTorso")
