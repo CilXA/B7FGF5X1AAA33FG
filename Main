@@ -734,6 +734,9 @@ end)
 
 miscfeatures:AddToggle('Whisper Alert', true, nil, function(v)
     whisperNotificationToggle = v
+    if whisperNotificationToggle and not whisperZone then
+        Notify("Exothium.xyz", "Feature isnt available in lobby.", 5)
+    end
 end)
 
 miscfeatures:AddButton('Reset',function() 
