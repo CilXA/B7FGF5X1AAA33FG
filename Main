@@ -2715,6 +2715,7 @@ task.spawn(function()
             local isAdmin = CheckAdminStatus(player)
             if isAdmin and not detectedAdmins[player.Name] then
                 detectedAdmins[player.Name] = true
+                print("[EXOTHIUM.XYZ] Admin joined:" .. player.Name)
                 Notify(
                     "Exothium.xyz",
                     "Admin detected: " .. player.Name,
@@ -2738,6 +2739,7 @@ end)
 Players.PlayerAdded:Connect(function(player)
     task.delay(1, function()
         if CheckAdminStatus(player) then
+            print("[EXOTHIUM.XYZ] Admin joined:" .. player.Name)
             Notify(
                 "Exothium.xyz",
                 "Admin detected: " .. player.Name,
@@ -2757,6 +2759,7 @@ end)
 
 Players.PlayerRemoving:Connect(function(player)
     if detectedAdmins[player.Name] then
+    print("[EXOTHIUM.XYZ] Admin left:" .. player.Name)
         Notify(
             "Exothium.xyz",
             "Admin left: " .. player.Name,
