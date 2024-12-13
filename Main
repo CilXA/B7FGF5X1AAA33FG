@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.2c"
+local version = "V0.0.3c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -125,6 +125,23 @@ function UpdateNotificationPositions()
     end
 end
 
+function GCG(plr)
+    local char = plr.Character
+    if not char then return nil, nil end
+
+    local gun = nil
+    local gunname = nil
+
+    for _, desc in ipairs(char:GetDescendants()) do
+        if desc:IsA("Model") and desc:FindFirstChild("ItemRoot") and desc:FindFirstChild("Attachments") then
+            gun = desc
+            gunname = desc.Name
+        end
+    end
+
+    return gunname, gun
+end
+
 if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
     Notify("Exothium.xyz", "Character is missing, script will execute when spawned in", 5)
     
@@ -147,7 +164,7 @@ if libraryxxt == false then
     Notify("Exothium.xyz", "DL-T", 0.3)
 end
 ]]
-if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil then
+if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
 else
@@ -155,7 +172,7 @@ else
     Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
-if exec == "Seliware" or exec == "Nihon" then
+if exec == "Seliware" or exec == "Nihon" or exec == "AWP" then
     Notify("Exothium.xyz", "".. exec .." is semi-supported, script might cause errors", 7)
 end
 if _G.exothiumxyz then
@@ -1699,15 +1716,14 @@ local function isvisible(char, object)
     if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") then
         return false
     end
-
     if aimvischeck == false then
         return true
     end
-
     local origin = wcamera.CFrame.Position
     local pos = object.Position
     local dir = pos - origin
     local dist = dir.Magnitude + 5
+    local penetrated = true
     dir = dir.Unit
 
     local params = RaycastParams.new()
@@ -1724,7 +1740,28 @@ local function isvisible(char, object)
     if aimbang then
         if ray and ray.Instance:IsDescendantOf(char) then
             return true
-        elseif ray and ray.Instance.Name ~= "Terrain" then
+        elseif ray and ray.Instance.Name ~= "Terrain" and not ray.Instance:GetAttribute("NoPen") then
+            local armorpen4 = 100
+            local gname = GCG(localplayer)
+            if gname then
+                local res, newpen = pcall(function()
+                    local gun = game.ReplicatedStorage.RangedWeapons:FindFirstChild(gname)
+                    if not gun or not gun:GetAttribute("DefaultAmmo") then return end
+                    local ammo = game.ReplicatedStorage.AmmoTypes:FindFirstChild(gun:GetAttribute("DefaultAmmo"))
+                    if ammo:GetAttribute("ArmorPen") ~= nil then
+                        return ammo:GetAttribute("ArmorPen")
+                    end
+                end)
+                if newpen ~= nil then 
+                    armorpen4 = newpen
+                end
+            end
+            local FunctionLibraryExtension = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension)
+            local armorpen1, newpos2 = FunctionLibraryExtension.Penetration(FunctionLibraryExtension, ray.Instance, ray.Position, dir, armorpen4)
+            if armorpen1 == nil or newpos2 == nil then
+                return false
+            end
+
             local neworigin = ray.Position + dir * 0.01
             local newray = workspace:Raycast(neworigin, dir * (dist - (neworigin - origin).Magnitude), params)
             if newray and newray.Instance:IsDescendantOf(char) then
