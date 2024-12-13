@@ -209,12 +209,8 @@ local whisperZone = aiZones and aiZones:FindFirstChild("Whisper")
 local stg = localplayer:WaitForChild("PlayerGui")
 local sg = stg:FindFirstChild("Exothium.xyz") or Instance.new("ScreenGui", stg); sg.Name = "Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 local uis = game:GetService("UserInputService")
-
 local realAmmoTypes = rp:FindFirstChild("realAmmoTypes") or rp:FindFirstChild("AmmoTypes") and rp:FindFirstChild("AmmoTypes"):Clone(); if realAmmoTypes then realAmmoTypes.Name = "realAmmoTypes" end
-
 local mouse = localplayer:GetMouse()
-
-local markvisible = true
 
 local aimbool = false
 local aimdebug1 = false
@@ -1730,7 +1726,6 @@ local function runtracer(start, endp)
     endpart:Destroy()
 end
 
-
 --silent aim--
 
 local function isonscreen(object)
@@ -2710,6 +2705,18 @@ function FlipBack()
     humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
 end
 
+-- ping
+
+for i = 10, 1000, 10 do
+    selftrack_data[i] = localplayer.Character.Head.Position
+end
+local function updateselfpos()
+    for time = 990, 10, -10 do
+        selftrack_data[time + 10] = selftrack_data[time]
+    end
+    selftrack_data[10] = localplayer.Character.Head.Position
+end
+
 --fly--
 
 local function fly_move(dir)
@@ -2989,7 +2996,7 @@ task.spawn(function() -- slow
     end
 end)
 
-runs.RenderStepped:Connect(function() --  fast
+runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
 
             Toggle.Visible = aimbool
@@ -3251,6 +3258,12 @@ end
         aimfovcircle.Radius = aimfov * (90 / wcamera.FieldOfView )
     else
         aimfovcircle.Radius = aimfov
+    end
+
+    selftrack_update += delta
+    if selftrack_update >= 0.01 then
+        updateselfpos(selftrack_update)
+        selftrack_update = 0
     end
 
     if aimtrigger and aimtarget ~= nil then
