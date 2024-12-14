@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3b beta"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -653,17 +653,6 @@ end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
 end)
-
---[[
-gunmods:AddToggle('Wallbang v2', true, nil, function(v) -- нужно в modules.fps чекнуть updatebulletlist, может быть тогда разгадаю как это сделать...
-    aimrecbang = v
-    if v == true then
-        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetratemodfunc
-    else
-        require(game.ReplicatedStorage.Modules.FunctionLibraryExtension).Penetration = penetrateogfunc
-    end
-end)
-]]
 
 gunmods:AddToggle('No Recoil', true, nil, function(v)
 			NoRecoil = v
@@ -1627,6 +1616,52 @@ KeybindListMenuD["_Title4"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 
 KeybindListMenuD["_Title4"].Size = UDim2.new(0, 84, 0, 18)
 KeybindListMenuD["_Title4"].Name = "Title"
 KeybindListMenuD["_Title4"].Parent = KeybindListMenuD["_MovementToggle"]
+
+UXI = KeybindListMenuD["_Holder"]
+
+Hovered = false
+Holding = false
+MoveCon = nil
+
+local InitialX, InitialY, UIInitialPos
+
+--// Functions
+
+local function Drag()
+	if Holding == false then MoveCon:Disconnect(); return end
+	local distanceMovedX = InitialX - mouse.X
+	local distanceMovedY = InitialY - mouse.Y
+
+	UXI.Position = UIInitialPos - UDim2.new(0, distanceMovedX, 0, distanceMovedY)
+end
+
+--// Connections
+
+UXI.MouseEnter:Connect(function()
+	Hovered = true
+end)
+
+UXI.MouseLeave:Connect(function()
+	Hovered = false
+end)
+
+uis.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		Holding = Hovered
+		if Holding then
+			InitialX, InitialY = mouse.X, mouse.Y
+			UIInitialPos = UXI.Position
+
+			MoveCon = mouse.Move:Connect(Drag)
+		end
+	end
+end)
+
+uis.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+		Holding = false
+	end
+end)
 
 local function bindupdate()
     if aimbool then
