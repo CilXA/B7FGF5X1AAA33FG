@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3a"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -286,6 +286,7 @@ espfillcolor = Color3.fromRGB(77, 210, 255)
 esplinecolor = Color3.fromRGB(77, 210, 255)
 
 silentaimbind = Enum.KeyCode.H
+autoshootbind = Enum.KeyCode.K
 
 inventoryCheckerToggle = true
 inventoryCheckerBind = Enum.KeyCode.Backquote
@@ -600,7 +601,7 @@ aim:AddToggle('Wall Check', true, nil, function(v)
     aimvischeck = v
 end)
 
-aim:AddToggle('Auto Shoot', true, nil, function(v)
+aim:AddToggle('Auto Shoot', true, autoshootbind, function(v)
     aimtrigger = v
 end)
 
@@ -1342,214 +1343,332 @@ end)
 
 local keybindmenuvisible = false
 
-local _2345426754327842387 = Instance.new("ScreenGui")
-local MainFrameKeybindss93942 = Instance.new("Frame")
-local UICorner = Instance.new("UICorner")
-local Title = Instance.new("TextLabel")
-local DecoIn = Instance.new("Frame")
-local UICorner_2 = Instance.new("UICorner")
-local DecoLine = Instance.new("Frame")
-local UICorner_3 = Instance.new("UICorner")
-local SilentAim = Instance.new("TextLabel")
-local Toggle = Instance.new("Frame")
-local ESPToggle = Instance.new("TextLabel")
-local Toggle_2 = Instance.new("Frame")
-local Zoom = Instance.new("TextLabel")
-local Toggle_3 = Instance.new("Frame")
-local Fly = Instance.new("TextLabel")
-local Toggle_4 = Instance.new("Frame")
+local KeybindListMenuD = {
+	["__238237458342578523124872147"] = Instance.new("ScreenGui");
+	["_Holder"] = Instance.new("Frame");
+	["_KeybindIcon"] = Instance.new("ImageLabel");
+	["_UIStroke"] = Instance.new("UIStroke");
+	["_UICorner"] = Instance.new("UICorner");
+	["_KeybindTitle"] = Instance.new("TextLabel");
+	["_UIStroke1"] = Instance.new("UIStroke");
+	["_UICorner1"] = Instance.new("UICorner");
+	["_KeybindListMenuD"] = Instance.new("Frame");
+	["_UIListLayout"] = Instance.new("UIListLayout");
+	["_SilentAim"] = Instance.new("Frame");
+	["_Icon"] = Instance.new("ImageLabel");
+	["_Title"] = Instance.new("TextLabel");
+	["_AutoShoot"] = Instance.new("Frame");
+	["_Icon1"] = Instance.new("ImageLabel");
+	["_Title1"] = Instance.new("TextLabel");
+	["_ESPToggle"] = Instance.new("Frame");
+	["_Icon2"] = Instance.new("ImageLabel");
+	["_Title2"] = Instance.new("TextLabel");
+	["_Zoom"] = Instance.new("Frame");
+	["_Icon3"] = Instance.new("ImageLabel");
+	["_Title3"] = Instance.new("TextLabel");
+	["_MovementToggle"] = Instance.new("Frame");
+	["_Icon4"] = Instance.new("ImageLabel");
+	["_Title4"] = Instance.new("TextLabel");
+}
 
-_2345426754327842387.Name = "_2345426754327842387"
-_2345426754327842387.ResetOnSpawn = false
-_2345426754327842387.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-_2345426754327842387.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+KeybindListMenuD["__238237458342578523124872147"].Enabled = false
+KeybindListMenuD["__238237458342578523124872147"].IgnoreGuiInset = true
+KeybindListMenuD["__238237458342578523124872147"].ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
+KeybindListMenuD["__238237458342578523124872147"].ResetOnSpawn = false
+KeybindListMenuD["__238237458342578523124872147"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+KeybindListMenuD["__238237458342578523124872147"].Name = "_238237458342578523124872147"
+KeybindListMenuD["__238237458342578523124872147"].Parent = game:GetService("CoreGui")
 
-MainFrameKeybindss93942.Name = "MainFrame"
-MainFrameKeybindss93942.Parent = _2345426754327842387
-MainFrameKeybindss93942.AnchorPoint = Vector2.new(0.5, 0.5)
-MainFrameKeybindss93942.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainFrameKeybindss93942.BackgroundTransparency = 0.3
-MainFrameKeybindss93942.BorderColor3 = Color3.fromRGB(0, 0, 0)
-MainFrameKeybindss93942.BorderSizePixel = 0
-MainFrameKeybindss93942.Position = UDim2.new(0.104013064, 0, 0.487762243, 0)
-MainFrameKeybindss93942.Size = UDim2.new(0, 225, 0, 132)
-MainFrameKeybindss93942.Visible = false
+KeybindListMenuD["_Holder"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_Holder"].BackgroundTransparency = 1
+KeybindListMenuD["_Holder"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Holder"].BorderSizePixel = 0
+KeybindListMenuD["_Holder"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_Holder"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_Holder"].Name = "Holder"
+KeybindListMenuD["_Holder"].Parent = KeybindListMenuD["__238237458342578523124872147"]
 
-    local uiStroke = Instance.new("UIStroke")
-    uiStroke.Parent = MainFrameKeybindss93942
-    uiStroke.Thickness = 1
-    uiStroke.Color = Color3.new(0, 255, 255)
+KeybindListMenuD["_KeybindIcon"].Image = "rbxassetid://12988755627"
+KeybindListMenuD["_KeybindIcon"].ImageColor3 = Color3.fromRGB(0, 203.00000309944153, 203.00000309944153)
+KeybindListMenuD["_KeybindIcon"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_KeybindIcon"].BackgroundTransparency = 1
+KeybindListMenuD["_KeybindIcon"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_KeybindIcon"].BorderSizePixel = 0
+KeybindListMenuD["_KeybindIcon"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_KeybindIcon"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_KeybindIcon"].Name = "KeybindIcon"
+KeybindListMenuD["_KeybindIcon"].Parent = KeybindListMenuD["_Holder"]
 
-UICorner.CornerRadius = UDim.new(0, 5)
-UICorner.Parent = MainFrameKeybindss93942
+KeybindListMenuD["_UIStroke"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+KeybindListMenuD["_UIStroke"].Color = Color3.fromRGB(0, 255, 255)
+KeybindListMenuD["_UIStroke"].Parent = KeybindListMenuD["_KeybindIcon"]
 
-Title.Name = "Title"
-Title.Parent = MainFrameKeybindss93942
-Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1
-Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Title.BorderSizePixel = 0
-Title.Position = UDim2.new(0.00740719261, 0, 0.0075757578, 0)
-Title.Size = UDim2.new(0, 223, 0, 19)
-Title.ZIndex = 5
-Title.Font = Enum.Font.Arimo
-Title.Text = "Keybinds"
-Title.TextColor3 = Color3.fromRGB(0, 255, 255)
-Title.TextSize = 14
-Title.TextStrokeTransparency = 0.5
+KeybindListMenuD["_UICorner"].CornerRadius = UDim.new(0, 5)
+KeybindListMenuD["_UICorner"].Parent = KeybindListMenuD["_KeybindIcon"]
 
-DecoIn.Name = "DecoIn"
-DecoIn.Parent = MainFrameKeybindss93942
-DecoIn.AnchorPoint = Vector2.new(0.5, 0.5)
-DecoIn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-DecoIn.BackgroundTransparency = 0.3
-DecoIn.BorderColor3 = Color3.fromRGB(0, 0, 0)
-DecoIn.BorderSizePixel = 0
-DecoIn.Position = UDim2.new(0.499672711, 0, 0.4936831, 0)
-DecoIn.Size = UDim2.new(0, 220, 0, 127)
+KeybindListMenuD["_KeybindTitle"].Font = Enum.Font.Arial
+KeybindListMenuD["_KeybindTitle"].Text = "Keybinds"
+KeybindListMenuD["_KeybindTitle"].TextColor3 = Color3.fromRGB(0, 203.00000309944153, 203.00000309944153)
+KeybindListMenuD["_KeybindTitle"].TextSize = 13
+KeybindListMenuD["_KeybindTitle"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_KeybindTitle"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_KeybindTitle"].TextWrapped = true
+KeybindListMenuD["_KeybindTitle"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_KeybindTitle"].BackgroundTransparency = 1
+KeybindListMenuD["_KeybindTitle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_KeybindTitle"].BorderSizePixel = 0
+KeybindListMenuD["_KeybindTitle"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_KeybindTitle"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_KeybindTitle"].Name = "KeybindTitle"
+KeybindListMenuD["_KeybindTitle"].Parent = KeybindListMenuD["_Holder"]
 
-    local uiStroke22 = Instance.new("UIStroke")
-    uiStroke22.Parent = DecoIn
-    uiStroke22.Thickness = 1
-    uiStroke22.Color = Color3.new(0, 149, 149)
+KeybindListMenuD["_UIStroke1"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+KeybindListMenuD["_UIStroke1"].Color = Color3.fromRGB(0, 255, 255)
+KeybindListMenuD["_UIStroke1"].Parent = KeybindListMenuD["_KeybindTitle"]
 
-UICorner_2.CornerRadius = UDim.new(0, 3)
-UICorner_2.Parent = DecoIn
+KeybindListMenuD["_UICorner1"].CornerRadius = UDim.new(0, 5)
+KeybindListMenuD["_UICorner1"].Parent = KeybindListMenuD["_KeybindTitle"]
 
-DecoLine.Name = "DecoLine"
-DecoLine.Parent = MainFrameKeybindss93942
-DecoLine.AnchorPoint = Vector2.new(0.5, 0.5)
-DecoLine.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-DecoLine.BackgroundTransparency = 0.3
-DecoLine.BorderColor3 = Color3.fromRGB(0, 0, 0)
-DecoLine.BorderSizePixel = 0
-DecoLine.Position = UDim2.new(0.499672711, 0, 0.0816445798, 0)
-DecoLine.Size = UDim2.new(0, 220, 0, 18)
+KeybindListMenuD["_KeybindListMenuD"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_KeybindListMenuD"].BackgroundTransparency = 1
+KeybindListMenuD["_KeybindListMenuD"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_KeybindListMenuD"].BorderSizePixel = 0
+KeybindListMenuD["_KeybindListMenuD"].Position = UDim2.new(0, 0, 1.47058821, 0)
+KeybindListMenuD["_KeybindListMenuD"].Size = UDim2.new(0, 105, 0, 209)
+KeybindListMenuD["_KeybindListMenuD"].Name = "KeybindListMenuD"
+KeybindListMenuD["_KeybindListMenuD"].Parent = KeybindListMenuD["_Holder"]
 
-    local uiStroke222 = Instance.new("UIStroke")
-    uiStroke222.Parent = DecoLine
-    uiStroke222.Thickness = 1
-    uiStroke222.Color = Color3.new(0, 149, 149)
+KeybindListMenuD["_UIListLayout"].Padding = UDim.new(0, 3)
+KeybindListMenuD["_UIListLayout"].SortOrder = Enum.SortOrder.LayoutOrder
+KeybindListMenuD["_UIListLayout"].Parent = KeybindListMenuD["_KeybindListMenuD"]
 
-UICorner_3.CornerRadius = UDim.new(0, 2)
-UICorner_3.Parent = DecoLine
+KeybindListMenuD["_SilentAim"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_SilentAim"].BackgroundTransparency = 1
+KeybindListMenuD["_SilentAim"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_SilentAim"].BorderSizePixel = 0
+KeybindListMenuD["_SilentAim"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_SilentAim"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_SilentAim"].Name = "SilentAim"
+KeybindListMenuD["_SilentAim"].Parent = KeybindListMenuD["_KeybindListMenuD"]
 
-SilentAim.Name = "SilentAim"
-SilentAim.Parent = MainFrameKeybindss93942
-SilentAim.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-SilentAim.BackgroundTransparency = 1
-SilentAim.BorderColor3 = Color3.fromRGB(0, 0, 0)
-SilentAim.BorderSizePixel = 0
-SilentAim.Position = UDim2.new(0.0074072266, 0, 0.151515156, 0)
-SilentAim.Size = UDim2.new(0, 223, 0, 19)
-SilentAim.Font = Enum.Font.Arimo
-SilentAim.TextColor3 = Color3.fromRGB(0, 255, 255)
-SilentAim.TextSize = 14
-SilentAim.TextStrokeTransparency = 0.5
+KeybindListMenuD["_Icon"].Image = "rbxassetid://7181750993"
+KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Icon"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Icon"].BackgroundTransparency = 1
+KeybindListMenuD["_Icon"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Icon"].BorderSizePixel = 0
+KeybindListMenuD["_Icon"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_Icon"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_Icon"].Name = "Icon"
+KeybindListMenuD["_Icon"].Parent = KeybindListMenuD["_SilentAim"]
 
-Toggle.Name = "Toggle"
-Toggle.Parent = SilentAim
-Toggle.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-Toggle.BackgroundTransparency = 0.8
-Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle.BorderSizePixel = 0
-Toggle.Position = UDim2.new(0.00181518006, 0, -0.00589471124, 0)
-Toggle.Size = UDim2.new(0, 220, 0, 19)
-Toggle.Visible = true
-Toggle.ZIndex = 5
+KeybindListMenuD["_Title"].Font = Enum.Font.Arial
+KeybindListMenuD["_Title"].Text = "Silent Aim"
+KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Title"].TextSize = 13
+KeybindListMenuD["_Title"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_Title"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title"].TextWrapped = true
+KeybindListMenuD["_Title"].TextXAlignment = Enum.TextXAlignment.Left
+KeybindListMenuD["_Title"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Title"].BackgroundTransparency = 1
+KeybindListMenuD["_Title"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Title"].BorderSizePixel = 0
+KeybindListMenuD["_Title"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_Title"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_Title"].Name = "Title"
+KeybindListMenuD["_Title"].Parent = KeybindListMenuD["_SilentAim"]
 
-ESPToggle.Name = "ESPToggle"
-ESPToggle.Parent = MainFrameKeybindss93942
-ESPToggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-ESPToggle.BackgroundTransparency = 1
-ESPToggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
-ESPToggle.BorderSizePixel = 0
-ESPToggle.Position = UDim2.new(0.00700000022, 0, 0.310000002, 0)
-ESPToggle.Size = UDim2.new(0, 223, 0, 19)
-ESPToggle.Font = Enum.Font.Arimo
-ESPToggle.TextColor3 = Color3.fromRGB(0, 255, 255)
-ESPToggle.TextSize = 14
-ESPToggle.TextStrokeTransparency = 0.5
+KeybindListMenuD["_AutoShoot"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_AutoShoot"].BackgroundTransparency = 1
+KeybindListMenuD["_AutoShoot"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_AutoShoot"].BorderSizePixel = 0
+KeybindListMenuD["_AutoShoot"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_AutoShoot"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_AutoShoot"].Name = "AutoShoot"
+KeybindListMenuD["_AutoShoot"].Parent = KeybindListMenuD["_KeybindListMenuD"]
 
-Toggle_2.Name = "Toggle_2"
-Toggle_2.Parent = ESPToggle
-Toggle_2.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-Toggle_2.BackgroundTransparency = 0.8
-Toggle_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle_2.BorderSizePixel = 0
-Toggle_2.Position = UDim2.new(0.00181514584, 0, -0.00589471124, 0)
-Toggle_2.Size = UDim2.new(0, 220, 0, 19)
-Toggle_2.Visible = true
-Toggle_2.ZIndex = 5
+KeybindListMenuD["_Icon1"].Image = "rbxassetid://7181750993"
+KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Icon1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Icon1"].BackgroundTransparency = 1
+KeybindListMenuD["_Icon1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Icon1"].BorderSizePixel = 0
+KeybindListMenuD["_Icon1"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_Icon1"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_Icon1"].Name = "Icon"
+KeybindListMenuD["_Icon1"].Parent = KeybindListMenuD["_AutoShoot"]
 
-Zoom.Name = "Zoom"
-Zoom.Parent = MainFrameKeybindss93942
-Zoom.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Zoom.BackgroundTransparency = 1
-Zoom.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Zoom.BorderSizePixel = 0
-Zoom.Position = UDim2.new(0.00700000022, 0, 0.467999995, 0)
-Zoom.Size = UDim2.new(0, 223, 0, 19)
-Zoom.Font = Enum.Font.Arimo
-Zoom.TextColor3 = Color3.fromRGB(0, 255, 255)
-Zoom.TextSize = 14
-Zoom.TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title1"].Font = Enum.Font.Arial
+KeybindListMenuD["_Title1"].Text = "Auto Shoot"
+KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Title1"].TextSize = 13
+KeybindListMenuD["_Title1"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_Title1"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title1"].TextWrapped = true
+KeybindListMenuD["_Title1"].TextXAlignment = Enum.TextXAlignment.Left
+KeybindListMenuD["_Title1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Title1"].BackgroundTransparency = 1
+KeybindListMenuD["_Title1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Title1"].BorderSizePixel = 0
+KeybindListMenuD["_Title1"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_Title1"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_Title1"].Name = "Title"
+KeybindListMenuD["_Title1"].Parent = KeybindListMenuD["_AutoShoot"]
 
-Toggle_3.Name = "Toggle_3"
-Toggle_3.Parent = Zoom
-Toggle_3.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-Toggle_3.BackgroundTransparency = 0.8
-Toggle_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle_3.BorderSizePixel = 0
-Toggle_3.Position = UDim2.new(0.00181516272, 0, -0.00589471124, 0)
-Toggle_3.Size = UDim2.new(0, 220, 0, 19)
-Toggle_3.Visible = true
-Toggle_3.ZIndex = 5
+KeybindListMenuD["_ESPToggle"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_ESPToggle"].BackgroundTransparency = 1
+KeybindListMenuD["_ESPToggle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_ESPToggle"].BorderSizePixel = 0
+KeybindListMenuD["_ESPToggle"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_ESPToggle"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_ESPToggle"].Name = "ESPToggle"
+KeybindListMenuD["_ESPToggle"].Parent = KeybindListMenuD["_KeybindListMenuD"]
 
-Fly.Name = "Movement Toggle"
-Fly.Parent = MainFrameKeybindss93942
-Fly.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Fly.BackgroundTransparency = 1
-Fly.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Fly.BorderSizePixel = 0
-Fly.Position = UDim2.new(0.00700000022, 0, 0.625, 0)
-Fly.Size = UDim2.new(0, 223, 0, 19)
-Fly.Font = Enum.Font.Arimo
-Fly.TextColor3 = Color3.fromRGB(0, 255, 255)
-Fly.TextSize = 14
-Fly.TextStrokeTransparency = 0.5
+KeybindListMenuD["_Icon2"].Image = "rbxassetid://7181750993"
+KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Icon2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Icon2"].BackgroundTransparency = 1
+KeybindListMenuD["_Icon2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Icon2"].BorderSizePixel = 0
+KeybindListMenuD["_Icon2"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_Icon2"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_Icon2"].Name = "Icon"
+KeybindListMenuD["_Icon2"].Parent = KeybindListMenuD["_ESPToggle"]
 
-Toggle_4.Name = "Toggle_4"
-Toggle_4.Parent = Fly
-Toggle_4.BackgroundColor3 = Color3.fromRGB(0, 255, 255)
-Toggle_4.BackgroundTransparency = 0.8
-Toggle_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
-Toggle_4.BorderSizePixel = 0
-Toggle_4.Position = UDim2.new(0.00181515072, 0, -0.00589471124, 0)
-Toggle_4.Size = UDim2.new(0, 220, 0, 19)
-Toggle_4.Visible = true
-Toggle_4.ZIndex = 5
+KeybindListMenuD["_Title2"].Font = Enum.Font.Arial
+KeybindListMenuD["_Title2"].Text = "ESP Toggle"
+KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Title2"].TextSize = 13
+KeybindListMenuD["_Title2"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_Title2"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title2"].TextWrapped = true
+KeybindListMenuD["_Title2"].TextXAlignment = Enum.TextXAlignment.Left
+KeybindListMenuD["_Title2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Title2"].BackgroundTransparency = 1
+KeybindListMenuD["_Title2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Title2"].BorderSizePixel = 0
+KeybindListMenuD["_Title2"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_Title2"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_Title2"].Name = "Title"
+KeybindListMenuD["_Title2"].Parent = KeybindListMenuD["_ESPToggle"]
 
-local function getKeyName(key)
-    return tostring(key):match("%.(%w+)$")
+KeybindListMenuD["_Zoom"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_Zoom"].BackgroundTransparency = 1
+KeybindListMenuD["_Zoom"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Zoom"].BorderSizePixel = 0
+KeybindListMenuD["_Zoom"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_Zoom"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_Zoom"].Name = "Zoom"
+KeybindListMenuD["_Zoom"].Parent = KeybindListMenuD["_KeybindListMenuD"]
+
+KeybindListMenuD["_Icon3"].Image = "rbxassetid://7181750993"
+KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Icon3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Icon3"].BackgroundTransparency = 1
+KeybindListMenuD["_Icon3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Icon3"].BorderSizePixel = 0
+KeybindListMenuD["_Icon3"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_Icon3"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_Icon3"].Name = "Icon"
+KeybindListMenuD["_Icon3"].Parent = KeybindListMenuD["_Zoom"]
+
+KeybindListMenuD["_Title3"].Font = Enum.Font.Arial
+KeybindListMenuD["_Title3"].Text = "Zoom"
+KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Title3"].TextSize = 13
+KeybindListMenuD["_Title3"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_Title3"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title3"].TextWrapped = true
+KeybindListMenuD["_Title3"].TextXAlignment = Enum.TextXAlignment.Left
+KeybindListMenuD["_Title3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Title3"].BackgroundTransparency = 1
+KeybindListMenuD["_Title3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Title3"].BorderSizePixel = 0
+KeybindListMenuD["_Title3"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_Title3"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_Title3"].Name = "Title"
+KeybindListMenuD["_Title3"].Parent = KeybindListMenuD["_Zoom"]
+
+KeybindListMenuD["_MovementToggle"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
+KeybindListMenuD["_MovementToggle"].BackgroundTransparency = 1
+KeybindListMenuD["_MovementToggle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_MovementToggle"].BorderSizePixel = 0
+KeybindListMenuD["_MovementToggle"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
+KeybindListMenuD["_MovementToggle"].Size = UDim2.new(0, 106, 0, 17)
+KeybindListMenuD["_MovementToggle"].Name = "MovementToggle"
+KeybindListMenuD["_MovementToggle"].Parent = KeybindListMenuD["_KeybindListMenuD"]
+
+KeybindListMenuD["_Icon4"].Image = "rbxassetid://7181750993"
+KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Icon4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Icon4"].BackgroundTransparency = 1
+KeybindListMenuD["_Icon4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Icon4"].BorderSizePixel = 0
+KeybindListMenuD["_Icon4"].Position = UDim2.new(0, 0, -0.0141179701, 0)
+KeybindListMenuD["_Icon4"].Size = UDim2.new(0, 18, 0, 18)
+KeybindListMenuD["_Icon4"].Name = "Icon"
+KeybindListMenuD["_Icon4"].Parent = KeybindListMenuD["_MovementToggle"]
+
+KeybindListMenuD["_Title4"].Font = Enum.Font.Arial
+KeybindListMenuD["_Title4"].Text = "Movement Toggle"
+KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
+KeybindListMenuD["_Title4"].TextScaled = true
+KeybindListMenuD["_Title4"].TextSize = 13
+KeybindListMenuD["_Title4"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
+KeybindListMenuD["_Title4"].TextStrokeTransparency = 0.5
+KeybindListMenuD["_Title4"].TextWrapped = true
+KeybindListMenuD["_Title4"].TextXAlignment = Enum.TextXAlignment.Left
+KeybindListMenuD["_Title4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+KeybindListMenuD["_Title4"].BackgroundTransparency = 1
+KeybindListMenuD["_Title4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+KeybindListMenuD["_Title4"].BorderSizePixel = 0
+KeybindListMenuD["_Title4"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
+KeybindListMenuD["_Title4"].Size = UDim2.new(0, 84, 0, 18)
+KeybindListMenuD["_Title4"].Name = "Title"
+KeybindListMenuD["_Title4"].Parent = KeybindListMenuD["_MovementToggle"]
+
+local function bindupdate()
+    if aimbool then
+        KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 255, 255)
+        KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 255, 255)
+    elseif not aimbool then
+        KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 170, 170)
+        KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 170, 170)
+    end
+
+    if aimtrigger then
+        KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 255, 255)
+        KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 255, 255)
+    elseif not aimtrigger then
+        KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 170, 170)
+        KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 170, 170)
+    end
+
+    if espbool then
+        KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 255, 255)
+        KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 255, 255)
+    elseif not espbool then
+        KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 170, 170)
+        KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 170, 170)
+    end
+
+    if zoomtoggle then
+        KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 255, 255)
+        KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 255, 255)
+    elseif not zoomtoggle then
+        KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 170, 170)
+        KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 170, 170)
+    end
+
+    if charsemifly then
+        KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 255, 255)
+        KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 255, 255)
+    elseif not charsemifly then
+        KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 170, 170)
+        KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 170, 170)
+    end
 end
---[[
-local function updateKeybindTexts()
-    SilentAim.Text = "Silent Aim [" .. getKeyName(silentaimbind) .. "]"
-    ESPToggle.Text = "ESP Toggle [" .. getKeyName(esptogglebind) .. "]"
-    Zoom.Text = "Zoom [" .. getKeyName(zoombind) .. "]"
-    Fly.Text = "Fly [" .. getKeyName(charsemiflybind) .. "]"
-end
-]]
-
-local function updateKeybindTexts()
-    SilentAim.Text = "Silent Aim"
-    ESPToggle.Text = "ESP Toggle"
-    Zoom.Text = "Zoom"
-    Fly.Text = "Movement Toggle"
-end
-
-updateKeybindTexts()
 
 keybinds:AddToggle('Keybind List', true, nil, function(v)
     keybindmenuvisible = v
@@ -2906,9 +3025,9 @@ task.spawn(function() -- slow
     while wait(1) do
 
         if keybindmenuvisible then
-            MainFrameKeybindss93942.Visible = true
+            KeybindListMenuD["__238237458342578523124872147"].Enabled = true
         elseif keybindmenuvisible == false then
-            MainFrameKeybindss93942.Visible = false
+            KeybindListMenuD["__238237458342578523124872147"].Enabled = false
         end
 
         local function handleFoliage()
@@ -2988,7 +3107,6 @@ task.spawn(function() -- slow
             end
         end
 
-        updateKeybindTexts()
         handleFoliage()
         handleInventory()
         handleViewModel()
@@ -2998,12 +3116,6 @@ end)
 
 runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
-
-            Toggle.Visible = aimbool
-            Toggle_2.Visible = espbool
-            Toggle_4.Visible = charsemifly
-            Toggle_3.Visible = zoomtoggle
-
 
             local function handleClientAntiCheatBypass()
             if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
@@ -3034,6 +3146,7 @@ runs.RenderStepped:Connect(function(delta) --  fast
         end
 
         handleClientAntiCheatBypass()
+        bindupdate()
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
