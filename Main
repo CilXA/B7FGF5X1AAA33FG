@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3b"
+local version = "V0.0.3c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -232,6 +232,8 @@ local aimfov = 150
 local aimdistance = 1500
 local aimchance = 100
 local aimfakewait = 0
+local aimsnapline = Drawing.new("Line")
+local snaplinebool = false
 local aimfovcircle = Drawing.new("Circle")
 local aimtargetname = Drawing.new("Text")
 local aimogfunc = require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet
@@ -381,35 +383,34 @@ yspinning = false -- yrot spin
 zspeedspin = 0
 zspinning = false -- zrot spin
 
-local xrot = 0
-local yrot = 0
-local zrot = 0
---[[
-local hitMarkers = game:GetService("ReplicatedStorage").SFX.Hits.HitMarkers
-local originalSounds = {
-    BodyArmor = hitMarkers.BodyArmor.SoundId,
-    Bodyshot = hitMarkers.Bodyshot.SoundId,
-    Headshot = hitMarkers.Headshot.SoundId,
-    Helmet = hitMarkers.Helmet.SoundId,
-    Kill = hitMarkers.Kill.SoundId
-}
-local HitmarkerSounds = {
-    ["Rust"] = "rbxassetid://1255040462",
-    ["Gamesense"] = "rbxassetid://4817809188",
-    ["CSGO"] = "rbxassetid://6937353691",
-    ["Neverlose"] = "rbxassetid://8726881116",
-    ["Minecraft"] = "rbxassetid://4018616850",
-}
+xrot = 0
+yrot = 0
+zrot = 0
 
-local currenthitsound = ""  
-local hitsounds_enabled = false
-]]
+local hitsoundbool = false
+local hitsoundhead = "Neverlose"
+local hitsoundbody = "Gamesense"
+local hitsoundlib = {
+    ["Neverlose"] = "rbxassetid://8726881116",
+    ["Gamesense"] = "rbxassetid://4817809188",
+    ["Rust"]      = "rbxassetid://1255040462",
+    ["Bubble"]    = "rbxassetid://198598793",
+    ["Minecraft"] = "rbxassetid://6361963422",
+    ["Among-Us"]  = "rbxassetid://7227567562",
+}
+local hitsoundlibUI = {}
+for i,v in hitsoundlib do
+    hitsoundlibUI[v] = i
+end
+
 local NoRecoil = false
 local BulletTracer = false
 local InstaReload = true
 local GunDrag = false
 local NoProjectileDrop = false
 local RapidFire = false
+local NoSway = false
+local InstaEquip = false
 local UnlockFiremodes = false
 local BurstFire = 1
 
@@ -478,6 +479,11 @@ aimtargetname.Color = Color3.fromRGB(77, 210, 255)
 aimtargetname.Visible = false
 aimtargetname.Center = true
 aimtargetname.Outline = true
+aimsnapline.From = Vector2.new(20, 20)
+aimsnapline.To = Vector2.new(50, 50)
+aimsnapline.Color = Color3.fromRGB(77, 210, 255)
+aimsnapline.Thickness = 1
+aimsnapline.Visible = false
 
 local somemethods = {
     "WalkSpeed",
@@ -568,12 +574,13 @@ local aim = combat:AddSection('Aimbot')
 local gunmods = combat:AddSection('Gun Mods')
 local camzoom = other:AddSection('Zoom')
 local tarinfo = combat:AddSection('Target Info')
+local snapline = combat:AddSection('Snapline')
 local wh = visual:AddSection('Player Visuals')
 local cross = visual:AddSection('Crosshair')
 local inventorychecker = other:AddSection('Inventory Checker')
 local tracers = visual:AddSection('Bullet Tracers')
 local camer = other:AddSection('Effects')
---local hitsounds = other:AddSection('Hitsounds')
+local hitsounds = other:AddSection('Hitsounds')
 local viewmod = visual:AddSection('Viewmodel')
 local semifly = player:AddSection('Character Modifier')
 local privatemods = player:AddSection('Player Exploits')
@@ -583,6 +590,35 @@ local keybinds = home:AddSection('Keybind List')
 
 mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
     game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
+end)
+
+hitsounds:AddToggle('Hitsound Enabled', true, nil, function(v)
+    hitsoundbool = v
+end)
+hitsounds:AddDropdown('Headshot Sound', hitsoundlibUI, hitsoundhead, function(a)
+    hitsoundhead = a
+
+    local preview = Instance.new("Sound", workspace)
+    preview.SoundId = hitsoundlib[a]
+    preview:Play()
+    task.wait(1)
+    preview:Destroy()
+end)
+hitsounds:AddDropdown('Bodyhit Sound', hitsoundlibUI, hitsoundbody, function(a)
+    hitsoundbody = a
+
+    local preview = Instance.new("Sound", workspace)
+    preview.SoundId = hitsoundlib[a]
+    preview:Play()
+    task.wait(1)
+    preview:Destroy()
+end)
+
+snapline:AddToggle('Snapline', true, nil, function(v)
+    snaplinebool = v
+end)
+snapline:AddColorPallete('Color', Color3.fromRGB(77, 210, 255),function(a) 
+    aimsnapline.Color = a
 end)
 
 aim:AddToggle('Silent Aim', true, silentaimbind, function(v) 
@@ -650,6 +686,9 @@ end)
 gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
     UnlockFiremodes = v
 end)
+gunmods:AddToggle('Instant Equip', true, nil, function(v)
+    InstaEquip = v
+end)
 gunmods:AddToggle('Wallbang', true, nil, function(v)
     aimbang = v
 end)
@@ -705,7 +744,9 @@ gunmods:AddToggle('No Drag', true, nil, function(v)
 		end
 	end
 end)
-
+gunmods:AddToggle('No Sway', true, nil, function(v)
+    NoSway = v
+end)
 gunmods:AddToggle('No Projectile Drop', true, nil, function(v)
 	NoProjectileDrop = v
 	if NoProjectileDrop and rp:FindFirstChild("AmmoTypes") then
@@ -2403,6 +2444,72 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     end
 end
 
+--nosway
+
+do
+    local mod = require(game.ReplicatedStorage.Modules.FPS)
+    local ogfunc = mod.updateClient
+
+    mod.updateClient = function(a1,a2,a3)
+        arg1, arg2, arg3 = ogfunc(a1,a2,a3)
+        
+        if NoSway then
+            a1.springs.sway.Speed = 0
+            a1.springs.walkCycle.Speed = 0
+            a1.springs.sprintCycle.Speed = 0
+            a1.springs.strafeTilt.Speed = 0
+            a1.springs.jumpTilt.Speed = 0
+        else
+            a1.springs.sway.Speed = 4
+            a1.springs.walkCycle.Speed = 4
+            a1.springs.sprintCycle.Speed = 4
+            a1.springs.strafeTilt.Speed = 4
+            a1.springs.jumpTilt.Speed = 4
+        end
+
+        return arg1, arg2, arg3
+    end
+end
+
+--instantequip
+
+workspace.Camera.ChildAdded:Connect(function(ch)
+    if InstaEquip and ch:IsA("Model") then
+        task.wait(0.015)
+        for i,v in ch.Humanoid.Animator:GetPlayingAnimationTracks() do
+            if v.Animation.Name == "Equip" then
+                --v:AdjustSpeed(15)
+                v.TimePosition = v.Length - 0.01
+            end
+        end
+    end
+end)
+
+--hitsounds
+localplayer.CharacterAdded:Connect(function(lchar)
+    local maingui = localplayer.PlayerGui:WaitForChild("MainGui")
+    if maingui then
+        maingui.ChildAdded:Connect(function(Sound)
+            if Sound:IsA("Sound") and hitsoundbool then
+                if Sound.SoundId == "rbxassetid://4585351098" or Sound.SoundId == "rbxassetid://4585382589" then --headshot
+                    Sound.SoundId = hitsoundlib[hitsoundhead]
+                elseif Sound.SoundId == "rbxassetid://4585382046" or Sound.SoundId == "rbxassetid://4585364605" then --bodyshot
+                    Sound.SoundId = hitsoundlib[hitsoundbody]
+                end
+            end
+        end)
+    end
+end)
+localplayer.PlayerGui.MainGui.ChildAdded:Connect(function(Sound)
+    if Sound:IsA("Sound") and hitsoundbool then
+        if Sound.SoundId == "rbxassetid://4585351098" or Sound.SoundId == "rbxassetid://4585382589" then --headshot
+            Sound.SoundId = hitsoundlib[hitsoundhead]
+        elseif Sound.SoundId == "rbxassetid://4585382046" or Sound.SoundId == "rbxassetid://4585364605" then --bodyshot
+            Sound.SoundId = hitsoundlib[hitsoundbody]
+        end
+    end
+end)
+
 --esp--
 
 local function setupesp(obj, dtype, otype1)
@@ -3425,6 +3532,15 @@ end
     end
 
     choosetarget() -- aim part
+
+    if snaplinebool and aimtargetpart then
+        aimsnapline.Visible = true
+        local headpos = wcamera:WorldToViewportPoint(aimtargetpart.Position)
+        aimsnapline.From = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
+        aimsnapline.To = Vector2.new(headpos.X, headpos.Y)
+    else
+        aimsnapline.Visible = false
+    end
 
     for dobj, info in esptable do --esp part
         local dtype = info.type
