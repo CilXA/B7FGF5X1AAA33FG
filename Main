@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -267,25 +267,25 @@ local esptable = {}
 healthtargetname = false
 admintargetname = false
 
-espbool = false
-esptogglebind = Enum.KeyCode.Home
-espname = false
-esphp = false
-espdistance = false
-espbots = false
-esphigh = false
-espskelet = false
-espdead = false
-esphotbar = false
-esploot = false
-espexit = false
-esptextline = true
-esprenderdist = 1800
-espchamsfill = 1
-espchamsline = 0
-esptextsize = 17
-espfillcolor = Color3.fromRGB(77, 210, 255)
-esplinecolor = Color3.fromRGB(77, 210, 255)
+espbool = false -- main toggle for everything if this is false and everything else is true nothing will show, if this is true and everything is on it will show everything
+esptogglebind = Enum.KeyCode.Home -- espbind (dont change)
+espname = false -- esp name toggle
+esphp = false -- esp health toggle
+espdistance = false -- esp distance toggle
+espbots = false -- include bots in esp
+esphigh = false -- this is higghlight (chams)
+espskelet = false -- u can get rid of this
+espdead = false -- dead body esp
+esphotbar = false -- whatever the player is holding
+esploot = false -- u can get rid of this
+espexit = false -- esp for exits, make a variable where it will say exitzones folder path
+esptextline = true -- text outline
+esprenderdist = 1800 -- render distance for esp
+espchamsfill = 1    --highlight (for chams)
+espchamsline = 0    --highlight (for chams)
+esptextsize = 17    -- for drawing text
+espfillcolor = Color3.fromRGB(77, 210, 255) --highlight (for chams)
+esplinecolor = Color3.fromRGB(77, 210, 255) --highlight (for chams)
 
 silentaimbind = Enum.KeyCode.H
 autoshootbind = Enum.KeyCode.K
@@ -304,8 +304,8 @@ tracertexture = nil
 local tracertextures = {
     ["None"] = nil,
     ["Neon"] = "http://www.roblox.com/asset/?id=71799812889976",
-    ["Lightning"] = "http://www.roblox.com/asset/?id=77261843796788",
-    ["Star"] = "http://www.roblox.com/asset/?id=75056325012653"
+    ["Lightning"] = "http://www.roblox.com/asset/?id=7151778311",
+    ["Wide"] = "http://www.roblox.com/asset/?id=75056325012653"
 }
 
 local crosshair = Drawing.new("Circle")
@@ -343,7 +343,7 @@ local changerbool = false
 local changergrav = 95
 local changerspeed = 18
 local changerheight = 2
-local changerjump = 5
+local changerjump = 4
 
 local charsemiflybind = Enum.KeyCode.X
 local charsemifly = false
@@ -353,6 +353,7 @@ local charsemiflyspeed = 18
 local semifly_bodyvel = nil
 
 whisperNotificationToggle = false
+notifiedwhisper = false
 
 bunnyhop = false
 
@@ -810,6 +811,20 @@ miscfeatures:AddToggle('Whisper Alert', true, nil, function(v)
     end
 end)
 
+task.spawn(function()
+    while whisperNotificationToggle do
+        local weather = game:GetService("Lighting"):FindFirstChild("Weather")
+        if weather then
+            local var2 = weather:GetAttribute("WeatherStatus")
+            if var2 == "RiftEmission" and not notifiedwhisper then
+                Notify()
+                notifiedwhisper = true
+            end
+        end
+        task.wait(0.2)
+    end
+end)
+
 miscfeatures:AddButton('Reset',function() 
     game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
 end)
@@ -1041,13 +1056,6 @@ end)
 wh:AddToggle('Body', true, nil, function(v)
     espdead = v
 end)
---[[
-
-wh:AddToggle('Loot', true, nil, function(v)
-    esploot = v
-end)
-
-]]
 wh:AddToggle('Extract', true, nil, function(v)
     espexit = v
 end)
@@ -1092,7 +1100,7 @@ end)
 tracers:AddToggle('Enabled', true, nil, function(v)
     tracbool = v
 end)
-tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Star"}, 'Neon', function(a)
+tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Wide"}, 'Neon', function(a)
     tracertexture = tracertextures[a]
 end)
 tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
@@ -1811,16 +1819,16 @@ privatemods:AddSeparateBar()
 privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
     changerspeed = c
 end)
-privatemods:AddSlider('Player Jumppower', 25, 0, 1, function(c) 
+privatemods:AddSlider('Player Jumppower', 25, 0, 4, function(c) 
     changerjump = c
 end)
 
 privatemods:AddSeparateBar()
 
-privatemods:AddSlider('Player Hipheight', 15, 0, 1, function(c) 
+privatemods:AddSlider('Player Hipheight', 15, 0, 2, function(c) 
     changerheight = c
 end)
-privatemods:AddSlider('Player Gravity', 300, 0, 50, function(c) 
+privatemods:AddSlider('Player Gravity', 300, 0, 95, function(c) 
     changergrav = c
 end)
 
@@ -1871,9 +1879,15 @@ end)
 --tracers--
 
 local function runtracer(start, endp)
+    -- Use tracertextures to find the texture ID if tracertexture is a key
+    if tracertextures[tracertexture] then
+        tracertexture = tracertextures[tracertexture]
+    end
+
     local beam = Instance.new("Beam")
     beam.Name = "LineBeam"
     beam.Parent = game.Workspace
+
     local startpart = Instance.new("Part")
     startpart.CanCollide = false
     startpart.CanQuery = false
@@ -1882,6 +1896,7 @@ local function runtracer(start, endp)
     startpart.Parent = workspace
     startpart.Anchored = true
     startpart.Size = Vector3.new(0.01, 0.01, 0.01)
+
     local endpart = Instance.new("Part")
     endpart.CanCollide = false
     endpart.CanQuery = false
@@ -1890,36 +1905,42 @@ local function runtracer(start, endp)
     endpart.Parent = workspace
     endpart.Anchored = true
     endpart.Size = Vector3.new(0.01, 0.01, 0.01)
+
     beam.Attachment0 = Instance.new("Attachment", startpart)
     beam.Attachment1 = Instance.new("Attachment", endpart)
-    beam.Color = ColorSequence.new(traccolor,  traccolor)
+    beam.Color = ColorSequence.new(traccolor, traccolor)
     beam.Width0 = 0.05
     beam.Width1 = 0.05
     beam.FaceCamera = true
     beam.Transparency = NumberSequence.new(0)
     beam.LightEmission = 1
 
-    if tracertexture ~= nil then
+    if tracertexture then
         beam.Texture = tracertexture
-        if tracertexture == "http://www.roblox.com/asset/?id=77261843796788" then
-            beam.TextureSpeed = 3
-            beam.TextureLength = (endp - start).Magnitude
+        beam.TextureSpeed = 3
+        beam.TextureLength = (endp - start).Magnitude
+
+        if tracertexture == "http://www.roblox.com/asset/?id=75056325012653" then
             beam.Width0 = 0.3
             beam.Width1 = 0.3
-        elseif tracertexture == "http://www.roblox.com/asset/?id=75056325012653" then
-            beam.TextureSpeed = 3
-            beam.TextureLength = (endp - start).Magnitude
-            beam.Width0 = 0.3
-            beam.Width1 = 0.3
+        elseif tracertexture == "http://www.roblox.com/asset/?id=7151778311" then
+            beam.Width0 = 0.2
+            beam.Width1 = 0.2
         end
     end
 
     wait(tracwait)
 
+    for i = 0, 1, 0.1 do
+        beam.Transparency = NumberSequence.new(i)
+        wait(0.01)
+    end
+
     beam:Destroy()
     startpart:Destroy()
     endpart:Destroy()
 end
+
 
 --silent aim--
 
@@ -2591,13 +2612,13 @@ local function setupesp(obj, dtype, otype1)
 
     if dobj == nil or tableinfo == nil then return end
 
-    local function selfdestruct()
+    local function sd()
         if dtype == "Highlight" then
             dobj.Enabled = false
             dobj:Destroy()
         else
             dobj.Visible = false
-            dobj:Remove()
+            dobj:Destroy() -- Use :Destroy() instead of :Remove()
         end
         if removing then
             removing:Disconnect()
@@ -2606,8 +2627,9 @@ local function setupesp(obj, dtype, otype1)
         return
     end
 
+
     if esptable[dobj] ~= nil then
-        selfdestruct()
+        sd()
         return
     else
         esptable[dobj] = tableinfo
@@ -2616,7 +2638,7 @@ local function setupesp(obj, dtype, otype1)
     removing = workspace.DescendantRemoving:Connect(function(what)
         if what == obj then
             esptable[dobj] = nil
-            selfdestruct()
+            sd()
         end
     end)
 end
@@ -2937,21 +2959,6 @@ end
 
 uis.InputBegan:Connect(onInventoryCheckerPressed)
 uis.InputEnded:Connect(onInventoryCheckerReleased)
-
--- whisper notifications
-if whisperZone then
-whisperZone.DescendantAdded:Connect(function(descendant)
-    if whisperNotificationToggle then
-        Notify("Exothium.xyz", "Whisper has spawned", 5)
-    end
-end)
-
-whisperZone.DescendantRemoving:Connect(function(descendant)
-    if whisperNotificationToggle then
-        Notify("Exothium.xyz", "Whisper has despawned", 5)
-    end
-end)
-end
 
 -- anti aim
 
