@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -181,7 +181,7 @@ if libraryxxt == false then
     Notify("Exothium.xyz", "DL-T", 0.3)
 end
 ]]
-if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil then
+if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil and string.match(exec, "Swift") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
 else
@@ -189,7 +189,7 @@ else
     Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
-if exec == "Seliware" or exec == "Nihon" or exec == "AWP" then
+if exec == "Seliware" or exec == "Nihon" or exec == "AWP" or exec == "Swift" then
     Notify("Exothium.xyz", "".. exec .." is semi-supported, script might cause errors", 7)
 end
 if _G.exothiumxyz then
