@@ -168,7 +168,7 @@ if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Cha
 end
 
 wait(0.5)
---[[
+
 local libraryxxt = pcall(function()
     local drawing199 = Drawing.new("Square")
     drawing199.Visible = false
@@ -180,7 +180,7 @@ if libraryxxt == false then
     loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
     Notify("Exothium.xyz", "DL-T", 0.3)
 end
-]]
+
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil and string.match(exec, "Swift") == nil then
     Notify("Exothium.xyz", "".. exec .." is not supported", 10)
     return
