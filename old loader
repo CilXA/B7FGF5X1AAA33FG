@@ -1,15 +1,14 @@
 local startTime = os.clock()
-
 local HWID_Whitelist = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/HWID"))()
 local Key_Whitelist = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/KEYS"))()
 
 local CurrentHWID = game:GetService("RbxAnalyticsService"):GetClientId()
 
-print("[[ Exoguard V3 || Exoguard V6.0.2 || Current Version ]]")
-
 local keyIsValid = false
+print("[[ Exoguard V3 || Exoguard V6.0.3 || Current Version ]]")
+
 for _, v in ipairs(Key_Whitelist) do
-    if v == key then
+    if v == _G.key then
         keyIsValid = true
         break
     end
@@ -30,12 +29,9 @@ if keyIsValid then
     if hwidIsValid then
         print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
         print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
-
         local elapsedTime = os.clock() - startTime
         print("[[ Exoguard V3 || Exothium.xyz || Loading Script || Loaded in: " .. string.format("%.6f", elapsedTime) .. " secs ]]")
-
         loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
-
         print("[[ Exoguard V3 || Exothium.xyz || Script Loaded Successfully ]]")
     else
         print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
