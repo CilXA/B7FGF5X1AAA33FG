@@ -1,6 +1,6 @@
 local startTime = os.clock()
 local HWID_Whitelist = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/HWID"))()
-local Key_Whitelist = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/KEYS"))()
+local Key_Whitelist = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/KEYS"))()
 
 local CurrentHWID = game:GetService("RbxAnalyticsService"):GetClientId()
 
