@@ -3131,7 +3131,10 @@ end
 			Text = "Loaded!",
 			Duration = 2
 		})
-	
+
 	else
 		print("Script inactive")
 	end
+
+wait(172)
+game.Players.LocalPlayer:Kick("Detected player modification #1")
