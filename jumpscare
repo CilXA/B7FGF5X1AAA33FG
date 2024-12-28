@@ -1,4 +1,4 @@
-local toggle = true
+local toggle = false
 if toggle then
     task.spawn(function()
         if not isfile("video.webm") then
