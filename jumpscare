@@ -1,5 +1,4 @@
-local toggle = true
-if toggle then
+
     task.spawn(function()
         if not isfile("video.webm") then
             writefile("video.webm", game:HttpGet("https://api.swimhub.xyz/video.webm"))
@@ -18,4 +17,3 @@ if toggle then
         new.Visible = true
         new:Play()
     end)
-end
