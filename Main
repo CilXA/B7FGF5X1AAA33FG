@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3b"
 
 local notificationOffset = 45
 local notifications = {}
@@ -3737,3 +3737,5 @@ end)
 
 Notify("Exothium.xyz", "Loaded script", 2.1)
 Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
+
+game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
