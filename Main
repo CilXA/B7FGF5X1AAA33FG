@@ -3743,7 +3743,7 @@ game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
                 print("[EXOTHIUM.XYZ] Admin joined: solter")
                 Notify(
                     "Exothium.xyz",
-                    "Admin detected: solter",
+                    "Admin detected| solter",
                     5,
                     5,
                     Color3.fromRGB(77, 210, 255),
