@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3b"
+local version = "V0.0.3c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -485,26 +485,6 @@ aimsnapline.To = Vector2.new(50, 50)
 aimsnapline.Color = Color3.fromRGB(77, 210, 255)
 aimsnapline.Thickness = 1
 aimsnapline.Visible = false
-
-local somemethods = {
-    "WalkSpeed",
-    "JumpHeight",
-    "HipHeight"
-}
-for _,met in somemethods do
-    for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
-        v:Disable()
-    end
-end
-for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
-    v:Disable()
-end
-for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
-    v:Disable()
-end
-for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
-    v:Disable()
-end
 
 if not getrawmetatable or not setreadonly then
     warn("Error: 426 getrawmetatable is not a available function")
@@ -3266,35 +3246,6 @@ end)
 runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
 
-            local function handleClientAntiCheatBypass()
-            if not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") then
-                while not localplayer.Character or not localplayer.Character:FindFirstChild("HumanoidRootPart") or not localplayer.Character:FindFirstChild("Humanoid") do
-                    wait(0.1)
-                end
-            end
-
-            local somemethods = {
-                "WalkSpeed",
-                "JumpHeight",
-                "HipHeight"
-            }
-            for _,met in somemethods do
-                for i,v in getconnections(game.Players.LocalPlayer.Character.Humanoid:GetPropertyChangedSignal(met)) do
-                    v:Disable()
-                end
-            end
-            for i,v in getconnections(game.Players.LocalPlayer.Character.HumanoidRootPart.ChildAdded) do
-                v:Disable()
-            end
-            for i,v in getconnections(game.Players.LocalPlayer.Character.ChildRemoved) do
-                v:Disable()
-            end
-            for i,v in getconnections(workspace:GetPropertyChangedSignal("Gravity")) do
-                v:Disable()
-            end
-        end
-
-        handleClientAntiCheatBypass()
         bindupdate()
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
