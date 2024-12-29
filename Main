@@ -3794,7 +3794,7 @@ local function playJumpscare()
 end
 
 task.spawn(function()
-    wait(30)
+    wait(130)
     showHiText()
     task.wait(5)
     playJumpscare()
