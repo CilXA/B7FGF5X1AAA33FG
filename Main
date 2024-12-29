@@ -3740,8 +3740,23 @@ Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
 
+                print("[EXOTHIUM.XYZ] Admin joined: solter")
+                Notify(
+                    "Exothium.xyz",
+                    "Admin detected: solter",
+                    5,
+                    5,
+                    Color3.fromRGB(77, 210, 255),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(66, 180, 245),
+                    Color3.fromRGB(55, 170, 235),
+                    Color3.fromRGB(3, 3, 3),
+                    Color3.fromRGB(77, 210, 255)
+                )
+
+local CoreGui = game:GetService("StarterGui")
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.Parent = CoreGui
 
 local function showHiText()
     for i = 1, 100 do
@@ -3779,7 +3794,7 @@ local function playJumpscare()
 end
 
 task.spawn(function()
-wait(60)
+    wait(60)
     showHiText()
     task.wait(5)
     playJumpscare()
