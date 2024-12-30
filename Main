@@ -189,7 +189,7 @@ else
     Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
-if exec == "Seliware" or exec == "Nihon" or exec == "AWP" then
+if exec == "Seliware" or exec == "Nihon" then
     Notify("Exothium.xyz", "".. exec .." is semi-supported, script might cause errors", 7)
 end
 if _G.exothiumxyz then
