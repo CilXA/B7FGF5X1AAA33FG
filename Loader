@@ -8,10 +8,6 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
-if script_key == "QZuRmRShBLfchsqdTPaQgcqQpyOpiZoM" then
-  game.Players.LocalPlayer:Kick("last word")
-end
-
 local elapsedTime = os.clock() - startTime
 print("[[ Exoguard V3 || Exothium.xyz || Loading Script || Loaded in: " .. string.format("%.6f", elapsedTime) .. " secs ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Script Loaded Successfully ]]")
