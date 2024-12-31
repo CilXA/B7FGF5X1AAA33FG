@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c x"
+local version = "V0.0.3c"
 
 local notificationOffset = 45
 local notifications = {}
@@ -624,7 +624,7 @@ aim:AddToggle('Auto Shoot', true, autoshootbind, function(v)
     aimtrigger = v
 end)
 
-aim:AddToggle('[!] Resolver', true, Enum.KeyCode.End, function(v)
+aim:AddToggle('Animation Resolver', true, Enum.KeyCode.End, function(v)
     resolver = v
 end)
 
@@ -2975,23 +2975,16 @@ end
 
 spawn(function()
     while true do
-        if resolver then
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player ~= localplayer then
-                    local character = player.Character
-                    if character then
-                        local hrp = character:FindFirstChild("HumanoidRootPart")
-                        if hrp then
-                            hrp.CFrame = CFrame.new(hrp.Position) * CFrame.Angles(0, 0, 0)
-                        end
-
-                        local humanoid = character:FindFirstChildOfClass("Humanoid")
-                        if humanoid then
-                            local animator = humanoid:FindFirstChildOfClass("Animator")
-                            if animator then
-                                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
-                                    track:Stop()
-                                end
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= localplayer then
+                local character = player.Character
+                if character then
+                    local humanoid = character:FindFirstChildOfClass("Humanoid")
+                    if humanoid then
+                        local animator = humanoid:FindFirstChildOfClass("Animator")
+                        if animator then
+                            for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                                track:Stop()
                             end
                         end
                     end
@@ -3001,6 +2994,7 @@ spawn(function()
         wait(0.02)
     end
 end)
+
 
 
 --fly--
