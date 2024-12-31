@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3c x"
 
 local notificationOffset = 45
 local notifications = {}
@@ -388,6 +388,8 @@ xrot = 0
 yrot = 0
 zrot = 0
 
+resolver = false
+
 local hitsoundbool = false
 local hitsoundhead = "Neverlose"
 local hitsoundbody = "Gamesense"
@@ -620,6 +622,10 @@ end)
 
 aim:AddToggle('Auto Shoot', true, autoshootbind, function(v)
     aimtrigger = v
+end)
+
+aim:AddToggle('[!] Resolver', true, Enum.KeyCode.End, function(v)
+    resolver = v
 end)
 
 aim:AddSeparateBar()
@@ -2964,6 +2970,38 @@ local function updateselfpos()
     end
     selftrack_data[10] = localplayer.Character.Head.Position
 end
+
+-- resolver
+
+spawn(function()
+    while true do
+        if resolver then
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player ~= localplayer then
+                    local character = player.Character
+                    if character then
+                        local hrp = character:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            hrp.CFrame = CFrame.new(hrp.Position) * CFrame.Angles(0, 0, 0)
+                        end
+
+                        local humanoid = character:FindFirstChildOfClass("Humanoid")
+                        if humanoid then
+                            local animator = humanoid:FindFirstChildOfClass("Animator")
+                            if animator then
+                                for _, track in ipairs(animator:GetPlayingAnimationTracks()) do
+                                    track:Stop()
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        wait(0.02)
+    end
+end)
+
 
 --fly--
 
