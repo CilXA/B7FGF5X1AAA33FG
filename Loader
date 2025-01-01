@@ -6,10 +6,6 @@ print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 print("[[ Exoguard V3 || Exothium.xyz || Checking HWID ]]")
 print("[[ Exoguard V3 || Exothium.xyz || ###✅### ]]")
 
-if script_key == "QZuRmRShBLfchsqdTPaQgcqQpyOpiZoM" then
-game.Players.LocalPlayer:Kick("Server Detected Exploiting")
-end
-
 loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/Main"))()
 
 local elapsedTime = os.clock() - startTime
