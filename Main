@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c"
+local version = "V0.0.3c x"
 
 local notificationOffset = 45
 local notifications = {}
@@ -2974,7 +2974,7 @@ end
 -- resolver
 
 spawn(function()
-    while true do
+    while resolver do
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= localplayer then
                 local character = player.Character
