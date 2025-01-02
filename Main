@@ -955,6 +955,20 @@ tarinfo:AddToggle({
     end
 })
 
+tarinfo:AddColor({
+    enabled = true,
+    text = "Target Info Theme",
+    tooltip = "Target Info Theme",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "TargetInfoColor",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        aimtargetname.Color = v
+    end
+})
+
 snapline:AddToggle({
     text = "Snapline Enabled",
     flag = "Snapline",
@@ -1019,7 +1033,7 @@ semifly:AddToggle({
     text = "Movement Toggle",
     tooltip = "Movement Toggle Keybind",
     mode = "toggle",
-    bind = Enum.KeyCode.X,
+    bind = "None",
     flag = "MovementToggleBind",
     state = false,
     nomouse = false,
@@ -1791,7 +1805,7 @@ tracers:AddColor({
     open = false,
     risky = false,
     callback = function(v)
-        traccolor.Color = Color3.fromRGB(v)
+        traccolor = Color3.fromRGB(v)
     end
 })
 
@@ -1854,12 +1868,19 @@ worldh:AddToggle({
     tooltip = "Enables/Disables Fog",
     flag = "NoFog",
     callback = function(v)
-        while v do task.wait()
-            game.Lighting.Atmosphere.Density = 0
-            game.Lighting.Atmosphere.Offset = 0
+        local atmosphere = game.Lighting:FindFirstChild("Atmosphere")
+        if atmosphere then
+            if v then
+                atmosphere.Density = 0
+                atmosphere.Offset = 0
+            else
+                atmosphere.Density = 1
+                atmosphere.Offset = 1
+            end
         end
     end
 })
+
 local prevAmbient = game.Lighting.Ambient
 local prevOutdoor = game.Lighting.OutdoorAmbient
 worldh:AddToggle({
@@ -2072,7 +2093,7 @@ end
     text = "Zoom",
     tooltip = "Zoom Keybind",
     mode = "toggle",
-    bind = Enum.KeyCode.C,
+    bind = "None",
     flag = "ZoomBind",
     state = false,
     nomouse = false,
@@ -2166,25 +2187,41 @@ inventorychecker:AddToggle({
     end
 })
 
+noEffectsActive = false
+
 camer:AddToggle({
     text = "No Effects",
     tooltip = "Enables/Disables Screen Effects",
     flag = "NoEffects",
     callback = function(v)
-        local noscreeneffects = v
-
-        while noscreeneffects do task.wait(0.1)
-        local pg = localplayer.PlayerGui
+        noEffectsActive = v
+        if noEffectsActive then
+            task.spawn(function()
+                while noEffectsActive do
+                    task.wait(0.1)
+                    local pg = localplayer.PlayerGui
+                    if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
+                        for i, v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
+                            if v:IsA("Frame") then
+                                v.Visible = false
+                            end
+                        end
+                    end
+                end
+            end)
+        else
+            local pg = localplayer.PlayerGui
             if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
-                for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
+                for i, v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
                     if v:IsA("Frame") then
-                        v.Visible = false
+                        v.Visible = true
                     end
                 end
             end
         end
     end
 })
+
 
 local finishCharacterCreation = rp:WaitForChild("Remotes"):WaitForChild("FinishCharacterCreation")
 
