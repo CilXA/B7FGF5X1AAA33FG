@@ -611,7 +611,7 @@ aim:AddList({
     multi = false,
     open = false,
     max = 4,
-    values = {"Head", "HeadTop", "Face", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg"},
+    values = {"Head", "HeadTop", "Face", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg", "Random"},
     risky = false,
     callback = function(v)
         aimpart = v
@@ -1869,13 +1869,16 @@ worldh:AddToggle({
     flag = "NoFog",
     callback = function(v)
         local atmosphere = game.Lighting:FindFirstChild("Atmosphere")
+
+        local old_dens = atmosphere.Density
+        local old_offset = atmosphere.Offset
         if atmosphere then
             if v then
                 atmosphere.Density = 0
                 atmosphere.Offset = 0
             else
-                atmosphere.Density = 1
-                atmosphere.Offset = 1
+                atmosphere.Density = old_dens
+                atmosphere.Offset = old_offset
             end
         end
     end
