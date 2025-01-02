@@ -601,11 +601,15 @@ function self:LoadConfig(name)
         setByConfig = true
         for flag, value in next, http:JSONDecode(cfg) do
             -- Log every flag encountered in the config
-            print("Loading flag: " .. flag) -- Add logging for every flag
+            print("Loading flag: " .. flag)  -- Log flag loading
 
             local option = library.options[flag]
             if option then
-                print("Loaded flag: " .. flag) -- Log successfully loaded flags
+                print("Found option for flag: " .. flag)  -- Log when option found for a flag
+
+                -- Log the class type of the flag (important for identifying mismatches)
+                print("Option class for " .. flag .. ": " .. tostring(option.class))  -- Log the class type
+
                 if option.class == 'toggle' then
                     option:SetState(value == nil and false or (value == 1 and true or false))
                 elseif option.class == 'slider' then
@@ -634,6 +638,7 @@ function self:LoadConfig(name)
         self:SendNotification('Error loading config: '..tostring(e)..'. ('..tostring(name)..')', 5, c3new(1, 0, 0))
     end
 end
+
 
 function self:SaveConfig(name)
     if not self:GetConfig(name) then
@@ -4799,5 +4804,5 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
-print('v291')
+print("439")
 return library
