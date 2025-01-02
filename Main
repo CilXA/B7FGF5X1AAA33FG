@@ -1335,10 +1335,13 @@ privatefeatures:AddSeparator({
 })
 
 privatefeatures:AddToggle({
-    text = "Main Toggle",
+    text = "Player Exploit Toggle",
     flag = "Abx2ay2u654fdt",
     callback = function(v)
         changerbool = v
+            if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
+                localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
+            end
     end
 })
 
