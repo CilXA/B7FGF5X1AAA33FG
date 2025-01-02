@@ -103,7 +103,6 @@ local localplayer = game.Players.LocalPlayer
 local runs = game:GetService("RunService")
 local rp = game:GetService("ReplicatedStorage")
 local aiZones = workspace:FindFirstChild("AiZones")
-local whisperZone = aiZones and aiZones:FindFirstChild("Whisper")
 local stg = localplayer:WaitForChild("PlayerGui")
 local sg = stg:FindFirstChild("Exothium.xyz") or Instance.new("ScreenGui", stg); sg.Name = "Exothium.xyz"; sg.IgnoreGuiInset = true ;sg.ResetOnSpawn = false
 local uis = game:GetService("UserInputService")
@@ -185,10 +184,6 @@ inventoryCheckerBind = Enum.KeyCode.Backquote
 tracbool = false
 tracwait = 1
 traccolor = Color3.fromRGB(77, 210, 255)
-
-tracbool = false
-tracwait = 1
-traccolor = Color3.fromRGB(77, 210, 255)
 tracertexture = nil
 local tracertextures = {
     ["None"] = nil,
@@ -240,9 +235,6 @@ local charsemiflydist = 6
 local charsemiflydistunlock = false
 local charsemiflyspeed = 18
 local semifly_bodyvel = nil
-
-whisperNotificationToggle = false
-notifiedwhisper = false
 
 bunnyhop = false
 
