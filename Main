@@ -59,7 +59,7 @@ function getcurrentammo(gun)
 end
 
 if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-    library:SendNotification(("Character is missing, script will load when spawned in"), 5)
+    library:SendNotification(("Character is missing, script will load when spawned in"), 10)
     
     while game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") do
         wait(0.2)
@@ -434,8 +434,118 @@ local camzoom = other:AddSection("Zoom", 1)
 local inventorychecker = other:AddSection("Inventory Checker", 2)
 local camer = other:AddSection("Effects", 1)
 local hitsounds = other:AddSection("Hitsounds", 2)
+local extrafeatures = other:AddSection("Extra Features", 2)
 
 --aim:SetText("Text")
+
+extrafeatures:AddButton({
+    enabled = true,
+    text = "Unlock Boss",
+    tooltip = "Unlocks the Boss Trader (NPC)",
+    confirm = false,
+    risky = false,
+    callback = function()
+            local npc = game.Workspace.Boss
+    npc:SetAttribute("Hidden", false)
+
+    for _, part in pairs(npc:GetChildren()) do
+        if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
+            part.Transparency = 0
+        end
+    end
+    end
+})
+
+extrafeatures:AddButton({
+    enabled = true,
+    text = "Spawn UAZ",
+    tooltip = "Spawns a vehicle",
+    confirm = false,
+    risky = false,
+    callback = function()
+        local player = game.Players.LocalPlayer
+local plr = player
+
+if not plr.Character or not plr.Character:FindFirstChildOfClass("Humanoid") then 
+    return library:SendNotification(("Error: No character detected."), 3)
+end
+
+local uaz, dist = nil, math.huge
+for i, v in pairs(workspace:WaitForChild("Vehicles"):GetChildren()) do
+    if v:FindFirstChild("Body") and v.Body:FindFirstChildOfClass("MeshPart") then
+        local vehiclePos = v.Body:FindFirstChildOfClass("MeshPart").Position
+        local camPos = workspace.CurrentCamera.CFrame.p
+        local distance = (vehiclePos - camPos).Magnitude
+        if dist > distance then
+            dist = distance
+            uaz = v
+        end
+    end
+end
+
+if not uaz then 
+    return library:SendNotification(("Error: No car found."), 8)
+end
+
+local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
+if humanoid then
+    for i, v in ipairs(uaz:GetDescendants()) do
+        if v:IsA('Seat') and v.Name == 'SeatFR' then
+            v:Sit(humanoid)
+        end
+    end
+end
+
+wait(0.2)
+
+for i = 1, 2 do
+    game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
+        ["Vehicle"] = uaz,
+        ["Action"] = "Enter",
+        ["Door"] = uaz.Body.FRdoor.FR_Door
+    })
+    wait(0.2)
+end
+
+uaz.Remotes.ExitSeat:FireServer()
+wait(0.1)
+
+game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
+    ["Vehicle"] = uaz,
+    ["Action"] = "Exit",
+    ["Door"] = uaz.Body.FRdoor.FR_Door
+})
+
+uaz.Remotes.ExitSeat:FireServer()
+wait(1)
+
+player.Character:FindFirstChildOfClass('Humanoid'):Move(Vector3.new(0, 10, 0))
+library:SendNotification(("Spawned UAZ."), 5)
+
+    end
+})
+
+extrafeatures:AddButton({
+    enabled = true,
+    text = "Quick Use",
+    tooltip = "Quickly uses a item without the animation",
+    confirm = false,
+    risky = false,
+    callback = function()
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Consume"):FireServer()
+    end
+})
+
+extrafeatures:AddButton({
+    enabled = true,
+    text = "Reset",
+    tooltip = "Resets your character",
+    confirm = true,
+    risky = false,
+    callback = function()
+        game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
+    end
+})
 
 aim:AddToggle({
     text = "Silent Aim",
@@ -884,17 +994,31 @@ snapline:AddColor({
 })
 
 local function movementtoggle(v)
-    if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
-        if v == false then
-			semifly_bodyvel:Destroy()
-		elseif v == true then
-			semifly_bodyvel = Instance.new("BodyVelocity", localplayer.Character.HumanoidRootPart)
-			semifly_bodyvel.Velocity = Vector3.new(0,0,0)
-		end
+    if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") and localplayer.Character:FindFirstChild("Humanoid") then
+        if v then
+            if not semifly_bodyvel then
+                semifly_bodyvel = Instance.new("BodyVelocity", localplayer.Character.HumanoidRootPart)
+                semifly_bodyvel.Velocity = Vector3.new(0, 0, 0)
+                semifly_bodyvel.MaxForce = Vector3.new(1e4, 1e4, 1e4)
+            end
+        else
+            if semifly_bodyvel then
+                semifly_bodyvel:Destroy()
+                semifly_bodyvel = nil
+            end
+        end
 
-		localplayer.Character.Humanoid.PlatformStand = not localplayer.Character.Humanoid.PlatformStand 
+        local humanoid = localplayer.Character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.PlatformStand = v
+        end
+
         charsemifly = v
     else
+        if semifly_bodyvel then
+            semifly_bodyvel:Destroy()
+            semifly_bodyvel = nil
+        end
         charsemifly = false
     end
 end
@@ -902,9 +1026,26 @@ end
 semifly:AddToggle({
     text = "Movement Toggle",
     state = false,
-    risky = false,
+    risky = true,
     flag = "MovementToggle",
     callback = function(v)
+        movementtoggle(v)
+    end
+}):AddBind({
+    enabled = true,
+    text = "Movement Toggle",
+    tooltip = "Movement Toggle Keybind",
+    mode = "toggle",
+    bind = Enum.KeyCode.X,
+    flag = "ToggleKey_5",
+    state = false,
+    nomouse = false,
+    risky = false,
+    noindicator = false,
+    callback = function(v)
+        movementtoggle(v)
+    end,
+    keycallback = function(v)
         movementtoggle(v)
     end
 })
@@ -1258,7 +1399,7 @@ privatefeatures:AddSlider({
     dragging = true,
     focused = false,
     min = 0,
-    max = 25,
+    max = 300,
     increment = 1,
     callback = function(v)
         changergrav = v
@@ -1486,7 +1627,6 @@ wh:AddSlider({
 })
 
 wh:AddToggle({
-    enabled = true,
     text = "Text Outline",
     tooltip = "Adds a Text Outline to ESP",
     flag = "v5ETextOutlinet543x54",
@@ -3989,6 +4129,8 @@ end)
 
 local Time = (string.format("%."..tostring(Decimals).."f", os.clock() - Clock))
 library:SendNotification(("Loaded in "..tostring(Time).."s"), 6)
+
+movementtoggle(false); charsemifly = false
 
 --[[
     --Window1:SetOpen(false)
