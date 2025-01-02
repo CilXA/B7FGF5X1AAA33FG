@@ -593,23 +593,24 @@ function library:init()
 function self:LoadConfig(name)
     local cfg = self:GetConfig(name)
     if not cfg then
-        self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1,0,0))
+        self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1, 0, 0))
         return
     end
 
     local s, e = pcall(function()
         setByConfig = true
-        for flag, value in next, http:JSONDecode(cfg) do
-            -- Log every flag encountered in the config
-            print("Loading flag: " .. flag)  -- Log flag loading
+        local configData = http:JSONDecode(cfg)
 
+        -- Iterate over all keys (flags) in the decoded config data
+        for flag, value in next, configData do
             local option = library.options[flag]
+
+            -- Check if the option exists in library.options
             if option then
-                print("Found option for flag: " .. flag)  -- Log when option found for a flag
+                -- Log the class of the option and its corresponding flag
+                print("Loading flag: " .. flag .. " with option class: " .. tostring(option.class))
 
-                -- Log the class type of the flag (important for identifying mismatches)
-                print("Option class for " .. flag .. ": " .. tostring(option.class))  -- Log the class type
-
+                -- Process the value based on the option class
                 if option.class == 'toggle' then
                     option:SetState(value == nil and false or (value == 1 and true or false))
                 elseif option.class == 'slider' then
@@ -623,10 +624,15 @@ function self:LoadConfig(name)
                     option:Select(value == nil and '' or value)
                 elseif option.class == 'box' then
                     option:SetInput(value == nil and '' or value)
+                else
+                    print("Unhandled class type: " .. option.class .. " for flag: " .. flag)
                 end
+
+                -- Log that the flag was successfully loaded
+                print("Successfully loaded flag: " .. flag)
             else
-                -- Log missing flags or flags not in library.options
-                print("Flag not found in options: " .. flag)
+                -- Log when a flag is not found in library.options
+                print("Flag not found in library.options: " .. flag)
             end
         end
         setByConfig = false
@@ -4804,5 +4810,5 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
-print("439")
+print("EXOTHIUM_")
 return library
