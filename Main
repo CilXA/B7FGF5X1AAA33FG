@@ -1055,6 +1055,22 @@ semifly:AddSlider({
     end
 })
 
+semifly:AddToggle({
+    text = "Unlock Height Distance",
+    flag = "Ashgrgay223rt",
+    risky = true,
+    callback = function(v)
+    charsemiflydistunlock = v
+    local oldsemiflydist = charsemiflydist
+
+    if charsemiflydistunlock then
+        charsemiflydist = 15000
+    else
+        charsemiflydist = oldsemiflydist
+    end
+    end
+})
+
 semifly:AddSlider({
     enabled = true,
     text = "Speed",
