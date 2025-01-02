@@ -278,7 +278,7 @@ xrot = 0
 yrot = 0
 zrot = 0
 
-resolver = false
+_G.resolver = false
 
 local hitmarkbool = false
 local hitmarkcolor = Color3.fromRGB(255,255,255)
@@ -606,7 +606,7 @@ aim:AddToggle({
     flag = "vAnimResolver",
     risky = true,
     callback = function(v)
-        resolver = v
+        _G.resolver = v
     end
 })
 
@@ -3474,7 +3474,7 @@ end
 -- resolver
 
 spawn(function()
-    while resolver do
+    while _G.resolver do
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= localplayer then
                 local character = player.Character
@@ -3491,7 +3491,7 @@ spawn(function()
                 end
             end
         end
-        task.wait(0.02) -- Use `task.wait` for better scheduling in modern Roblox Lua.
+        task.wait(0.02)
     end
 end)
 
@@ -3751,10 +3751,6 @@ end)
 
 runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
-    
-    local nil1, nil2, newglobalcurrentgun = getcurrentgun(localplayer)
-    globalcurrentgun = newglobalcurrentgun
-    globalammo = getcurrentammo(globalcurrentgun)
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         localplayer.Character.Humanoid.PlatformStand = false
