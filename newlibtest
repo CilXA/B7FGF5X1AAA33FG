@@ -4792,5 +4792,4 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
-print("exothium v241329598")
 return library
