@@ -589,13 +589,15 @@ function library:init()
             return readfile(self.cheatname..'/'..self.gamename..'/configs/'..name..self.fileext);
         end
     end
-
 function self:LoadConfig(name)
     local cfg = self:GetConfig(name)
     if not cfg then
         self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1, 0, 0))
         return
     end
+
+    local totalFlags = 0  -- This will track the total number of flags processed
+    local loadedFlags = 0 -- This will track how many flags are successfully loaded
 
     local s, e = pcall(function()
         setByConfig = true
@@ -605,10 +607,12 @@ function self:LoadConfig(name)
         for flag, value in next, configData do
             local option = library.options[flag]
 
+            -- Log the flag and option class type
+            print("Processing flag: " .. flag)
+
             -- Check if the option exists in library.options
             if option then
-                -- Log the class of the option and its corresponding flag
-                print("Loading flag: " .. flag .. " with option class: " .. tostring(option.class))
+                totalFlags = totalFlags + 1  -- Count every flag processed
 
                 -- Process the value based on the option class
                 if option.class == 'toggle' then
@@ -624,11 +628,10 @@ function self:LoadConfig(name)
                     option:Select(value == nil and '' or value)
                 elseif option.class == 'box' then
                     option:SetInput(value == nil and '' or value)
-                else
-                    print("Unhandled class type: " .. option.class .. " for flag: " .. flag)
                 end
 
-                -- Log that the flag was successfully loaded
+                -- Increment the count of successfully loaded flags
+                loadedFlags = loadedFlags + 1
                 print("Successfully loaded flag: " .. flag)
             else
                 -- Log when a flag is not found in library.options
@@ -639,12 +642,14 @@ function self:LoadConfig(name)
     end)
 
     if s then
-        self:SendNotification('Successfully loaded config: '..name, 5, c3new(0, 1, 0))
+        -- Output the number of flags processed and successfully loaded
+        self:SendNotification('Successfully loaded config: '..name..' ('..loadedFlags..' out of '..totalFlags..' flags loaded)', 5, c3new(0, 1, 0))
+        print("Total flags processed: " .. totalFlags .. ", successfully loaded: " .. loadedFlags)
     else
         self:SendNotification('Error loading config: '..tostring(e)..'. ('..tostring(name)..')', 5, c3new(1, 0, 0))
+        print("Error loading config: "..tostring(e))
     end
 end
-
 
 function self:SaveConfig(name)
     if not self:GetConfig(name) then
@@ -4810,5 +4815,4 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
-print("EXOTHIUM_")
 return library
