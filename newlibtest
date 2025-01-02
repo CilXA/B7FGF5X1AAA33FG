@@ -634,38 +634,42 @@ function self:SaveConfig(name)
         return
     end
 
-    local s,e = pcall(function()
+    local s, e = pcall(function()
         local cfg = {};
-        for flag,option in next, self.options or {} do
+        -- Dynamically fetch flags and process them
+        for flag, option in next, self.flags or {} do
             if option.class == 'toggle' then
                 cfg[flag] = option.state and 1 or 0;
-            elseif option.class == 'slider' and option.value then
+            elseif option.class == 'slider' then
                 cfg[flag] = option.value;
-            elseif option.class == 'bind' and option.bind then
-                cfg[flag] = option.bind.Name;
-            elseif option.class == 'color' and option.color then
+            elseif option.class == 'bind' then
+                cfg[flag] = option.bind and option.bind.Name or nil;
+            elseif option.class == 'color' then
                 cfg[flag] = {
-                    option.color.r or 0,
-                    option.color.g or 0,
-                    option.color.b or 0,
+                    option.color and option.color.r or 0,
+                    option.color and option.color.g or 0,
+                    option.color and option.color.b or 0,
                     option.trans or 0,
-                }
-            elseif option.class == 'list' and option.selected then
+                };
+            elseif option.class == 'list' then
                 cfg[flag] = option.selected;
-            elseif option.class == 'box' and option.input then
+            elseif option.class == 'box' then
                 cfg[flag] = option.input;
             end
         end
-        local path = self.cheatname..'/'..self.gamename..'/configs/'..name..self.fileext;
+
+        -- Construct the file path
+        local path = self.cheatname .. '/' .. self.gamename .. '/configs/' .. name .. self.fileext;
         writefile(path, http:JSONEncode(cfg));
     end)
 
     if s then
-        self:SendNotification('Successfully saved config: '..name, 5, c3new(0,1,0));
+        self:SendNotification('Successfully saved config: ' .. name, 5, c3new(0,1,0));
     else
-        self:SendNotification('Error saving config: '..tostring(e)..'. ('..tostring(name)..')', 5, c3new(1,0,0));
+        self:SendNotification('Error saving config: ' .. tostring(e) .. '. (' .. tostring(name) .. ')', 5, c3new(1,0,0));
     end
 end
+
 
 
     for i,v in next, self.images do
@@ -4792,4 +4796,5 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
+print("exothium lib loaded - NEWEST 1")
 return library
