@@ -534,7 +534,7 @@ aim:AddToggle({
     state = false,
     risky = true,
     tooltip = "Enables Silent Aim",
-    flag = "vSilentAim",
+    flag = "SilentAim",
     callback = function(v)
         aimbool = v
         if v == true then
@@ -549,7 +549,7 @@ aim:AddToggle({
     tooltip = "Silent Aim Keybind",
     mode = "toggle",
     bind = "None",
-    flag = "ToggleKey_1",
+    flag = "SilentAimBind",
     state = false,
     nomouse = false,
     risky = false,
@@ -573,7 +573,7 @@ aim:AddToggle({
 })
 aim:AddToggle({
     text = "Include NPCs",
-    flag = "TargetAI",
+    flag = "IncludeNPC",
     callback = function(v)
         aimbots = v
     end
@@ -595,7 +595,7 @@ aim:AddToggle({
 })
 aim:AddToggle({
     text = "Animation Resolver",
-    flag = "vAnimResolver",
+    flag = "AnimResolver",
     risky = true,
     callback = function(v)
         _G.resolver = v
@@ -607,6 +607,7 @@ aim:AddList({
     text = "Hitbox", 
     tooltip = "Aim Hitbox",
     selected = "Head",
+    flag = "Hitbox",
     multi = false,
     open = false,
     max = 4,
@@ -622,6 +623,7 @@ aim:AddList({
     text = "Method", 
     tooltip = "Aim Method",
     selected = "Instant Hit",
+    flag = "Method",
     multi = false,
     open = false,
     max = 4,
@@ -697,14 +699,14 @@ aim:AddSeparator({
 -- Button1:SetText("Text")
 aim:AddToggle({
     text = "FOV Visible",
-    flag = "FOVvisible",
+    flag = "FOVVisible",
     callback = function(v)
         aimfovcircle.Visible = v
     end
 })
 aim:AddToggle({
     text = "Dynamic FOV",
-    flag = "sefsfe",
+    flag = "DynamicFOV",
     callback = function(v)
         aimdynamicfov = v
     end
@@ -733,7 +735,7 @@ aim:AddColor({
     text = "FOV Color",
     tooltip = "FOV Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_1",
+    flag = "FOVColor",
     trans = 0,
     open = false,
     risky = false,
@@ -745,7 +747,7 @@ aim:AddColor({
 
 gunmods:AddToggle({
     text = "Rapid Fire",
-    flag = "dhftdfjhtydjtfy",
+    flag = "RapidFire",
     risky = true,
     callback = function(v)
             RapidFire = v
@@ -769,7 +771,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "Unlock Firemodes",
-    flag = "Ashetrshert",
+    flag = "UnlockFiremodes",
     callback = function(v)
         UnlockFiremodes = v
     end
@@ -777,7 +779,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "Instant Equip",
-    flag = "Ashetrsdwawdert",
+    flag = "InstantEquip",
     callback = function(v)
         InstaEquip = v
     end
@@ -785,7 +787,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "Wallbang",
-    flag = "Ashetgrdrshert",
+    flag = "Wallbang",
     callback = function(v)
         aimbang = v
     end
@@ -793,7 +795,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "No Recoil",
-    flag = "gdfAshetrshert",
+    flag = "NoRecoil",
     callback = function(v)
         			NoRecoil = v
 			if NoRecoil and rp:FindFirstChild("AmmoTypes") then
@@ -819,7 +821,7 @@ local reloadRemote = rp:WaitForChild("Remotes"):WaitForChild("Reload")
 
 gunmods:AddToggle({
     text = "Instant Reload",
-    flag = "Ashetrsdfshert",
+    flag = "InstantReload",
     callback = function(v)
             InstaReload = v
     if InstaReload then
@@ -833,7 +835,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "No Drag",
-    flag = "Ashetrshfesert",
+    flag = "NoDrag",
     callback = function(v)
         	GunDrag = v
 	if GunDrag and rp:FindFirstChild("AmmoTypes") then
@@ -857,7 +859,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "No Sway",
-    flag = "Ashetrssferhert",
+    flag = "NoSway",
     callback = function(v)
         NoSway = v
     end
@@ -865,7 +867,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "No Projectile Drop",
-    flag = "Ashetrssferhert",
+    flag = "NoProjectileDrop",
     risky = true,
     callback = function(v)
         	NoProjectileDrop = v
@@ -890,7 +892,7 @@ gunmods:AddToggle({
 
 gunmods:AddToggle({
     text = "Bullet Tracer",
-    flag = "Ashetdsrssferhert",
+    flag = "vBulletTracer",
     callback = function(v)
         	BulletTracer = v
 	if BulletTracer and rp:FindFirstChild("AmmoTypes") then
@@ -916,7 +918,7 @@ gunmods:AddSlider({
     enabled = true,
     text = "Burstfire",
     tooltip = "Shoots multiple bullets at once.",
-    flag = "dtrhdhh",
+    flag = "Burstfire",
     suffix = "",
     dragging = true,
     focused = false,
@@ -925,13 +927,13 @@ gunmods:AddSlider({
     increment = 1,
     risky = true,
     callback = function(v)
-        BurstFire = v
+        multitaps = v
     end
 })
 
 tarinfo:AddToggle({
     text = "Target Name",
-    flag = "Ashgrgretfesrssferhert",
+    flag = "TargetName",
     callback = function(v)
         aimtargetname.Visible = v
     end
@@ -939,7 +941,7 @@ tarinfo:AddToggle({
 
 tarinfo:AddToggle({
     text = "Health",
-    flag = "Ashgrgfsefsretrssferhert",
+    flag = "TargetHealth",
     callback = function(v)
         healthtargetname = v
     end
@@ -947,7 +949,7 @@ tarinfo:AddToggle({
 
 tarinfo:AddToggle({
     text = "Admin",
-    flag = "Ashgrgrefnghtrssferhert",
+    flag = "TargetAdmin",
     callback = function(v)
         admintargetname = v
     end
@@ -955,7 +957,7 @@ tarinfo:AddToggle({
 
 snapline:AddToggle({
     text = "Snapline Enabled",
-    flag = "As42t",
+    flag = "Snapline",
     callback = function(v)
         snaplinebool = v
     end
@@ -965,7 +967,7 @@ snapline:AddColor({
     text = "Snapline Color",
     tooltip = "Snapline Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_rsdg1",
+    flag = "SnaplineColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1018,7 +1020,7 @@ semifly:AddToggle({
     tooltip = "Movement Toggle Keybind",
     mode = "toggle",
     bind = Enum.KeyCode.X,
-    flag = "ToggleKey_5",
+    flag = "MovementToggleBind",
     state = false,
     nomouse = false,
     risky = false,
@@ -1035,7 +1037,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Max Height Distance",
     tooltip = "Movement Max Height Distance",
-    flag = "dtrhtgh4dhh",
+    flag = "MaxHeightDistance",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1049,7 +1051,7 @@ semifly:AddSlider({
 
 semifly:AddToggle({
     text = "Unlock Height Distance",
-    flag = "Ashgrgay223rt",
+    flag = "vUnlockHeightDistance",
     risky = true,
     callback = function(v)
     charsemiflydistunlock = v
@@ -1067,7 +1069,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Speed",
     tooltip = "Movement Speed",
-    flag = "dtr3htgh4dhh",
+    flag = "vMovementSpeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1086,7 +1088,7 @@ semifly:AddSeparator({
 
 semifly:AddToggle({
     text = "Custom Rotation",
-    flag = "Ashgrgretfesrssferhert",
+    flag = "CustomRotation",
     risky = true,
     callback = function(v)
         charantiaim_underground = v
@@ -1101,7 +1103,7 @@ local animTrackHH = humanoid:LoadAnimation(animationxx)
 
 semifly:AddToggle({
     text = "Play Falling Animation",
-    flag = "Ashg642xrt",
+    flag = "PlayFallAnim",
     risky = true,
     callback = function(v)
         fallanim = v
@@ -1122,7 +1124,7 @@ semifly:AddToggle({
 
 semifly:AddToggle({
     text = "UpAngle Toggle",
-    flag = "Ashgrgretfesrssferhert",
+    flag = "UpAngleToggle",
     risky = true,
     callback = function(v)
         upangletoggle = v
@@ -1133,7 +1135,7 @@ semifly:AddSlider({
     enabled = true,
     text = "UpAngle Value",
     tooltip = "UpAngle Value",
-    flag = "dxgfgdhh",
+    flag = "UpAngleValue",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1154,7 +1156,7 @@ semifly:AddSlider({
     enabled = true,
     text = "X Rotation",
     tooltip = "X Axis Rotation",
-    flag = "dx2gfgdhh",
+    flag = "XRotation",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1170,7 +1172,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Y Rotation",
     tooltip = "Y Axis Rotation",
-    flag = "dxYgfgdhh",
+    flag = "YRotation",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1186,7 +1188,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Z Rotation",
     tooltip = "Z Axis Rotation",
-    flag = "dxZgfgdhh",
+    flag = "ZRotation",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1205,7 +1207,7 @@ semifly:AddSeparator({
 
 semifly:AddToggle({
     text = "Spin X",
-    flag = "A4536dd",
+    flag = "SpinX",
     risky = false,
     callback = function(v)
             xspinning = v
@@ -1226,7 +1228,7 @@ semifly:AddSlider({
     enabled = true,
     text = "X Rotation Speed",
     tooltip = "X Axis Rotation Speed",
-    flag = "dxZgfgdhh",
+    flag = "SpinXSpeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1240,7 +1242,7 @@ semifly:AddSlider({
 
 semifly:AddToggle({
     text = "Spin Y",
-    flag = "A453f6dd",
+    flag = "SpinY",
     risky = false,
     callback = function(v)
             yspinning = v
@@ -1261,7 +1263,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Y Rotation Speed",
     tooltip = "Y Axis Rotation Speed",
-    flag = "dxZgfghhdhh",
+    flag = "SpinYSpeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1275,7 +1277,7 @@ semifly:AddSlider({
 
 semifly:AddToggle({
     text = "Spin Z",
-    flag = "A4zz536dd",
+    flag = "SpinZ",
     risky = false,
     callback = function(v)
             zspinning = v
@@ -1296,7 +1298,7 @@ semifly:AddSlider({
     enabled = true,
     text = "Z Rotation Speed",
     tooltip = "Z Axis Rotation Speed",
-    flag = "dxsssdwdZgfgdhh",
+    flag = "SpinZSpeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1330,7 +1332,7 @@ privatefeatures:AddSeparator({
 
 privatefeatures:AddToggle({
     text = "CFrame Speed Enabled",
-    flag = "Abay2u654fdt",
+    flag = "CFrameSpeedToggle",
     callback = function(v)
         speedbool = v
         startspeedhack()
@@ -1341,7 +1343,7 @@ privatefeatures:AddSlider({
     enabled = true,
     text = "CFrame Speed",
     tooltip = "CFrame Speed Value",
-    flag = "dxsssdwdZgfgdhh",
+    flag = "vCFrameSpeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1360,7 +1362,7 @@ privatefeatures:AddSeparator({
 
 privatefeatures:AddToggle({
     text = "Player Exploit Toggle",
-    flag = "Abx2ay2u654fdt",
+    flag = "PlayerExploitToggle",
     callback = function(v)
         changerbool = v
             if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
@@ -1373,7 +1375,7 @@ privatefeatures:AddSlider({
     enabled = true,
     text = "Player Walkspeed",
     tooltip = "Walkspeed Value",
-    flag = "dxsssdwd234rZgfgdhh",
+    flag = "vWalkspeed",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1389,7 +1391,7 @@ privatefeatures:AddSlider({
     enabled = true,
     text = "Player Jumppower",
     tooltip = "Jumppower Value",
-    flag = "dwa2dxsssdwd234rZgfgdhh",
+    flag = "vJumppower",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1405,7 +1407,7 @@ privatefeatures:AddSlider({
     enabled = true,
     text = "Player Hipheight",
     tooltip = "Hipheight Value",
-    flag = "dwa2dHipheightxdhh",
+    flag = "vHipheight",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1421,7 +1423,7 @@ privatefeatures:AddSlider({
     enabled = true,
     text = "Player Gravity",
     tooltip = "Gravity Value",
-    flag = "dwdhPlayerGravityh",
+    flag = "vGravity",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1440,7 +1442,7 @@ privatefeatures:AddSeparator({
 
 privatefeatures:AddToggle({
     text = "Jesus",
-    flag = "Abx2ay2uJezus654fdt",
+    flag = "Jesus",
     callback = function(v)
         worldjesus = v
         if v then
@@ -1508,7 +1510,7 @@ end
 
 privatefeatures:AddToggle({
     text = "Bunnyhop",
-    flag = "Abannit",
+    flag = "Bunnyhop",
     callback = function(v)
         bunnyhop = v
         repeat
@@ -1522,7 +1524,7 @@ privatefeatures:AddToggle({
 
 privatefeatures:AddToggle({
     text = "Gnome Mode",
-    flag = "gnome359",
+    flag = "GnomeMode",
     risky = true,
     tooltip = "Moves your limbs and head into your torso",
     callback = function(v)
@@ -1533,7 +1535,7 @@ privatefeatures:AddToggle({
 privatefeatures:AddToggle({
     text = "No Fall Damage",
     tooltip = "Main Toggle for No Fall Damage",
-    flag = "Abanxnidwaawfdt",
+    flag = "NoFallDamage",
     callback = function(v)
         NoFallDamage = v
         if v then
@@ -1545,7 +1547,7 @@ privatefeatures:AddToggle({
 privatefeatures:AddToggle({
     text = "Visualize",
     tooltip = "Visualizes No Fall Damage",
-    flag = "Abayu654fdt",
+    flag = "VisualizeNFD",
     callback = function(v)
         transparencyToggle = v
     end
@@ -1554,7 +1556,7 @@ privatefeatures:AddToggle({
 wh:AddToggle({
     text = "ESP Enabled",
     tooltip = "Main Toggle for ESP",
-    flag = "v5u54354",
+    flag = "vSESP",
     callback = function(v)
         espbool = v
     end
@@ -1563,7 +1565,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "AI",
     tooltip = "Includes AI in ESP",
-    flag = "v5u543x54",
+    flag = "vSAI",
     callback = function(v)
         espbots = v
     end
@@ -1572,7 +1574,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Name",
     tooltip = "Includes Names in ESP",
-    flag = "v5u543x54",
+    flag = "vSName",
     callback = function(v)
         espname = v
     end
@@ -1581,7 +1583,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Health",
     tooltip = "Includes Health in ESP",
-    flag = "v5uHealth543x54",
+    flag = "vSHealth",
     callback = function(v)
         esphp = v
     end
@@ -1590,7 +1592,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Distance",
     tooltip = "Includes Distance in ESP",
-    flag = "v5u5Distance43x54",
+    flag = "vSDistance",
     callback = function(v)
         espdistance = v
     end
@@ -1599,7 +1601,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Chams",
     tooltip = "Includes Chams in ESP",
-    flag = "v5uChams543x54",
+    flag = "vSChams",
     callback = function(v)
         esphigh = v
     end
@@ -1608,7 +1610,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Equipped Tool",
     tooltip = "Includes Equipped Tool in ESP",
-    flag = "v5EquippedTool543x54",
+    flag = "vSEquippedTool",
     callback = function(v)
         esphotbar = v
     end
@@ -1617,7 +1619,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Body",
     tooltip = "Includes Dead Bodies in ESP",
-    flag = "v5Body543x54",
+    flag = "vSBody",
     callback = function(v)
         espdead = v
     end
@@ -1626,7 +1628,7 @@ wh:AddToggle({
 wh:AddToggle({
     text = "Extract",
     tooltip = "Includes Extracts in ESP",
-    flag = "v5Extract543x54",
+    flag = "vSExtract",
     callback = function(v)
         espexit = v
     end
@@ -1641,7 +1643,7 @@ wh:AddSlider({
     enabled = true,
     text = "Text Size",
     tooltip = "ESP Text Size",
-    flag = "dwdhTextSizeavityh",
+    flag = "vSTextSize",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1656,7 +1658,7 @@ wh:AddSlider({
 wh:AddToggle({
     text = "Text Outline",
     tooltip = "Adds a Text Outline to ESP",
-    flag = "v5ETextOutlinet543x54",
+    flag = "vSTextOutline",
     callback = function(v)
         esptextline = v
     end
@@ -1666,7 +1668,7 @@ wh:AddColor({
     enabled = true,
     text = "Text Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_92514",
+    flag = "vSColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1683,7 +1685,7 @@ wh:AddSeparator({
 wh:AddSlider({
     enabled = true,
     text = "Chams Outline Transparency",
-    flag = "dwdhTexjrjrzeavityh",
+    flag = "vSCOT",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1698,7 +1700,7 @@ wh:AddColor({
     enabled = true,
     text = "Chams Outline Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_92",
+    flag = "vSCOC",
     trans = 0,
     open = false,
     risky = false,
@@ -1709,7 +1711,7 @@ wh:AddColor({
 wh:AddSlider({
     enabled = true,
     text = "Chams Fill Transparency",
-    flag = "dwdhTegfrgzeavityh",
+    flag = "vSCFT",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1724,7 +1726,7 @@ wh:AddColor({
     enabled = true,
     text = "Chams Fill Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_61",
+    flag = "vSCFC",
     trans = 0,
     open = false,
     risky = false,
@@ -1736,7 +1738,7 @@ wh:AddColor({
 cross:AddToggle({
     text = "Crosshair Enabled",
     tooltip = "Enables/disables crosshair",
-    flag = "v5ETexehtt543x54",
+    flag = "CrosshairEnabled",
     callback = function(v)
         crosshair.Visible = v
     end
@@ -1746,7 +1748,7 @@ cross:AddColor({
     enabled = true,
     text = "Crosshair Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_612",
+    flag = "CrosshairColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1758,7 +1760,7 @@ cross:AddColor({
 tracers:AddToggle({
     text = "Bullet Tracers Enabled",
     tooltip = "Enables/disables Bullet Tracers",
-    flag = "v5ET3yt4543x54",
+    flag = "BulletTracersToggle",
     callback = function(v)
         tracbool = v
     end
@@ -1769,6 +1771,7 @@ tracers:AddList({
     text = "Tracer Texture", 
     tooltip = "Bullet Tracer Texture",
     selected = "Neon",
+    flag = "TracerTexture",
     multi = false,
     open = false,
     max = 4,
@@ -1783,7 +1786,7 @@ tracers:AddColor({
     enabled = true,
     text = "Bullet Tracer Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_612x",
+    flag = "BulletTracerColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1795,7 +1798,7 @@ tracers:AddColor({
 tracers:AddSlider({
     enabled = true,
     text = "Tracer Lifetime",
-    flag = "dwTracerLifetimetyh",
+    flag = "TracerLifetime",
     suffix = "",
     dragging = true,
     focused = false,
@@ -1810,7 +1813,7 @@ tracers:AddSlider({
 worldh:AddToggle({
     text = "No Grass",
     tooltip = "Adds/Removes Grass",
-    flag = "v5ET3ytGrass4543x54",
+    flag = "NoGrass",
     callback = function(v)
         sethiddenproperty(workspace.Terrain, "Decoration", not v)
     end
@@ -1819,7 +1822,7 @@ worldh:AddToggle({
 worldh:AddToggle({
     text = "No Leaves",
     tooltip = "Adds/Removes Leaves",
-    flag = "v5ET3ytLeaves4543x54",
+    flag = "NoLeaves",
     callback = function(v)
         worldleaves = v
     end
@@ -1833,7 +1836,7 @@ worldh:AddSeparator({
 worldh:AddSlider({
     enabled = true,
     text = "Clock Time",
-    flag = "dwdhTClockTimevityh",
+    flag = "ClockTime",
     suffix = "h",
     dragging = true,
     focused = false,
@@ -1849,7 +1852,7 @@ worldh:AddSlider({
 worldh:AddToggle({
     text = "No Fog",
     tooltip = "Enables/Disables Fog",
-    flag = "v5ET3yFogs4543x54",
+    flag = "NoFog",
     callback = function(v)
         while v do task.wait()
             game.Lighting.Atmosphere.Density = 0
@@ -1862,7 +1865,7 @@ local prevOutdoor = game.Lighting.OutdoorAmbient
 worldh:AddToggle({
     text = "Ambient Toggle",
     tooltip = "Enables/Disables Ambient Modifier",
-    flag = "v5ET3yAmbientToggl4543x54",
+    flag = "AmbientToggle",
     callback = function(v)
         worldvisualstoggle = v
         if worldvisualstoggle then
@@ -1879,7 +1882,7 @@ worldh:AddColor({
     enabled = true,
     text = "Ambient Color",
     color = Color3.fromRGB(255, 255, 255),
-    flag = "Color_682x",
+    flag = "AmColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1892,7 +1895,7 @@ worldh:AddColor({
     enabled = true,
     text = "Outdoor Ambient Color",
     color = Color3.fromRGB(255, 255, 255),
-    flag = "Color_68h2x",
+    flag = "OAmColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1904,7 +1907,7 @@ worldh:AddColor({
 viewmod:AddToggle({
     text = "Viewmodel Chams",
     tooltip = "Enables/Disables Viewmodel Chams",
-    flag = "v3yViewmodelChams44",
+    flag = "ViewmodelChams",
     callback = function(v)
         viewmodbool = v
     end
@@ -1913,6 +1916,7 @@ viewmod:AddList({
     enabled = true,
     text = "Arm Chams Material", 
     selected = "Forcefield",
+    flag = "ViewmodelArmChamMaterial",
     multi = false,
     open = false,
     max = 4,
@@ -1930,6 +1934,7 @@ viewmod:AddList({
     enabled = true,
     text = "Weapon Chams Material", 
     selected = "Forcefield",
+    flag = "ViewmodelWeaponChamMaterial",
     multi = false,
     open = false,
     max = 4,
@@ -1947,7 +1952,7 @@ viewmod:AddColor({
     enabled = true,
     text = "Arm Chams Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_ArmChams",
+    flag = "ArmChamsColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1959,7 +1964,7 @@ viewmod:AddColor({
     enabled = true,
     text = "Weapon Chams Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_WeaponChams",
+    flag = "WeaponChamsColor",
     trans = 0,
     open = false,
     risky = false,
@@ -1976,7 +1981,7 @@ viewmod:AddSeparator({
 viewmod:AddToggle({
     text = "Viewmodel Outline Chams",
     tooltip = "Enables/Disables Viewmodel Outline Chams",
-    flag = "v3yOutlineViewmodelChams44",
+    flag = "ViewmodelOutlineChams",
     callback = function(v)
         viewmodhighlightchams = v
     end
@@ -1986,7 +1991,7 @@ viewmod:AddColor({
     enabled = true,
     text = "Outline Fill Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_OutlineFill",
+    flag = "ViewmodelOFC",
     trans = 0,
     open = false,
     risky = false,
@@ -1998,7 +2003,7 @@ viewmod:AddColor({
 viewmod:AddSlider({
     enabled = true,
     text = "Outline Fill Transparency",
-    flag = "dwOutlineFillTranstyh",
+    flag = "ViewmodelOFT",
     suffix = "",
     dragging = true,
     focused = false,
@@ -2014,7 +2019,7 @@ viewmod:AddColor({
     enabled = true,
     text = "Outline Color",
     color = Color3.fromRGB(77, 210, 255),
-    flag = "Color_Outline",
+    flag = "ViewmodelOC",
     trans = 0,
     open = false,
     risky = false,
@@ -2026,7 +2031,7 @@ viewmod:AddColor({
 viewmod:AddSlider({
     enabled = true,
     text = "Outline Transparency",
-    flag = "dwFillTranstyh",
+    flag = "ViewmodelT",
     suffix = "",
     dragging = true,
     focused = false,
@@ -2046,7 +2051,7 @@ local zoomfov = 5
 camzoom:AddToggle({
     text = "Zoom",
     tooltip = "Enables/Disables Zoom",
-    flag = "v5ET3yAmbientToggl4543x54",
+    flag = "ZoomEnabled",
     callback = function(v)
 if zoomtoggle then
 			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
@@ -2068,7 +2073,7 @@ end
     tooltip = "Zoom Keybind",
     mode = "toggle",
     bind = Enum.KeyCode.C,
-    flag = "ToggleKey_2",
+    flag = "ZoomBind",
     state = false,
     nomouse = false,
     risky = false,
@@ -2108,7 +2113,7 @@ end
 camzoom:AddSlider({
     enabled = true,
     text = "Base FOV",
-    flag = "dwdhTBaseFOVevityh",
+    flag = "BaseFOV",
     suffix = "",
     dragging = true,
     focused = false,
@@ -2123,7 +2128,7 @@ camzoom:AddSlider({
 camzoom:AddSlider({
     enabled = true,
     text = "Zoom FOV",
-    flag = "dwdhTZoomFOVevityh",
+    flag = "ZoomFOV",
     suffix = "",
     dragging = true,
     focused = false,
@@ -2138,7 +2143,7 @@ camzoom:AddSlider({
 inventorychecker:AddToggle({
     text = "Inventory Checker",
     tooltip = "Enables/Disables Inventory Checker",
-    flag = "v5ET3yInventoryChecker4543x54",
+    flag = "InventoryChecker",
     callback = function(v)
         inventoryCheckerToggle = v
     end
@@ -2148,7 +2153,7 @@ inventorychecker:AddToggle({
     tooltip = "Inventory Checker Keybind",
     mode = "toggle",
     bind = Enum.KeyCode.Backquote,
-    flag = "ToggleKey_3",
+    flag = "InventoryCheckerBind",
     state = false,
     nomouse = false,
     risky = false,
@@ -2164,7 +2169,7 @@ inventorychecker:AddToggle({
 camer:AddToggle({
     text = "No Effects",
     tooltip = "Enables/Disables Screen Effects",
-    flag = "v5ET3yAScreenEffectse4543x54",
+    flag = "NoEffects",
     callback = function(v)
         local noscreeneffects = v
 
@@ -2220,7 +2225,7 @@ end
 camer:AddToggle({
     text = "Appearance Switcher",
     tooltip = "Switches your appearance",
-    flag = "v5ET3yAAppearance4543x54",
+    flag = "vAppearance",
     callback = function(v)
         toggleActive = v
         if toggleActive then
@@ -2235,7 +2240,7 @@ camer:AddToggle({
 camer:AddToggle({
     text = "No Visor",
     tooltip = "Enables/Disables Visor Visibility",
-    flag = "v5ET3yAVisor4543x54",
+    flag = "NoVisor",
     callback = function(v)
         if v == true then
             game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(0,0,1,0)
@@ -2256,7 +2261,7 @@ camer:AddToggle({
 camer:AddToggle({
     text = "No Flashbang",
     tooltip = "Enables/Disables Flashbang Effect",
-    flag = "vFlasbang",
+    flag = "NoFlashbang",
     callback = function(v)
         if v == true then
             game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(0,0,1,0)
@@ -2268,6 +2273,8 @@ camer:AddToggle({
 
 local origZoom = localplayer.CameraMaxZoomDistance
 local origMode = localplayer.CameraMode
+
+local isToggled = false
 
 local newZoom = 99999
 local newMode = Enum.CameraMode.Classic
@@ -2291,7 +2298,7 @@ camer:AddToggle({
 camer:AddToggle({
     text = "No Drown",
     tooltip = "Enables/Disables Drown Damage",
-    flag = "vDrown",
+    flag = "NoDrown",
     risky = true,
     callback = function(v)
         AntiDrown = v
@@ -2306,7 +2313,7 @@ camer:AddToggle({
 hitsounds:AddToggle({
     text = "Hitsounds Enabled",
     tooltip = "Enables/Disables Custom Hitsounds",
-    flag = "vHitsoundBool",
+    flag = "HitsoundBool",
     callback = function(v)
         hitsoundbool = v
     end
@@ -2316,6 +2323,7 @@ hitsounds:AddList({
     enabled = true,
     text = "Headshot Hitsound", 
     selected = "Neverlose",
+    flag = "HSHS",
     multi = false,
     open = false,
     max = 4,
@@ -2336,6 +2344,7 @@ hitsounds:AddList({
     enabled = true,
     text = "Bodyhit Hitsound", 
     selected = "Gamesense",
+    flag = "BHHS",
     multi = false,
     open = false,
     max = 4,
