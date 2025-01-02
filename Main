@@ -1,129 +1,28 @@
 local exec = identifyexecutor()
-local version = "V0.0.3c x"
+local version = "v0.0.4a"
 
-local notificationOffset = 45
-local notifications = {}
 local detectedAdmins = {}
 
-function Notify(tt, tx, duration, rounding, strokeColor1, strokeColor2, darkerStroke1, darkerStroke2, fillColor, textColor)
-    duration = duration or 5
-    rounding = rounding or 5
-    strokeColor1 = strokeColor1 or Color3.fromRGB(77, 210, 255)
-    strokeColor2 = strokeColor2 or Color3.fromRGB(66, 180, 245)
-    darkerStroke1 = darkerStroke1 or Color3.fromRGB(66, 180, 245)
-    darkerStroke2 = darkerStroke2 or Color3.fromRGB(55, 170, 235)
-    fillColor = fillColor or Color3.fromRGB(3, 3, 3)
-    textColor = textColor or Color3.new(1, 1, 1)
+local Decimals = 4
+local Clock = os.clock()
 
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "_3247968012979470"
-    screenGui.Parent = game:GetService("CoreGui")
-    screenGui.ResetOnSpawn = false
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/newlibtest"))({
+    cheatname = "Exothium.xyz", -- watermark text
+    gamename = "Project Delta", -- watermark text
+})
 
-    local yPos = #notifications * notificationOffset + 10
+library:init()
 
-    local frame = Instance.new("Frame")
-    frame.Parent = screenGui
-    frame.Size = UDim2.new(0, 300, 0, 40)
-    frame.Position = UDim2.new(0, 10, 0, yPos)
-    frame.AnchorPoint = Vector2.new(0, 0)
-    frame.BackgroundColor3 = fillColor
-    frame.BackgroundTransparency = 0.4
-    frame.BorderSizePixel = 0
+local Window1  = library.NewWindow({
+    title = "Exothium.xyz - " .. version,
+    size = UDim2.new(0, 510, 0.66, 5
+)})
 
-    table.insert(notifications, frame)
-
-    local uiCorner = Instance.new("UICorner")
-    uiCorner.CornerRadius = UDim.new(0, rounding)
-    uiCorner.Parent = frame
-
-    local uiStroke = Instance.new("UIStroke")
-    uiStroke.Parent = frame
-    uiStroke.Thickness = 1.1
-    uiStroke.Color = strokeColor1
-
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, strokeColor1),
-        ColorSequenceKeypoint.new(1, strokeColor2)
-    })
-    gradient.Rotation = 0
-    gradient.Parent = uiStroke
-
-    local tweenService = game:GetService("TweenService")
-    local rotateTween = tweenService:Create(gradient, TweenInfo.new(2, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, -1), {Rotation = 360})
-    rotateTween:Play()
-
-    local title = Instance.new("TextLabel")
-    title.Parent = frame
-    title.Text = tt
-    title.Font = Enum.Font.SourceSansBold
-    title.TextSize = 18
-    title.Size = UDim2.new(1, 0, 0.5, 0)
-    title.BackgroundTransparency = 1
-    title.TextColor3 = textColor
-
-    local body = Instance.new("TextLabel")
-    body.Parent = frame
-    body.Text = tx
-    body.Font = Enum.Font.SourceSans
-    body.TextSize = 14
-    body.Size = UDim2.new(1, 0, 0.5, 0)
-    body.Position = UDim2.new(0, 0, 0.5, 0)
-    body.BackgroundTransparency = 1
-    body.TextColor3 = textColor
-
-    local progressBar = Instance.new("Frame")
-    progressBar.Parent = frame
-    progressBar.Size = UDim2.new(1, -4, 0.02, 0)
-    progressBar.Position = UDim2.new(0, 2, 1, -3)
-    progressBar.BackgroundTransparency = 0
-    progressBar.BorderSizePixel = 0
-
-    local progressGradient = Instance.new("UIGradient")
-    progressGradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, darkerStroke1),
-        ColorSequenceKeypoint.new(1, darkerStroke2)
-    })
-    progressGradient.Rotation = 0
-    progressGradient.Parent = progressBar
-
-    local progressCorner = Instance.new("UICorner")
-    progressCorner.CornerRadius = UDim.new(0, rounding)
-    progressCorner.Parent = progressBar
-
-    local fadeInTween = tweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {BackgroundTransparency = 0})
-    local titleFadeInTween = tweenService:Create(title, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
-    local bodyFadeInTween = tweenService:Create(body, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {TextTransparency = 0})
-
-    fadeInTween:Play()
-    titleFadeInTween:Play()
-    bodyFadeInTween:Play()
-
-    local progressTween = tweenService:Create(progressBar, TweenInfo.new(duration, Enum.EasingStyle.Linear, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0.02, 0)})
-    progressTween:Play()
-
-    local function fadeOut()
-        local fadeOutTween = tweenService:Create(frame, TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {BackgroundTransparency = 1})
-        fadeOutTween:Play()
-        fadeOutTween.Completed:Connect(function()
-            frame:Destroy()
-            table.remove(notifications, table.find(notifications, frame))
-            UpdateNotificationPositions()
-        end)
-    end
-
-    task.delay(duration, fadeOut)
-end
-
-function UpdateNotificationPositions()
-    for i, notification in ipairs(notifications) do
-        local targetYPos = (i - 1) * notificationOffset + 10
-        local tweenService = game:GetService("TweenService")
-        local moveTween = tweenService:Create(notification, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Position = UDim2.new(0, 10, 0, targetYPos)})
-        moveTween:Play()
-    end
-end
+local combat = Window1:AddTab('Combat')
+local playerstab = Window1:AddTab("Player")
+local visualstab = Window1:AddTab("Visuals")
+local other = Window1:AddTab("Misc")
+local settings = library:CreateSettingsTab(Window1)
 
 function getcurrentgun(plr)
     local char = plr.Character
@@ -160,7 +59,7 @@ function getcurrentammo(gun)
 end
 
 if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-    Notify("Exothium.xyz", "Character is missing, script will execute when spawned in", 5)
+    library:SendNotification(("Character is missing, script will load when spawned in"), 5)
     
     while game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") do
         wait(0.2)
@@ -176,24 +75,23 @@ local libraryxxt = pcall(function()
 end)
 
 if libraryxxt == false then
-    Notify("Exothium.xyz", "DL-F", 0.6)
+    library:SendNotification(("DL-F"), 0.6)
     loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/Drawing"))()
-    Notify("Exothium.xyz", "DL-T", 0.3)
+    library:SendNotification(("DL-T"), 0.3)
 end
 
 if string.match(exec, "Wave") == nil and string.match(exec, "Synapse") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil and string.match(exec, "Swift") == nil then
-    Notify("Exothium.xyz", "".. exec .." is not supported", 10)
+    library:SendNotification((exec .. "is not supported"), 10)
     return
 else
-    Notify("Exothium.xyz || Loading Script", " ".. exec .." ", 3.5)
-    Notify("Exothium.xyz || Loading Assets", " " .. version .. " ", 4)
+    library:SendNotification(("Loading Assets " .. version .. " - " .. exec), 4)
     print("[[ Exoguard V3 || Exothium.xyz || " .. exec .." || " .. version .. " ]]")
 end
 if exec == "Seliware" or exec == "Nihon" then
-    Notify("Exothium.xyz", "".. exec .." is semi-supported, script might cause errors", 7)
+    library:SendNotification((exec .. " is semi-supported, script might cause errors."), 3.5)
 end
 if _G.exothiumxyz then
-    Notify("Exothium.xyz", "Script is already loaded, therefore you cant execute it again", 4)
+    library:SendNotification(("Script is already loaded, therefore you cant execute it again"), 3.5)
     return
 end
 
@@ -406,16 +304,16 @@ for i,v in hitsoundlib do
     hitsoundlibUI[v] = i
 end
 
-local NoRecoil = false
-local BulletTracer = false
-local InstaReload = true
-local GunDrag = false
-local NoProjectileDrop = false
-local RapidFire = false
-local NoSway = false
-local InstaEquip = false
-local UnlockFiremodes = false
-local BurstFire = 1
+NoRecoil = false
+BulletTracer = false
+InstaReload = true
+GunDrag = false
+NoProjectileDrop = false
+RapidFire = false
+NoSway = false
+InstaEquip = false
+UnlockFiremodes = false
+BurstFire = 1
 
 AntiDrown = false
 AntiProjectile = true
@@ -516,144 +414,249 @@ end)
 
 setreadonly(mt, true)
 
---gui setup--
-local LibraryVS = loadstring(game:HttpGet('https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/watermark'))()
+--combat:SetText("Text")
 
-local FrameTimer = tick()
-local FrameCounter = 0;
-local FPS = 60;
+local aim = combat:AddSection("Aimbot", 1)
+local gunmods = combat:AddSection("Gun Manipulation", 2)
+local tarinfo = combat:AddSection("Target Info", 2)
+local snapline = combat:AddSection("Snapline", 1)
 
-local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
-    FrameCounter += 1;
+local semifly = playerstab:AddSection("Character Modifier", 1)
+local privatefeatures = playerstab:AddSection("Player Exploits", 2)
 
-    if (tick() - FrameTimer) >= 1 then
-        FPS = FrameCounter;
-        FrameTimer = tick();
-        FrameCounter = 0;
-    end;
+local wh = visualstab:AddSection("Extra-Sensory Perception", 1)
+local tracers = visualstab:AddSection("Bullet Tracers", 2)
+local cross = visualstab:AddSection("Crosshair", 2)
+local worldh = visualstab:AddSection("World", 2)
+local viewmod = visualstab:AddSection("Viewmodel", 1)
 
-    LibraryVS:SetWatermark(('Exothium.xyz | %s fps | %s ms'):format(
-        math.floor(FPS),
-        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
-    ));
-end);
+local camzoom = other:AddSection("Zoom", 1)
+local inventorychecker = other:AddSection("Inventory Checker", 2)
+local camer = other:AddSection("Effects", 1)
+local hitsounds = other:AddSection("Hitsounds", 2)
 
+--aim:SetText("Text")
 
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/main/UI%20LIB", true))()
-game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
-
-library:ChangeWeb("Exothium.xyz")
-library:ChangeGame("Project Delta")
-
-local combat = library:AddWindow('Combat')
-local player = library:AddWindow('Player')
-local visual = library:AddWindow('Visuals')
-local other = library:AddWindow('Misc')
-local home = library:AddWindow('Settings')
-
-local mainhome = home:AddSection('Menu')
-local miscfeatures = home:AddSection('Extra Features')
-local aim = combat:AddSection('Aimbot')
-local gunmods = combat:AddSection('Gun Mods')
-local camzoom = other:AddSection('Zoom')
-local tarinfo = combat:AddSection('Target Info')
-local snapline = combat:AddSection('Snapline')
-local wh = visual:AddSection('Player Visuals')
-local cross = visual:AddSection('Crosshair')
-local inventorychecker = other:AddSection('Inventory Checker')
-local tracers = visual:AddSection('Bullet Tracers')
-local camer = other:AddSection('Effects')
-local hitsounds = other:AddSection('Hitsounds')
-local viewmod = visual:AddSection('Viewmodel')
-local semifly = player:AddSection('Character Modifier')
-local privatemods = player:AddSection('Player Exploits')
-local plrmods = player:AddSection('Player Mods')
-local worldh = visual:AddSection('World')
-local keybinds = home:AddSection('Keybind List')
-
-mainhome:AddKeyBind('Menu Bind', Enum.KeyCode.Insert, function() 
-    game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = not game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled
-end)
-
-hitsounds:AddToggle('Hitsound Enabled', true, nil, function(v)
-    hitsoundbool = v
-end)
-hitsounds:AddDropdown('Headshot Sound', hitsoundlibUI, hitsoundhead, function(a)
-    hitsoundhead = a
-
-    local preview = Instance.new("Sound", workspace)
-    preview.SoundId = hitsoundlib[a]
-    preview:Play()
-    task.wait(1)
-    preview:Destroy()
-end)
-hitsounds:AddDropdown('Bodyhit Sound', hitsoundlibUI, hitsoundbody, function(a)
-    hitsoundbody = a
-
-    local preview = Instance.new("Sound", workspace)
-    preview.SoundId = hitsoundlib[a]
-    preview:Play()
-    task.wait(1)
-    preview:Destroy()
-end)
-
-snapline:AddToggle('Snapline', true, nil, function(v)
-    snaplinebool = v
-end)
-snapline:AddColorPallete('Color', Color3.fromRGB(77, 210, 255),function(a) 
-    aimsnapline.Color = a
-end)
-
-aim:AddToggle('Silent Aim', true, silentaimbind, function(v) 
-    aimbool = v
-    if v == true then
-        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
-    else
-        require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
+aim:AddToggle({
+    text = "Silent Aim",
+    state = false,
+    risky = true,
+    tooltip = "Enables silent aim",
+    flag = "SilentAim",
+    callback = function(v)
+        aimbool = v
+        if v == true then
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
+        else
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
+        end
     end
-end)
-aim:AddToggle('Target AI', true, nil, function(v)
-    aimbots = v
-end)
+}):AddBind({
+    enabled = true,
+    text = "Silent Aim",
+    tooltip = "Silent Aim Keybind",
+    mode = "toggle",
+    bind = "None",
+    flag = "ToggleKey_1",
+    state = false,
+    nomouse = false,
+    risky = false,
+    noindicator = false,
+    callback = function(v)
+        aimbool = v
+        if v == true then
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
+        else
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
+        end
+    end,
+    keycallback = function(v)
+        aimbool = v
+        if v == true then
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimmodfunc
+        else
+            require(game.ReplicatedStorage.Modules.FPS.Bullet).CreateBullet = aimogfunc
+        end
+    end
+})
+aim:AddToggle({
+    text = "Target AI",
+    flag = "TargetAI",
+    callback = function(v)
+        aimbots = v
+    end
+})
+aim:AddToggle({
+    text = "Wall Check",
+    flag = "WallCheck",
+    callback = function(v)
+        aimvischeck = v
+    end
+})
+aim:AddToggle({
+    text = "Auto Shoot",
+    flag = "AutoShoot",
+    risky = true,
+    callback = function(v)
+        aimtrigger = v
+    end
+})
+aim:AddToggle({
+    text = "[!] Animation Resolver",
+    flag = "AnimResolver",
+    risky = true,
+    callback = function(v)
+        resolver = v
+    end
+})
 
-aim:AddToggle('Wall Check', true, nil, function(v)
-    aimvischeck = v
-end)
+aim:AddList({
+    enabled = true,
+    text = "Hitbox", 
+    tooltip = "Aimbot Hitbox",
+    selected = "Head",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Head", "Torso", "Legs", "Random"},
+    risky = false,
+    callback = function(v)
+        aimpart = v
+    end
+})
 
-aim:AddToggle('Auto Shoot', true, autoshootbind, function(v)
-    aimtrigger = v
-end)
+aim:AddList({
+    enabled = true,
+    text = "Method", 
+    tooltip = "Aimbot Method",
+    selected = "Instant Hit",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Instant Hit", "Prediction"},
+    risky = false,
+    callback = function(v)
+        aimtype = v
+    end
+})
 
-aim:AddToggle('Animation Resolver', true, Enum.KeyCode.End, function(v)
-    resolver = v
-end)
+--[[aim:AddBox({
+    enabled = true,
+    name = "TextBox1",
+    flag = "TextBox_1",
+    input = "PlaceHolder1",
+    focused = false,
+    risky = false,
+    callback = function(v)
+        print(v)
+    end
+})--]]
 
-aim:AddSeparateBar()
+--[[aim:AddToggle({
+    text = "Toggle1",
+    flag = "Toggle_1",
+    callback = function(v)
+        print(ValueText, v)
+    end
+}):AddColor({
+    text = "Color1",
+    color = Color3.fromRGB(255, 255, 255),
+    flag = "Color_1",
+    callback = function(v)
+        print(ValueText, v)
+    end
+})--]]
 
-aim:AddToggle('FOV Visible', true, nil, function(v)
-    aimfovcircle.Visible = v
-end)
-aim:AddToggle('Dynamic FOV', true, nil, function(v)
-    aimdynamicfov = v
-end)
-aim:AddSlider('FOV Radius', 350, 10, 150, function(c) 
-    aimfov = c
-end)
-aim:AddColorPallete('FOV Color', Color3.fromRGB(77, 210, 255),function(a) 
-   aimfovcircle.Color = a
-end)
+--[[aim:AddBind({
+    enabled = true,
+    text = "Keybind1",
+    tooltip = "tooltip1",
+    mode = "toggle",
+    bind = "None",
+    flag = "ToggleKey_1",
+    state = false,
+    nomouse = false,
+    risky = false,
+    noindicator = false,
+    callback = function(v)
+        print(ValueText, v)
+    end,
+    keycallback = function(v)
+        print(ValueText, v)
+    end
+})--]]
 
-aim:AddSeparateBar()
+aim:AddSeparator({
+    enabled = true,
+    text = "Visual"
+})
 
-aim:AddDropdown('Hitbox', {'Head', 'Torso', 'Legs', 'Random', 'Scripted'}, 'Head', function(a)
-    aimpart = a
-end)
-aim:AddDropdown('Method', {'Prediction', 'Instant Hit'}, 'Instant Hit', function(a)
-    aimtype = a
-end)
+--[[aim:AddButton({
+    enabled = true,
+    text = "Button1",
+    tooltip = "tooltip1",
+    confirm = true,
+    risky = false,
+    callback = function()
+        print("Pressed!")
+    end
+})--]]
 
-gunmods:AddToggle('Rapid Fire', true, nil, function(v)
-    RapidFire = v
+-- Button1:SetText("Text")
+aim:AddToggle({
+    text = "FOV Visible",
+    flag = "FOVvisible",
+    callback = function(v)
+        aimfovcircle.Visible = v
+    end
+})
+aim:AddToggle({
+    text = "Dynamic FOV",
+    flag = "sefsfe",
+    callback = function(v)
+        aimdynamicfov = v
+    end
+})
+aim:AddSlider({
+    enabled = true,
+    text = "FOV Radius",
+    tooltip = "FOV Radius",
+    flag = "FOVRadius",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 10,
+    max = 350,
+    increment = 1,
+    risky = false,
+    callback = function(v)
+        aimfov = v
+    end
+})
+
+--Slider_1:SetValue(100)
+
+aim:AddColor({
+    enabled = true,
+    text = "FOV Color",
+    tooltip = "FOV Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_1",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        aimfovcircle.Color = v
+    end
+})
+
+
+gunmods:AddToggle({
+    text = "Rapid Fire",
+    flag = "dhftdfjhtydjtfy",
+    risky = true,
+    callback = function(v)
+            RapidFire = v
     if v == true then
         local inv = game.ReplicatedStorage.Players:FindFirstChild(localplayer.Name).Inventory
         for i,v in ipairs(inv:GetChildren()) do
@@ -669,19 +672,39 @@ gunmods:AddToggle('Rapid Fire', true, nil, function(v)
             sett.FireRate = toset
         end
     end
-end)
-gunmods:AddToggle('Unlock Firemodes', true, nil, function(v)
-    UnlockFiremodes = v
-end)
-gunmods:AddToggle('Instant Equip', true, nil, function(v)
-    InstaEquip = v
-end)
-gunmods:AddToggle('Wallbang', true, nil, function(v)
-    aimbang = v
-end)
+    end
+})
 
-gunmods:AddToggle('No Recoil', true, nil, function(v)
-			NoRecoil = v
+gunmods:AddToggle({
+    text = "Unlock Firemodes",
+    flag = "Ashetrshert",
+    risky = true,
+    callback = function(v)
+        UnlockFiremodes = v
+    end
+})
+
+gunmods:AddToggle({
+    text = "Instant Equip",
+    flag = "Ashetrsdwawdert",
+    callback = function(v)
+        InstaEquip = v
+    end
+})
+
+gunmods:AddToggle({
+    text = "Wallbang",
+    flag = "Ashetgrdrshert",
+    callback = function(v)
+        aimbang = v
+    end
+})
+
+gunmods:AddToggle({
+    text = "No Recoil",
+    flag = "gdfAshetrshert",
+    callback = function(v)
+        			NoRecoil = v
 			if NoRecoil and rp:FindFirstChild("AmmoTypes") then
 				for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 					if v then
@@ -698,22 +721,30 @@ gunmods:AddToggle('No Recoil', true, nil, function(v)
 					end
 				end
 			end
-end)
+    end
+})
 
 local reloadRemote = rp:WaitForChild("Remotes"):WaitForChild("Reload")
 
-gunmods:AddToggle('Insta Reload', true, nil, function(v)
-    InstaReload = v
+gunmods:AddToggle({
+    text = "Instant Reload",
+    flag = "Ashetrsdfshert",
+    callback = function(v)
+            InstaReload = v
     if InstaReload then
 	    while InstaReload do
 	      	reloadRemote:InvokeServer()
 	     	wait(0.00001)
 	    end
     end
-end)
+    end
+})
 
-gunmods:AddToggle('No Drag', true, nil, function(v)
-	GunDrag = v
+gunmods:AddToggle({
+    text = "No Drag",
+    flag = "Ashetrshfesert",
+    callback = function(v)
+        	GunDrag = v
 	if GunDrag and rp:FindFirstChild("AmmoTypes") then
 		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 			if v then
@@ -730,12 +761,23 @@ gunmods:AddToggle('No Drag', true, nil, function(v)
 	    	end
 		end
 	end
-end)
-gunmods:AddToggle('No Sway', true, nil, function(v)
-    NoSway = v
-end)
-gunmods:AddToggle('No Projectile Drop', true, nil, function(v)
-	NoProjectileDrop = v
+    end
+})
+
+gunmods:AddToggle({
+    text = "No Sway",
+    flag = "Ashetrssferhert",
+    callback = function(v)
+        NoSway = v
+    end
+})
+
+gunmods:AddToggle({
+    text = "No Projectile Drop",
+    flag = "Ashetrssferhert",
+    risky = true,
+    callback = function(v)
+        	NoProjectileDrop = v
 	if NoProjectileDrop and rp:FindFirstChild("AmmoTypes") then
 		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 			if v then
@@ -752,10 +794,14 @@ gunmods:AddToggle('No Projectile Drop', true, nil, function(v)
 			end
 		end
 	end
-end)
+    end
+})
 
-gunmods:AddToggle('Bullet Tracer', true, nil, function(v)
-	BulletTracer = v
+gunmods:AddToggle({
+    text = "Bullet Tracer",
+    flag = "Ashetdsrssferhert",
+    callback = function(v)
+        	BulletTracer = v
 	if BulletTracer and rp:FindFirstChild("AmmoTypes") then
 		for i,v in ipairs(rp.AmmoTypes:GetChildren()) do
 			if v then
@@ -772,126 +818,72 @@ gunmods:AddToggle('Bullet Tracer', true, nil, function(v)
 			end
 		end
 	end
-end)
-
-gunmods:AddSlider('Burstfire', 5, 1, 1,function(c)
-    BurstFire = c
-end)
-
-tarinfo:AddToggle('Target Name', true, nil, function(v)
-    aimtargetname.Visible = v
-end)
-
-tarinfo:AddToggle('Health', true, nil, function(v)
-    healthtargetname = v
-end)
-
-tarinfo:AddToggle('Admin', true, nil, function(v)
-    admintargetname = v
-end)
-
-miscfeatures:AddToggle('Whisper Alert', true, nil, function(v)
-    whisperNotificationToggle = v
-    if whisperNotificationToggle and not whisperZone then
-        Notify("Exothium.xyz", "Feature isnt available in lobby.", 5)
     end
-end)
-
-task.spawn(function()
-    while whisperNotificationToggle do
-        local weather = game:GetService("Lighting"):FindFirstChild("Weather")
-        if weather then
-            local var2 = weather:GetAttribute("WeatherStatus")
-            if var2 == "RiftEmission" and not notifiedwhisper then
-                Notify()
-                notifiedwhisper = true
-            end
-        end
-        task.wait(0.2)
-    end
-end)
-
-miscfeatures:AddButton('Reset',function() 
-    game.Players.LocalPlayer.Character.Health.Drowning:FireServer(115)
-end)
-
-miscfeatures:AddButton('Quick Use',function() 
-    game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Consume"):FireServer()
-end)
-
-miscfeatures:AddButton('Unlock Boss',function() 
-    local npc = game.Workspace.Boss
-    npc:SetAttribute("Hidden", false)
-
-    for _, part in pairs(npc:GetChildren()) do
-        if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-            part.Transparency = 0
-        end
-    end
-end)
-
-miscfeatures:AddButton('Spawn UAZ',function() 
-local player = game.Players.LocalPlayer
-local plr = player
-
-if not plr.Character or not plr.Character:FindFirstChildOfClass("Humanoid") then 
-    return Notify("Exothium.xyz", "Error: No character", 3) 
-end
-
-local uaz, dist = nil, math.huge
-for i, v in pairs(workspace:WaitForChild("Vehicles"):GetChildren()) do
-    if v:FindFirstChild("Body") and v.Body:FindFirstChildOfClass("MeshPart") then
-        local vehiclePos = v.Body:FindFirstChildOfClass("MeshPart").Position
-        local camPos = workspace.CurrentCamera.CFrame.p
-        local distance = (vehiclePos - camPos).Magnitude
-        if dist > distance then
-            dist = distance
-            uaz = v
-        end
-    end
-end
-
-if not uaz then 
-    return Notify("Exothium.xyz", "Error: No car found", 3) 
-end
-
-local humanoid = plr.Character:FindFirstChildOfClass("Humanoid")
-if humanoid then
-    for i, v in ipairs(uaz:GetDescendants()) do
-        if v:IsA('Seat') and v.Name == 'SeatFR' then
-            v:Sit(humanoid)
-        end
-    end
-end
-
-wait(0.2)
-
-for i = 1, 2 do
-    game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
-        ["Vehicle"] = uaz,
-        ["Action"] = "Enter",
-        ["Door"] = uaz.Body.FRdoor.FR_Door
-    })
-    wait(0.2)
-end
-
-uaz.Remotes.ExitSeat:FireServer()
-wait(0.1)
-
-game:GetService("ReplicatedStorage").Remotes.VehicleInteractions:FireServer({
-    ["Vehicle"] = uaz,
-    ["Action"] = "Exit",
-    ["Door"] = uaz.Body.FRdoor.FR_Door
 })
 
-uaz.Remotes.ExitSeat:FireServer()
-wait(1)
+gunmods:AddSlider({
+    enabled = true,
+    text = "Burstfire",
+    tooltip = "Shoots multiple bullets at once.",
+    flag = "dtrhdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 1,
+    max = 100,
+    increment = 1,
+    risky = true,
+    callback = function(v)
+        BurstFire = v
+    end
+})
 
-player.Character:FindFirstChildOfClass('Humanoid'):Move(Vector3.new(0, 10, 0))
-Notify("Exothium.xyz", "Spawned UAZ", 3) 
-end)
+tarinfo:AddToggle({
+    text = "Target Name",
+    flag = "Ashgrgretfesrssferhert",
+    callback = function(v)
+        aimtargetname.Visible = v
+    end
+})
 
-semifly:AddToggle('Movement Toggle', true, charsemiflybind, function(v) 
+tarinfo:AddToggle({
+    text = "Health",
+    flag = "Ashgrgfsefsretrssferhert",
+    callback = function(v)
+        healthtargetname = v
+    end
+})
+
+tarinfo:AddToggle({
+    text = "Admin",
+    flag = "Ashgrgrefnghtrssferhert",
+    callback = function(v)
+        admintargetname = v
+    end
+})
+
+snapline:AddToggle({
+    text = "Snapline Enabled",
+    flag = "As42t",
+    callback = function(v)
+        snaplinebool = v
+    end
+})
+snapline:AddColor({
+    enabled = true,
+    text = "Snapline Color",
+    tooltip = "Snapline Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_rsdg1",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        aimsnapline.Color = v
+    end
+})
+
+local function movementtoggle(v)
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if v == false then
 			semifly_bodyvel:Destroy()
@@ -905,58 +897,153 @@ semifly:AddToggle('Movement Toggle', true, charsemiflybind, function(v)
     else
         charsemifly = false
     end
-end)
-semifly:AddSeparateBar()
-semifly:AddSlider('Max Height Distance', 8, 0.1, 6, function(c) 
-    charsemiflydist = c
-end)
+end
 
-semifly:AddToggle('[!] Unlock Height Distance', true, nil, function(v) 
-    charsemiflydistunlock = v
-    local oldsemiflydist = charsemiflydist
-
-    if charsemiflydistunlock then
-        charsemiflydist = 1500
-    else
-        charsemiflydist = oldsemiflydist
+semifly:AddToggle({
+    text = "Movement Toggle",
+    state = false,
+    risky = false,
+    flag = "MovementToggle",
+    callback = function(v)
+        movementtoggle(v)
     end
-end)
+})
 
-semifly:AddSlider('Speed', 90, 1, 18, function(c) 
-    charsemiflyspeed = c
-end)
-semifly:AddSeparateBar()
+semifly:AddSlider({
+    enabled = true,
+    text = "Max Height Distance",
+    tooltip = "Movement Max Height Distance",
+    flag = "dtrhtgh4dhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 1,
+    max = 8,
+    increment = 1,
+    callback = function(v)
+        charsemiflydist = v
+    end
+})
 
---semifly:AddToggle('Flip Character', true, nil, function(v) 
---    charantiaim_underground = v
---end)
+semifly:AddSlider({
+    enabled = true,
+    text = "Speed",
+    tooltip = "Movement Speed",
+    flag = "dtr3htgh4dhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 1,
+    max = 90,
+    increment = 1,
+    callback = function(v)
+        charsemiflyspeed = v
+    end
+})
 
-semifly:AddToggle('Custom Rotation', true, nil, function(v) 
-    charantiaim_underground = v
-end)
+semifly:AddSeparator({
+    enabled = true,
+    text = "Anti Aim Toggles"
+})
 
-semifly:AddToggle('UpAngle Toggle', true, nil, function(v) 
-    upangletoggle = v
-end)
+semifly:AddToggle({
+    text = "Custom Rotation",
+    flag = "Ashgrgretfesrssferhert",
+    risky = true,
+    callback = function(v)
+        charantiaim_underground = v
+    end
+})
 
-semifly:AddSlider('UpAngle Value', 5, -5, 0, function(c) 
-    upangleY = c
-end)
-semifly:AddSeparateBar()
-semifly:AddSlider('X Rotation', 360, 0, 0, function(c) 
-    xrot = c
-end)
-semifly:AddSlider('Y Rotation', 10, 0, 0, function(c) 
-    yrot = c
-end)
-semifly:AddSlider('Z Rotation', 10, 0, 0, function(c) 
-    zrot = c
-end)
+semifly:AddToggle({
+    text = "UpAngle Toggle",
+    flag = "Ashgrgretfesrssferhert",
+    risky = true,
+    callback = function(v)
+        upangletoggle = v
+    end
+})
 
-semifly:AddSeparateBar()
+semifly:AddSlider({
+    enabled = true,
+    text = "UpAngle Value",
+    tooltip = "UpAngle Value",
+    flag = "dxgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = -5,
+    max = 5,
+    increment = 1,
+    callback = function(v)
+        upangleY = v
+    end
+})
 
-semifly:AddToggle('Spin X', true, nil, function(v)
-    xspinning = v
+semifly:AddSeparator({
+    enabled = true,
+    text = "Anti Aim Parameters"
+})
+
+semifly:AddSlider({
+    enabled = true,
+    text = "X Rotation",
+    tooltip = "X Axis Rotation",
+    flag = "dx2gfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 180,
+    increment = 1,
+    callback = function(v)
+        xrot = v
+    end
+})
+
+semifly:AddSlider({
+    enabled = true,
+    text = "Y Rotation",
+    tooltip = "Y Axis Rotation",
+    flag = "dxYgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 10,
+    increment = 1,
+    callback = function(v)
+        yrot = v
+    end
+})
+
+semifly:AddSlider({
+    enabled = true,
+    text = "Z Rotation",
+    tooltip = "Z Axis Rotation",
+    flag = "dxZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 10,
+    increment = 1,
+    callback = function(v)
+        zrot = v
+    end
+})
+
+semifly:AddSeparator({
+    enabled = true,
+    text = "Anti Aim Spin"
+})
+
+semifly:AddToggle({
+    text = "Spin X",
+    flag = "A4536dd",
+    risky = false,
+    callback = function(v)
+            xspinning = v
     if not xspinning then
         xrot = 0
     else
@@ -967,14 +1054,31 @@ semifly:AddToggle('Spin X', true, nil, function(v)
             end
         end)()
     end
-end)
+    end
+})
 
-semifly:AddSlider('X Rotation Speed', 20, 0, 0, function(c) 
-    xspeedspin = c
-end)
+semifly:AddSlider({
+    enabled = true,
+    text = "X Rotation Speed",
+    tooltip = "X Axis Rotation Speed",
+    flag = "dxZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 20,
+    increment = 1,
+    callback = function(v)
+        xspeedspin = v
+    end
+})
 
-semifly:AddToggle('Spin Y', true, nil, function(v)
-    yspinning = v
+semifly:AddToggle({
+    text = "Spin Y",
+    flag = "A453f6dd",
+    risky = false,
+    callback = function(v)
+            yspinning = v
     if not yspinning then
         yrot = 0
     else
@@ -985,14 +1089,31 @@ semifly:AddToggle('Spin Y', true, nil, function(v)
             end
         end)()
     end
-end)
+    end
+})
 
-semifly:AddSlider('Y Rotation Speed', 20, 0, 0, function(c) 
-    yspeedspin = c
-end)
+semifly:AddSlider({
+    enabled = true,
+    text = "Y Rotation Speed",
+    tooltip = "Y Axis Rotation Speed",
+    flag = "dxZgfghhdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 20,
+    increment = 1,
+    callback = function(v)
+        yspeedspin = v
+    end
+})
 
-semifly:AddToggle('Spin Z', true, nil, function(v)
-    zspinning = v
+semifly:AddToggle({
+    text = "Spin Z",
+    flag = "A4zz536dd",
+    risky = false,
+    callback = function(v)
+            zspinning = v
     if not zspinning then
         zrot = 0
     else
@@ -1003,98 +1124,178 @@ semifly:AddToggle('Spin Z', true, nil, function(v)
             end
         end)()
     end
-end)
+    end
+})
 
-semifly:AddSlider('Z Rotation Speed', 20, 0, 0, function(c) 
-    zspeedspin = c
-end)
+semifly:AddSlider({
+    enabled = true,
+    text = "Z Rotation Speed",
+    tooltip = "Z Axis Rotation Speed",
+    flag = "dxsssdwdZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 20,
+    increment = 1,
+    callback = function(v)
+        zspeedspin = v
+    end
+})
 
---[[
-hitsounds:AddDropdown('Hitsound', {"None", "Neverlose", "Gamesense", "CSGO", "Rust", "Minecraft"}, 'None', function(v)
-    currenthitsound = v == "None" and "" or HitmarkerSounds[v]
-end)
+function startspeedhack()
+    local speaker = game:GetService("Players").LocalPlayer
+    local chr = speaker.Character
+    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
+    local hb = game:GetService("RunService").Heartbeat
+    while speedbool and chr and hum and hum.Parent do
+        local delta = hb:Wait()
+        if hum.MoveDirection.Magnitude > 0 then
+            chr:TranslateBy(hum.MoveDirection * tonumber(speedboost) * delta * 10)
+        else
+            chr:TranslateBy(hum.MoveDirection * delta * 10)
+        end
+    end
+end
 
-hitsounds:AddToggle('Enable Hitsounds', true, nil, function(v)
-    hitsounds_enabled = v
-end)
-]]
-wh:AddToggle('ESP Enabled', true, esptogglebind, function(v)
-    espbool = v
-end)
-wh:AddToggle('Bots', true, nil, function(v)
-    espbots = v
-end)
-wh:AddToggle('Name', true, nil, function(v)
-    espname = v
-end)
-wh:AddToggle('Health', true, nil, function(v)
-    esphp = v
-end)
-wh:AddToggle('Distance', true, nil, function(v)
-    espdistance = v
-end)
-wh:AddToggle('Chams', true, nil, function(v)
-    esphigh = v
-end)
-wh:AddToggle('Equipped Tool', true, nil, function(v)
-    esphotbar = v
-end)
-wh:AddToggle('Body', true, nil, function(v)
-    espdead = v
-end)
-wh:AddToggle('Extract', true, nil, function(v)
-    espexit = v
-end)
+privatefeatures:AddSeparator({
+    enabled = true,
+    text = "CFrame Speed"
+})
 
-wh:AddSeparateBar()
+privatefeatures:AddToggle({
+    text = "CFrame Speed Enabled",
+    flag = "Abay2u654fdt",
+    callback = function(v)
+        speedbool = v
+        startspeedhack()
+    end
+})
 
-wh:AddColorPallete('Text Color', Color3.fromRGB(77, 210, 255),function(a) 
-    esptextcolor = a
-end)
-wh:AddSlider('Text Size', 35, 1, 17, function(c) 
-    esptextsize = c
-end)
-wh:AddToggle('Text Outline', false, nil, function(v)
-    esptextline = v
-end)
+privatefeatures:AddSlider({
+    enabled = true,
+    text = "CFrame Speed",
+    tooltip = "CFrame Speed Value",
+    flag = "dxsssdwdZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 1.5,
+    increment = 0.1,
+    callback = function(v)
+        speedboost = v
+    end
+})
 
-wh:AddSeparateBar()
+privatefeatures:AddSeparator({
+    enabled = true,
+    text = "Player Exploits"
+})
 
-wh:AddSlider('Chams Outline Transparency', 1, 0, 0, function(c) 
-    espchamsline = c
-end)
-wh:AddColorPallete('Chams Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
-    esplinecolor = a
-end)
+privatefeatures:AddToggle({
+    text = "Main Toggle",
+    flag = "Abx2ay2u654fdt",
+    callback = function(v)
+        changerbool = v
+    end
+})
 
-wh:AddSlider('Chams Fill Transparency', 1, 0, 0.5, function(c) 
-    espchamsfill = c
-end)
-wh:AddColorPallete('Chams Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
-    espfillcolor = a
-end)
+privatefeatures:AddSlider({
+    enabled = true,
+    text = "Player Walkspeed",
+    tooltip = "Walkspeed Value",
+    flag = "dxsssdwd234rZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 70,
+    increment = 1,
+    callback = function(v)
+        changerspeed = v
+    end
+})
 
+privatefeatures:AddSlider({
+    enabled = true,
+    text = "Player Jumppower",
+    tooltip = "Jumppower Value",
+    flag = "dwa2dxsssdwd234rZgfgdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 25,
+    increment = 1,
+    callback = function(v)
+        changerjump = v
+    end
+})
 
-cross:AddToggle('Crosshair', true, nil, function(v)
-    crosshair.Visible = v
-end)
-cross:AddColorPallete('Crosshair Color', Color3.fromRGB(77, 210, 255),function(a) 
-    crosshair.Color = a
-end)
+privatefeatures:AddSlider({
+    enabled = true,
+    text = "Player Hipheight",
+    tooltip = "Hipheight Value",
+    flag = "dwa2dHipheightxdhh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 25,
+    increment = 1,
+    callback = function(v)
+        changerheight = v
+    end
+})
 
+privatefeatures:AddSlider({
+    enabled = true,
+    text = "Player Gravity",
+    tooltip = "Gravity Value",
+    flag = "dwdhPlayerGravityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 25,
+    increment = 1,
+    callback = function(v)
+        changergrav = v
+    end
+})
 
-tracers:AddToggle('Enabled', true, nil, function(v)
-    tracbool = v
-end)
-tracers:AddDropdown('Tracer Texture', {'None', "Neon", "Lightning", "Wide"}, 'Neon', function(a)
-    tracertexture = tracertextures[a]
-end)
-tracers:AddColorPallete('Tracers Color', Color3.fromRGB(77, 210, 255),function(a) 
-    traccolor.Color = Color3.fromRGB(a)
-end)
-tracers:AddSlider('Tracer Lifetime', 20, 0, 1, function(c) 
-    tracwait = c
-end)
+privatefeatures:AddSeparator({
+    enabled = true,
+    text = "Other Exploits"
+})
+
+privatefeatures:AddToggle({
+    text = "Jesus",
+    flag = "Abx2ay2uJezus654fdt",
+    callback = function(v)
+        worldjesus = v
+        if v then
+            while worldjesus do
+                wait()
+                local hitPart = workspace:Raycast(localplayer.Character:FindFirstChild("HumanoidRootPart").Position, Vector3.new(0, -5, 0) + localplayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 5, RaycastParams.new())
+                if hitPart and hitPart.Material == Enum.Material.Water then
+                    local clone = Instance.new("Part")
+                    clone.Parent = waterplatforms
+                    clone.Position = hitPart.Position
+                    clone.Anchored = true
+                    clone.CanCollide = true
+                    clone.Size = Vector3.new(10,0.2,10)
+                    clone.Transparency = 1
+                end
+            end
+        else
+            for i,v in ipairs(waterplatforms:GetChildren()) do
+                v:Destroy()
+            end
+        end
+    end
+})
 
 function isFalling()
     local humanoid = localplayer.Character and localplayer.Character:FindFirstChild("Humanoid")
@@ -1137,60 +1338,668 @@ local function startFallProtection()
     end
 end
 
-plrmods:AddToggle('Bunnyhop', true, nil, function(v)
-    bunnyhop = v
-    repeat
-        if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
-            localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
-        end
-        task.wait()
-    until not bunnyhop
-end)
-
-plrmods:AddSeparateBar()
-
-plrmods:AddToggle('No Fall Damage', true, nil, function(v)
-    NoFallDamage = v
-    if v then
-        startFallProtection()
+privatefeatures:AddToggle({
+    text = "Bunnyhop",
+    flag = "Abannit",
+    callback = function(v)
+        bunnyhop = v
+        repeat
+            if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
+                localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
+            end
+            task.wait()
+        until not bunnyhop
     end
-end)
+})
 
-plrmods:AddToggle('Visualize', true, nil, function(v)
-    transparencyToggle = v
-end)
+privatefeatures:AddToggle({
+    text = "Gnome Mode",
+    flag = "gnome359",
+    risky = true,
+    tooltip = "Moves your limbs and head into your torso",
+    callback = function(v)
+        game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
+    end
+})
 
-plrmods:AddSeparateBar()
+privatefeatures:AddToggle({
+    text = "No Fall Damage",
+    tooltip = "Main Toggle for No Fall Damage",
+    flag = "Abanxnidwaawfdt",
+    callback = function(v)
+        NoFallDamage = v
+        if v then
+            startFallProtection()
+        end
+    end
+})
 
-plrmods:AddToggle('Gnome Mode', true, nil, function(v)
-    game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
-end)
+privatefeatures:AddToggle({
+    text = "Visualize",
+    tooltip = "Visualizes No Fall Damage",
+    flag = "Abayu654fdt",
+    callback = function(v)
+        transparencyToggle = v
+    end
+})
 
-inventorychecker:AddToggle('Inventory Checker', true, nil, function(v)
-    inventoryCheckerToggle = v
-end)
+wh:AddToggle({
+    text = "ESP Enabled",
+    tooltip = "Main Toggle for ESP",
+    flag = "v5u54354",
+    callback = function(v)
+        espbool = v
+    end
+})
 
-inventorychecker:AddKeyBind('Inventory Checker Bind', Enum.KeyCode.Backquote, function(s) 
-    inventoryCheckerBind = s
-end)
+wh:AddToggle({
+    text = "AI",
+    tooltip = "Includes AI in ESP",
+    flag = "v5u543x54",
+    callback = function(v)
+        espbots = v
+    end
+})
 
+wh:AddToggle({
+    text = "Name",
+    tooltip = "Includes Names in ESP",
+    flag = "v5u543x54",
+    callback = function(v)
+        espname = v
+    end
+})
 
+wh:AddToggle({
+    text = "Health",
+    tooltip = "Includes Health in ESP",
+    flag = "v5uHealth543x54",
+    callback = function(v)
+        esphp = v
+    end
+})
 
-camer:AddToggle('No Effects', true, nil, function(v) 
-local noscreeneffects = v
+wh:AddToggle({
+    text = "Distance",
+    tooltip = "Includes Distance in ESP",
+    flag = "v5u5Distance43x54",
+    callback = function(v)
+        espdistance = v
+    end
+})
 
-while noscreeneffects do task.wait(0.1)
-local pg = localplayer.PlayerGui
-	if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
-		for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
-			if v:IsA("Frame") then
-				v.Visible = false
+wh:AddToggle({
+    text = "Chams",
+    tooltip = "Includes Chams in ESP",
+    flag = "v5uChams543x54",
+    callback = function(v)
+        esphigh = v
+    end
+})
+
+wh:AddToggle({
+    text = "Equipped Tool",
+    tooltip = "Includes Equipped Tool in ESP",
+    flag = "v5EquippedTool543x54",
+    callback = function(v)
+        esphotbar = v
+    end
+})
+
+wh:AddToggle({
+    text = "Body",
+    tooltip = "Includes Dead Bodies in ESP",
+    flag = "v5Body543x54",
+    callback = function(v)
+        espdead = v
+    end
+})
+
+wh:AddToggle({
+    text = "Extract",
+    tooltip = "Includes Extracts in ESP",
+    flag = "v5Extract543x54",
+    callback = function(v)
+        espexit = v
+    end
+})
+
+wh:AddSeparator({
+    enabled = true,
+    text = "ESP Parameters"
+})
+
+wh:AddSlider({
+    enabled = true,
+    text = "Text Size",
+    tooltip = "ESP Text Size",
+    flag = "dwdhTextSizeavityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 1,
+    max = 35,
+    increment = 1,
+    callback = function(v)
+        esptextsize = v
+    end
+})
+
+wh:AddToggle({
+    enabled = true,
+    text = "Text Outline",
+    tooltip = "Adds a Text Outline to ESP",
+    flag = "v5ETextOutlinet543x54",
+    callback = function(v)
+        esptextline = v
+    end
+})
+
+wh:AddSeparator({
+    enabled = true,
+    text = "Cham Parameters"
+})
+
+wh:AddSlider({
+    enabled = true,
+    text = "Chams Outline Transparency",
+    flag = "dwdhTexjrjrzeavityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 1,
+    increment = 0.1,
+    callback = function(v)
+        espchamsline = v
+    end
+})
+wh:AddColor({
+    enabled = true,
+    text = "Chams Outline Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_92",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        esplinecolor = v
+    end
+})
+wh:AddSlider({
+    enabled = true,
+    text = "Chams Fill Transparency",
+    flag = "dwdhTegfrgzeavityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 1,
+    increment = 0.1,
+    callback = function(v)
+        espchamsfill = v
+    end
+})
+wh:AddColor({
+    enabled = true,
+    text = "Chams Fill Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_61",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        espfillcolor = v
+    end
+})
+
+cross:AddToggle({
+    text = "Crosshair Enabled",
+    tooltip = "Enables/disables crosshair",
+    flag = "v5ETexehtt543x54",
+    callback = function(v)
+        crosshair.Visible = v
+    end
+})
+
+cross:AddColor({
+    enabled = true,
+    text = "Crosshair Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_612",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        crosshair.Color = v
+    end
+})
+
+tracers:AddToggle({
+    text = "Bullet Tracers Enabled",
+    tooltip = "Enables/disables Bullet Tracers",
+    flag = "v5ET3yt4543x54",
+    callback = function(v)
+        tracbool = v
+    end
+})
+
+tracers:AddList({
+    enabled = true,
+    text = "Tracer Texture", 
+    tooltip = "Bullet Tracer Texture",
+    selected = "Neon",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"None", "Neon", "Lightning", "Wide"},
+    risky = false,
+    callback = function(v)
+        tracertexture = tracertextures[v]
+    end
+})
+
+tracers:AddColor({
+    enabled = true,
+    text = "Bullet Tracer Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_612x",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        traccolor.Color = Color3.fromRGB(v)
+    end
+})
+
+tracers:AddSlider({
+    enabled = true,
+    text = "Tracer Lifetime",
+    flag = "dwTracerLifetimetyh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0.5,
+    max = 20,
+    increment = 0.5,
+    callback = function(v)
+        tracwait = v
+    end
+})
+
+worldh:AddToggle({
+    text = "No Grass",
+    tooltip = "Adds/Removes Grass",
+    flag = "v5ET3ytGrass4543x54",
+    callback = function(v)
+        sethiddenproperty(workspace.Terrain, "Decoration", not v)
+    end
+})
+
+worldh:AddToggle({
+    text = "No Leaves",
+    tooltip = "Adds/Removes Leaves",
+    flag = "v5ET3ytLeaves4543x54",
+    callback = function(v)
+        worldleaves = v
+    end
+})
+
+worldh:AddSeparator({
+    enabled = true,
+    text = "Lighting Parameters"
+})
+
+worldh:AddSlider({
+    enabled = true,
+    text = "Clock Time",
+    flag = "dwdhTClockTimevityh",
+    suffix = "h",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 24,
+    increment = 0.1,
+    callback = function(v)
+        worldclock = v
+        game.Lighting.ClockTime = v
+    end
+})
+
+worldh:AddToggle({
+    text = "No Fog",
+    tooltip = "Enables/Disables Fog",
+    flag = "v5ET3yFogs4543x54",
+    callback = function(v)
+        while v do task.wait()
+            game.Lighting.Atmosphere.Density = 0
+            game.Lighting.Atmosphere.Offset = 0
+        end
+    end
+})
+local prevAmbient = game.Lighting.Ambient
+local prevOutdoor = game.Lighting.OutdoorAmbient
+worldh:AddToggle({
+    text = "Ambient Toggle",
+    tooltip = "Enables/Disables Ambient Modifier",
+    flag = "v5ET3yAmbientToggl4543x54",
+    callback = function(v)
+        worldvisualstoggle = v
+        if worldvisualstoggle then
+            game.Lighting.Ambient = worldambient
+            game.Lighting.OutdoorAmbient = worldoutdoor
+        else
+            game.Lighting.Ambient = prevAmbient
+            game.Lighting.OutdoorAmbient = prevOutdoor
+        end
+    end
+})
+
+worldh:AddColor({
+    enabled = true,
+    text = "Ambient Color",
+    color = Color3.fromRGB(255, 255, 255),
+    flag = "Color_682x",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        worldambient = v
+    end
+})
+
+worldh:AddColor({
+    enabled = true,
+    text = "Outdoor Ambient Color",
+    color = Color3.fromRGB(255, 255, 255),
+    flag = "Color_68h2x",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        worldoutdoor = v
+    end
+})
+
+viewmod:AddToggle({
+    text = "Viewmodel Chams",
+    tooltip = "Enables/Disables Viewmodel Chams",
+    flag = "v3yViewmodelChams44",
+    callback = function(v)
+        viewmodbool = v
+    end
+})
+viewmod:AddList({
+    enabled = true,
+    text = "Arm Chams Material", 
+    selected = "Forcefield",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Neon", "Forcefield", "Plastic"},
+    risky = false,
+    callback = function(v)
+        if viewmod_materials[v] then
+            viewmodhandmat = viewmod_materials[v]
+        else
+    
+        end
+    end
+})
+viewmod:AddList({
+    enabled = true,
+    text = "Weapon Chams Material", 
+    selected = "Forcefield",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Neon", "Forcefield", "Plastic"},
+    risky = false,
+    callback = function(v)
+        if viewmod_materials[v] then
+            viewmodgunmat = viewmod_materials[v]
+        else
+    
+        end
+    end
+})
+viewmod:AddColor({
+    enabled = true,
+    text = "Arm Chams Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_ArmChams",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        viewmodhandcolor = v
+    end
+})
+viewmod:AddColor({
+    enabled = true,
+    text = "Weapon Chams Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_WeaponChams",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        viewmodguncolor = v
+    end
+})
+
+viewmod:AddSeparator({
+    enabled = true,
+    text = "Outline Chams"
+})
+
+viewmod:AddToggle({
+    text = "Viewmodel Outline Chams",
+    tooltip = "Enables/Disables Viewmodel Outline Chams",
+    flag = "v3yOutlineViewmodelChams44",
+    callback = function(v)
+        viewmodhighlightchams = v
+    end
+})
+
+viewmod:AddColor({
+    enabled = true,
+    text = "Outline Fill Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_OutlineFill",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        viewmodhighlightfillcolor = v
+    end
+})
+
+viewmod:AddSlider({
+    enabled = true,
+    text = "Outline Fill Transparency",
+    flag = "dwOutlineFillTranstyh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 1,
+    increment = 0.1,
+    callback = function(v)
+        viewmodhighlightfilltransparency = v
+    end
+})
+
+viewmod:AddColor({
+    enabled = true,
+    text = "Outline Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_Outline",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        viewmodhighlightoutlinecolor = v
+    end
+})
+
+viewmod:AddSlider({
+    enabled = true,
+    text = "Outline Transparency",
+    flag = "dwFillTranstyh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 0,
+    max = 1,
+    increment = 0.1,
+    callback = function(v)
+        viewmodhighlightoutlinetransparency = v
+    end
+})
+
+local zoomtoggle = false
+
+local classicfov = 100
+local zoomfov = 5
+
+camzoom:AddToggle({
+    text = "Zoom",
+    tooltip = "Enables/Disables Zoom",
+    flag = "v5ET3yAmbientToggl4543x54",
+    callback = function(v)
+if zoomtoggle then
+			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = false
+				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
 			end
-		end
-	end
+else
+	                if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+		                local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = true
+		                 settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
+	                end
 end
-end)
+    end
+}):AddBind({
+    enabled = true,
+    text = "Zoom",
+    tooltip = "Zoom Keybind",
+    mode = "toggle",
+    bind = Enum.KeyCode.C,
+    flag = "ToggleKey_2",
+    state = false,
+    nomouse = false,
+    risky = false,
+    noindicator = false,
+    callback = function(v)
+if zoomtoggle then
+			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = false
+				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
+			end
+else
+	                if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+		                local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = true
+		                 settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
+	                end
+end
+    end,
+    keycallback = function(v)
+if zoomtoggle then
+			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = false
+				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
+			end
+else
+	                if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
+		                local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
+                                zoomtoggle = true
+		                 settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
+	                end
+end
+    end
+})
 
+camzoom:AddSlider({
+    enabled = true,
+    text = "Base FOV",
+    flag = "dwdhTBaseFOVevityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 5,
+    max = 100,
+    increment = 1,
+    callback = function(v)
+        classicfov = v
+    end
+})
+
+camzoom:AddSlider({
+    enabled = true,
+    text = "Zoom FOV",
+    flag = "dwdhTZoomFOVevityh",
+    suffix = "",
+    dragging = true,
+    focused = false,
+    min = 5,
+    max = 80,
+    increment = 1,
+    callback = function(v)
+        zoomfov = v
+    end
+})
+
+inventorychecker:AddToggle({
+    text = "Inventory Checker",
+    tooltip = "Enables/Disables Inventory Checker",
+    flag = "v5ET3yInventoryChecker4543x54",
+    callback = function(v)
+        inventoryCheckerToggle = v
+    end
+}):AddBind({
+    enabled = true,
+    text = "Inventory Checker",
+    tooltip = "Inventory Checker Keybind",
+    mode = "toggle",
+    bind = Enum.KeyCode.Backquote,
+    flag = "ToggleKey_3",
+    state = false,
+    nomouse = false,
+    risky = false,
+    noindicator = false,
+    callback = function(v)
+        inventoryCheckerToggle = v
+    end,
+    keycallback = function(v)
+        inventoryCheckerToggle = v
+    end
+})
+
+camer:AddToggle({
+    text = "No Effects",
+    tooltip = "Enables/Disables Screen Effects",
+    flag = "v5ET3yAScreenEffectse4543x54",
+    callback = function(v)
+        local noscreeneffects = v
+
+        while noscreeneffects do task.wait(0.1)
+        local pg = localplayer.PlayerGui
+            if pg and pg:FindFirstChild("MainGui") and pg.MainGui:FindFirstChild("MainFrame") and pg.MainGui.MainFrame:FindFirstChild("ScreenEffects") then
+                for i,v in ipairs(localplayer.PlayerGui.MainGui.MainFrame.ScreenEffects:GetChildren()) do
+                    if v:IsA("Frame") then
+                        v.Visible = false
+                    end
+                end
+            end
+        end
+    end
+})
 
 local finishCharacterCreation = rp:WaitForChild("Remotes"):WaitForChild("FinishCharacterCreation")
 
@@ -1228,73 +2037,54 @@ local function fireCharacterCreation()
     end
 end
 
-camer:AddToggle('Appearance Switcher', true, nil, function(v)
-    toggleActive = v
-    if toggleActive then
-        runningThread = coroutine.create(fireCharacterCreation)
-        coroutine.resume(runningThread)
-    else
-        runningThread = nil
-    end
-end)
-
-local classicfov = 100
-local zoomfov = 5
-
-camzoom:AddSlider('Base FOV', 100, 5, 100, function(c) 
-    classicfov = c
-end)
-
-camzoom:AddSlider('Zoom FOV', 80, 5, 5, function(c) 
-    zoomfov = c
-end)
-
-local zoomtoggle = false
-local zoombind = Enum.KeyCode.C
-
-camzoom:AddKeyBind('Zoom Bind', Enum.KeyCode.C, function(g)
-    zoombind = g
-	local ic3Connect
-	ic3Connect = uis.InputEnded:Connect(function(input, _)
-		if input.KeyCode == zoombind then
-			ic3Connect:Disconnect()
-			if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
-				local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
-                zoomtoggle = false
-				settings.GameplaySettings:SetAttribute("DefaultFOV", classicfov)
-			end
-		end
-	end)
-	if rp.Players and rp.Players:FindFirstChild(localplayer.Name) and rp.Players:FindFirstChild(localplayer.Name).Settings then
-		local settings = rp.Players:FindFirstChild(localplayer.Name).Settings
-        zoomtoggle = true
-		settings.GameplaySettings:SetAttribute("DefaultFOV", zoomfov)
-	end
-end)
-
-
-camer:AddToggle('No Visor', true, nil, function(v)
-    if v == true then
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(0,0,1,0)
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Mask.GP5.Size = UDim2.new(0,0,1,0)
-        for i,v in ipairs(game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Visor:GetChildren()) do
-            v.Size = UDim2.new(0,0,1,0)
-        end
-    else
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(1,0,1,0)
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Mask.GP5.Size = UDim2.new(1,0,1,0)
-        for i,v in ipairs(game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Visor:GetChildren()) do
-            v.Size = UDim2.new(1,0,1,0)
+camer:AddToggle({
+    text = "Appearance Switcher",
+    tooltip = "Switches your appearance",
+    flag = "v5ET3yAAppearance4543x54",
+    callback = function(v)
+        toggleActive = v
+        if toggleActive then
+            runningThread = coroutine.create(fireCharacterCreation)
+            coroutine.resume(runningThread)
+        else
+            runningThread = nil
         end
     end
-end)
-camer:AddToggle('No Flashbang', true, nil, function(v)
-    if v == true then
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(0,0,1,0)
-    else
-        game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(1,0,1,0)
+})
+
+camer:AddToggle({
+    text = "No Visor",
+    tooltip = "Enables/Disables Visor Visibility",
+    flag = "v5ET3yAVisor4543x54",
+    callback = function(v)
+        if v == true then
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(0,0,1,0)
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Mask.GP5.Size = UDim2.new(0,0,1,0)
+            for i,v in ipairs(game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Visor:GetChildren()) do
+                v.Size = UDim2.new(0,0,1,0)
+            end
+        else
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.HelmetMask.TitanShield.Size = UDim2.new(1,0,1,0)
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Mask.GP5.Size = UDim2.new(1,0,1,0)
+            for i,v in ipairs(game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Visor:GetChildren()) do
+                v.Size = UDim2.new(1,0,1,0)
+            end
+        end
     end
-end)
+})
+
+camer:AddToggle({
+    text = "No Flashbang",
+    tooltip = "Enables/Disables Flashbang Effect",
+    flag = "vFlasbang",
+    callback = function(v)
+        if v == true then
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(0,0,1,0)
+        else
+            game.Players.LocalPlayer.PlayerGui.MainGui.MainFrame.ScreenEffects.Flashbang.Size = UDim2.new(1,0,1,0)
+        end
+    end
+})
 
 local origZoom = localplayer.CameraMaxZoomDistance
 local origMode = localplayer.CameraMode
@@ -1302,565 +2092,85 @@ local origMode = localplayer.CameraMode
 local newZoom = 99999
 local newMode = Enum.CameraMode.Classic
 
-camer:AddToggle('Third Person', true, nil, function(isToggled)
-    if isToggled then
-        localplayer.CameraMaxZoomDistance = newZoom
-        localplayer.CameraMode = newMode
-    else
-        localplayer.CameraMaxZoomDistance = origZoom
-        localplayer.CameraMode = origMode
-    end
-end)
-
-camer:AddToggle('No Drown', true, nil, function(v)
-    AntiDrown = v
-    if AntiDrown then
-        game.Lighting.WaterBlur.Size = 0
-    else
-        game.Lighting.WaterBlur.Size = 24
-    end
-end)
-
-viewmod:AddToggle('Viewmodel Chams', true, nil, function(v)
-    viewmodbool = v
-end)
-viewmod:AddDropdown('Arm Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
-    if viewmod_materials[a] then
-        viewmodhandmat = viewmod_materials[a]
-    else
-
-    end
-end)
-viewmod:AddDropdown('Weapon Chams Material', {'Neon', 'Forcefield', "Plastic"}, 'Forcefield', function(a)
-    if viewmod_materials[a] then
-        viewmodgunmat = viewmod_materials[a]
-    else
-
-    end
-end)
-viewmod:AddColorPallete('Arm Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodhandcolor = a
-end)
-viewmod:AddColorPallete('Weapon Chams Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodguncolor = a
-end)
-
-viewmod:AddSeparateBar()
-
-viewmod:AddToggle('Viewmodel Outline Chams', true, nil, function(v)
-    viewmodhighlightchams = v
-end)
-
-viewmod:AddColorPallete('Outline Fill Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodhighlightfillcolor = a
-end)
-viewmod:AddSlider('Outline Fill Transparency', 1, 0, 1, function(c) 
-    viewmodhighlightfilltransparency = c
-end)
-
-viewmod:AddColorPallete('Outline Color', Color3.fromRGB(77, 210, 255),function(a) 
-    viewmodhighlightoutlinecolor = a
-end)
-viewmod:AddSlider('Outline Transparency', 1, 0, 0, function(c) 
-    viewmodhighlightoutlinetransparency = c
-end)
-
-local keybindmenuvisible = false
-
-local KeybindListMenuD = {
-	["__238237458342578523124872147"] = Instance.new("ScreenGui");
-	["_Holder"] = Instance.new("Frame");
-	["_KeybindIcon"] = Instance.new("ImageLabel");
-	["_UIStroke"] = Instance.new("UIStroke");
-	["_UICorner"] = Instance.new("UICorner");
-	["_KeybindTitle"] = Instance.new("TextLabel");
-	["_UIStroke1"] = Instance.new("UIStroke");
-	["_UICorner1"] = Instance.new("UICorner");
-	["_KeybindListMenuD"] = Instance.new("Frame");
-	["_UIListLayout"] = Instance.new("UIListLayout");
-	["_SilentAim"] = Instance.new("Frame");
-	["_Icon"] = Instance.new("ImageLabel");
-	["_Title"] = Instance.new("TextLabel");
-	["_AutoShoot"] = Instance.new("Frame");
-	["_Icon1"] = Instance.new("ImageLabel");
-	["_Title1"] = Instance.new("TextLabel");
-	["_ESPToggle"] = Instance.new("Frame");
-	["_Icon2"] = Instance.new("ImageLabel");
-	["_Title2"] = Instance.new("TextLabel");
-	["_Zoom"] = Instance.new("Frame");
-	["_Icon3"] = Instance.new("ImageLabel");
-	["_Title3"] = Instance.new("TextLabel");
-	["_MovementToggle"] = Instance.new("Frame");
-	["_Icon4"] = Instance.new("ImageLabel");
-	["_Title4"] = Instance.new("TextLabel");
-}
-
-KeybindListMenuD["__238237458342578523124872147"].Enabled = false
-KeybindListMenuD["__238237458342578523124872147"].IgnoreGuiInset = true
-KeybindListMenuD["__238237458342578523124872147"].ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
-KeybindListMenuD["__238237458342578523124872147"].ResetOnSpawn = false
-KeybindListMenuD["__238237458342578523124872147"].ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-KeybindListMenuD["__238237458342578523124872147"].Name = "_238237458342578523124872147"
-KeybindListMenuD["__238237458342578523124872147"].Parent = game:GetService("CoreGui")
-
-KeybindListMenuD["_Holder"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_Holder"].BackgroundTransparency = 1
-KeybindListMenuD["_Holder"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Holder"].BorderSizePixel = 0
-KeybindListMenuD["_Holder"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_Holder"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_Holder"].Name = "Holder"
-KeybindListMenuD["_Holder"].Parent = KeybindListMenuD["__238237458342578523124872147"]
-
-KeybindListMenuD["_KeybindIcon"].Image = "rbxassetid://12988755627"
-KeybindListMenuD["_KeybindIcon"].ImageColor3 = Color3.fromRGB(0, 203.00000309944153, 203.00000309944153)
-KeybindListMenuD["_KeybindIcon"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_KeybindIcon"].BackgroundTransparency = 1
-KeybindListMenuD["_KeybindIcon"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_KeybindIcon"].BorderSizePixel = 0
-KeybindListMenuD["_KeybindIcon"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_KeybindIcon"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_KeybindIcon"].Name = "KeybindIcon"
-KeybindListMenuD["_KeybindIcon"].Parent = KeybindListMenuD["_Holder"]
-
-KeybindListMenuD["_UIStroke"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-KeybindListMenuD["_UIStroke"].Color = Color3.fromRGB(0, 255, 255)
-KeybindListMenuD["_UIStroke"].Parent = KeybindListMenuD["_KeybindIcon"]
-
-KeybindListMenuD["_UICorner"].CornerRadius = UDim.new(0, 5)
-KeybindListMenuD["_UICorner"].Parent = KeybindListMenuD["_KeybindIcon"]
-
-KeybindListMenuD["_KeybindTitle"].Font = Enum.Font.Arial
-KeybindListMenuD["_KeybindTitle"].Text = "Keybinds"
-KeybindListMenuD["_KeybindTitle"].TextColor3 = Color3.fromRGB(0, 203.00000309944153, 203.00000309944153)
-KeybindListMenuD["_KeybindTitle"].TextSize = 13
-KeybindListMenuD["_KeybindTitle"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_KeybindTitle"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_KeybindTitle"].TextWrapped = true
-KeybindListMenuD["_KeybindTitle"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_KeybindTitle"].BackgroundTransparency = 1
-KeybindListMenuD["_KeybindTitle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_KeybindTitle"].BorderSizePixel = 0
-KeybindListMenuD["_KeybindTitle"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_KeybindTitle"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_KeybindTitle"].Name = "KeybindTitle"
-KeybindListMenuD["_KeybindTitle"].Parent = KeybindListMenuD["_Holder"]
-
-KeybindListMenuD["_UIStroke1"].ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-KeybindListMenuD["_UIStroke1"].Color = Color3.fromRGB(0, 255, 255)
-KeybindListMenuD["_UIStroke1"].Parent = KeybindListMenuD["_KeybindTitle"]
-
-KeybindListMenuD["_UICorner1"].CornerRadius = UDim.new(0, 5)
-KeybindListMenuD["_UICorner1"].Parent = KeybindListMenuD["_KeybindTitle"]
-
-KeybindListMenuD["_KeybindListMenuD"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_KeybindListMenuD"].BackgroundTransparency = 1
-KeybindListMenuD["_KeybindListMenuD"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_KeybindListMenuD"].BorderSizePixel = 0
-KeybindListMenuD["_KeybindListMenuD"].Position = UDim2.new(0, 0, 1.47058821, 0)
-KeybindListMenuD["_KeybindListMenuD"].Size = UDim2.new(0, 105, 0, 209)
-KeybindListMenuD["_KeybindListMenuD"].Name = "KeybindListMenuD"
-KeybindListMenuD["_KeybindListMenuD"].Parent = KeybindListMenuD["_Holder"]
-
-KeybindListMenuD["_UIListLayout"].Padding = UDim.new(0, 3)
-KeybindListMenuD["_UIListLayout"].SortOrder = Enum.SortOrder.LayoutOrder
-KeybindListMenuD["_UIListLayout"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_SilentAim"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_SilentAim"].BackgroundTransparency = 1
-KeybindListMenuD["_SilentAim"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_SilentAim"].BorderSizePixel = 0
-KeybindListMenuD["_SilentAim"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_SilentAim"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_SilentAim"].Name = "SilentAim"
-KeybindListMenuD["_SilentAim"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_Icon"].Image = "rbxassetid://7181750993"
-KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Icon"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Icon"].BackgroundTransparency = 1
-KeybindListMenuD["_Icon"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Icon"].BorderSizePixel = 0
-KeybindListMenuD["_Icon"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_Icon"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_Icon"].Name = "Icon"
-KeybindListMenuD["_Icon"].Parent = KeybindListMenuD["_SilentAim"]
-
-KeybindListMenuD["_Title"].Font = Enum.Font.Arial
-KeybindListMenuD["_Title"].Text = "Silent Aim"
-KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Title"].TextSize = 13
-KeybindListMenuD["_Title"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_Title"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_Title"].TextWrapped = true
-KeybindListMenuD["_Title"].TextXAlignment = Enum.TextXAlignment.Left
-KeybindListMenuD["_Title"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Title"].BackgroundTransparency = 1
-KeybindListMenuD["_Title"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Title"].BorderSizePixel = 0
-KeybindListMenuD["_Title"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_Title"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_Title"].Name = "Title"
-KeybindListMenuD["_Title"].Parent = KeybindListMenuD["_SilentAim"]
-
-KeybindListMenuD["_AutoShoot"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_AutoShoot"].BackgroundTransparency = 1
-KeybindListMenuD["_AutoShoot"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_AutoShoot"].BorderSizePixel = 0
-KeybindListMenuD["_AutoShoot"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_AutoShoot"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_AutoShoot"].Name = "AutoShoot"
-KeybindListMenuD["_AutoShoot"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_Icon1"].Image = "rbxassetid://7181750993"
-KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Icon1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Icon1"].BackgroundTransparency = 1
-KeybindListMenuD["_Icon1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Icon1"].BorderSizePixel = 0
-KeybindListMenuD["_Icon1"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_Icon1"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_Icon1"].Name = "Icon"
-KeybindListMenuD["_Icon1"].Parent = KeybindListMenuD["_AutoShoot"]
-
-KeybindListMenuD["_Title1"].Font = Enum.Font.Arial
-KeybindListMenuD["_Title1"].Text = "Auto Shoot"
-KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Title1"].TextSize = 13
-KeybindListMenuD["_Title1"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_Title1"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_Title1"].TextWrapped = true
-KeybindListMenuD["_Title1"].TextXAlignment = Enum.TextXAlignment.Left
-KeybindListMenuD["_Title1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Title1"].BackgroundTransparency = 1
-KeybindListMenuD["_Title1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Title1"].BorderSizePixel = 0
-KeybindListMenuD["_Title1"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_Title1"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_Title1"].Name = "Title"
-KeybindListMenuD["_Title1"].Parent = KeybindListMenuD["_AutoShoot"]
-
-KeybindListMenuD["_ESPToggle"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_ESPToggle"].BackgroundTransparency = 1
-KeybindListMenuD["_ESPToggle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_ESPToggle"].BorderSizePixel = 0
-KeybindListMenuD["_ESPToggle"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_ESPToggle"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_ESPToggle"].Name = "ESPToggle"
-KeybindListMenuD["_ESPToggle"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_Icon2"].Image = "rbxassetid://7181750993"
-KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Icon2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Icon2"].BackgroundTransparency = 1
-KeybindListMenuD["_Icon2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Icon2"].BorderSizePixel = 0
-KeybindListMenuD["_Icon2"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_Icon2"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_Icon2"].Name = "Icon"
-KeybindListMenuD["_Icon2"].Parent = KeybindListMenuD["_ESPToggle"]
-
-KeybindListMenuD["_Title2"].Font = Enum.Font.Arial
-KeybindListMenuD["_Title2"].Text = "ESP Toggle"
-KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Title2"].TextSize = 13
-KeybindListMenuD["_Title2"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_Title2"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_Title2"].TextWrapped = true
-KeybindListMenuD["_Title2"].TextXAlignment = Enum.TextXAlignment.Left
-KeybindListMenuD["_Title2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Title2"].BackgroundTransparency = 1
-KeybindListMenuD["_Title2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Title2"].BorderSizePixel = 0
-KeybindListMenuD["_Title2"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_Title2"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_Title2"].Name = "Title"
-KeybindListMenuD["_Title2"].Parent = KeybindListMenuD["_ESPToggle"]
-
-KeybindListMenuD["_Zoom"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_Zoom"].BackgroundTransparency = 1
-KeybindListMenuD["_Zoom"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Zoom"].BorderSizePixel = 0
-KeybindListMenuD["_Zoom"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_Zoom"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_Zoom"].Name = "Zoom"
-KeybindListMenuD["_Zoom"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_Icon3"].Image = "rbxassetid://7181750993"
-KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Icon3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Icon3"].BackgroundTransparency = 1
-KeybindListMenuD["_Icon3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Icon3"].BorderSizePixel = 0
-KeybindListMenuD["_Icon3"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_Icon3"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_Icon3"].Name = "Icon"
-KeybindListMenuD["_Icon3"].Parent = KeybindListMenuD["_Zoom"]
-
-KeybindListMenuD["_Title3"].Font = Enum.Font.Arial
-KeybindListMenuD["_Title3"].Text = "Zoom"
-KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Title3"].TextSize = 13
-KeybindListMenuD["_Title3"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_Title3"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_Title3"].TextWrapped = true
-KeybindListMenuD["_Title3"].TextXAlignment = Enum.TextXAlignment.Left
-KeybindListMenuD["_Title3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Title3"].BackgroundTransparency = 1
-KeybindListMenuD["_Title3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Title3"].BorderSizePixel = 0
-KeybindListMenuD["_Title3"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_Title3"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_Title3"].Name = "Title"
-KeybindListMenuD["_Title3"].Parent = KeybindListMenuD["_Zoom"]
-
-KeybindListMenuD["_MovementToggle"].BackgroundColor3 = Color3.fromRGB(61.00000396370888, 61.00000396370888, 61.00000396370888)
-KeybindListMenuD["_MovementToggle"].BackgroundTransparency = 1
-KeybindListMenuD["_MovementToggle"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_MovementToggle"].BorderSizePixel = 0
-KeybindListMenuD["_MovementToggle"].Position = UDim2.new(0.080824092, 0, 0.415061295, 0)
-KeybindListMenuD["_MovementToggle"].Size = UDim2.new(0, 106, 0, 17)
-KeybindListMenuD["_MovementToggle"].Name = "MovementToggle"
-KeybindListMenuD["_MovementToggle"].Parent = KeybindListMenuD["_KeybindListMenuD"]
-
-KeybindListMenuD["_Icon4"].Image = "rbxassetid://7181750993"
-KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Icon4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Icon4"].BackgroundTransparency = 1
-KeybindListMenuD["_Icon4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Icon4"].BorderSizePixel = 0
-KeybindListMenuD["_Icon4"].Position = UDim2.new(0, 0, -0.0141179701, 0)
-KeybindListMenuD["_Icon4"].Size = UDim2.new(0, 18, 0, 18)
-KeybindListMenuD["_Icon4"].Name = "Icon"
-KeybindListMenuD["_Icon4"].Parent = KeybindListMenuD["_MovementToggle"]
-
-KeybindListMenuD["_Title4"].Font = Enum.Font.Arial
-KeybindListMenuD["_Title4"].Text = "Movement Toggle"
-KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 200.00000327825546, 200.00000327825546)
-KeybindListMenuD["_Title4"].TextScaled = true
-KeybindListMenuD["_Title4"].TextSize = 13
-KeybindListMenuD["_Title4"].TextStrokeColor3 = Color3.fromRGB(59.00000408291817, 59.00000408291817, 59.00000408291817)
-KeybindListMenuD["_Title4"].TextStrokeTransparency = 0.5
-KeybindListMenuD["_Title4"].TextWrapped = true
-KeybindListMenuD["_Title4"].TextXAlignment = Enum.TextXAlignment.Left
-KeybindListMenuD["_Title4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-KeybindListMenuD["_Title4"].BackgroundTransparency = 1
-KeybindListMenuD["_Title4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-KeybindListMenuD["_Title4"].BorderSizePixel = 0
-KeybindListMenuD["_Title4"].Position = UDim2.new(0.205933198, 0, -0.0141179701, 0)
-KeybindListMenuD["_Title4"].Size = UDim2.new(0, 84, 0, 18)
-KeybindListMenuD["_Title4"].Name = "Title"
-KeybindListMenuD["_Title4"].Parent = KeybindListMenuD["_MovementToggle"]
-
-UXI = KeybindListMenuD["_Holder"]
-
-Hovered = false
-Holding = false
-MoveCon = nil
-
-local InitialX, InitialY, UIInitialPos
-
---// Functions
-
-local function Drag()
-	if Holding == false then MoveCon:Disconnect(); return end
-	local distanceMovedX = InitialX - mouse.X
-	local distanceMovedY = InitialY - mouse.Y
-
-	UXI.Position = UIInitialPos - UDim2.new(0, distanceMovedX, 0, distanceMovedY)
-end
-
---// Connections
-
-UXI.MouseEnter:Connect(function()
-	Hovered = true
-end)
-
-UXI.MouseLeave:Connect(function()
-	Hovered = false
-end)
-
-uis.InputBegan:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		Holding = Hovered
-		if Holding then
-			InitialX, InitialY = mouse.X, mouse.Y
-			UIInitialPos = UXI.Position
-
-			MoveCon = mouse.Move:Connect(Drag)
-		end
-	end
-end)
-
-uis.InputEnded:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-		Holding = false
-	end
-end)
-
-local function bindupdate()
-    if aimbool then
-        KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 255, 255)
-        KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 255, 255)
-    elseif not aimbool then
-        KeybindListMenuD["_Title"].TextColor3 = Color3.fromRGB(0, 170, 170)
-        KeybindListMenuD["_Icon"].ImageColor3 = Color3.fromRGB(0, 170, 170)
-    end
-
-    if aimtrigger then
-        KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 255, 255)
-        KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 255, 255)
-    elseif not aimtrigger then
-        KeybindListMenuD["_Title1"].TextColor3 = Color3.fromRGB(0, 170, 170)
-        KeybindListMenuD["_Icon1"].ImageColor3 = Color3.fromRGB(0, 170, 170)
-    end
-
-    if espbool then
-        KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 255, 255)
-        KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 255, 255)
-    elseif not espbool then
-        KeybindListMenuD["_Title2"].TextColor3 = Color3.fromRGB(0, 170, 170)
-        KeybindListMenuD["_Icon2"].ImageColor3 = Color3.fromRGB(0, 170, 170)
-    end
-
-    if zoomtoggle then
-        KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 255, 255)
-        KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 255, 255)
-    elseif not zoomtoggle then
-        KeybindListMenuD["_Title3"].TextColor3 = Color3.fromRGB(0, 170, 170)
-        KeybindListMenuD["_Icon3"].ImageColor3 = Color3.fromRGB(0, 170, 170)
-    end
-
-    if charsemifly then
-        KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 255, 255)
-        KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 255, 255)
-    elseif not charsemifly then
-        KeybindListMenuD["_Title4"].TextColor3 = Color3.fromRGB(0, 170, 170)
-        KeybindListMenuD["_Icon4"].ImageColor3 = Color3.fromRGB(0, 170, 170)
-    end
-end
-
-keybinds:AddToggle('Keybind List', true, nil, function(v)
-    keybindmenuvisible = v
-end)
-
---speedhack--
-
-function startspeedhack()
-    local speaker = game:GetService("Players").LocalPlayer
-    local chr = speaker.Character
-    local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
-    local hb = game:GetService("RunService").Heartbeat
-    while speedbool and chr and hum and hum.Parent do
-        local delta = hb:Wait()
-        if hum.MoveDirection.Magnitude > 0 then
-            chr:TranslateBy(hum.MoveDirection * tonumber(speedboost) * delta * 10)
+camer:AddToggle({
+    text = "Third Person",
+    tooltip = "Enables/Disables Third Person Ability",
+    flag = "vThirdPerson",
+    callback = function(v)
+        isToggled = v
+        if isToggled then
+            localplayer.CameraMaxZoomDistance = newZoom
+            localplayer.CameraMode = newMode
         else
-            chr:TranslateBy(hum.MoveDirection * delta * 10)
+            localplayer.CameraMaxZoomDistance = origZoom
+            localplayer.CameraMode = origMode
         end
     end
-end
+})
 
-privatemods:AddToggle('Enabled', true, nil, function(v)
-    speedbool = v
-    startspeedhack()
-end)
-privatemods:AddSlider('Speed Slider', 1.5, 0, 1.2, function(c) 
-    speedboost = c
-end)
-
-privatemods:AddSeparateBar()
-
-privatemods:AddToggle('Jesus', true, nil, function(v)
-    worldjesus = v
-    if v then
-        while worldjesus do
-            wait()
-            local hitPart = workspace:Raycast(localplayer.Character:FindFirstChild("HumanoidRootPart").Position, Vector3.new(0, -5, 0) + localplayer.Character:FindFirstChild("HumanoidRootPart").CFrame.LookVector * 5, RaycastParams.new())
-            if hitPart and hitPart.Material == Enum.Material.Water then
-                local clone = Instance.new("Part")
-                clone.Parent = waterplatforms
-                clone.Position = hitPart.Position
-                clone.Anchored = true
-                clone.CanCollide = true
-                clone.Size = Vector3.new(10,0.2,10)
-                clone.Transparency = 1
-            end
-        end
-    else
-        for i,v in ipairs(waterplatforms:GetChildren()) do
-            v:Destroy()
+camer:AddToggle({
+    text = "No Drown",
+    tooltip = "Enables/Disables Drown Damage",
+    flag = "vDrown",
+    risky = true,
+    callback = function(v)
+        AntiDrown = v
+        if AntiDrown then
+            game.Lighting.WaterBlur.Size = 0
+        else
+            game.Lighting.WaterBlur.Size = 24
         end
     end
-end)
+})
 
-privatemods:AddSeparateBar()
-
-privatemods:AddToggle('Main Toggle', true, nil, function(v)
-    changerbool = v
-end)
-
-privatemods:AddSeparateBar()
-
-privatemods:AddSlider('Player Walkspeed', 50, 0, 16, function(c: number) 
-    changerspeed = c
-end)
-privatemods:AddSlider('Player Jumppower', 25, 0, 4, function(c) 
-    changerjump = c
-end)
-
-privatemods:AddSeparateBar()
-
-privatemods:AddSlider('Player Hipheight', 15, 0, 2, function(c) 
-    changerheight = c
-end)
-privatemods:AddSlider('Player Gravity', 300, 0, 95, function(c) 
-    changergrav = c
-end)
-
-worldh:AddToggle('No Grass', true, nil, function(v)
-    sethiddenproperty(workspace.Terrain, "Decoration", not v)
-end)
-worldh:AddToggle('No Leaves', true, nil, function(v)
-    worldleaves = v
-end)
-
-worldh:AddSeparateBar()
-
-worldh:AddSlider('Clock Time', 24, 0, 14, function(c) 
-    worldclock = c
-    game.Lighting.ClockTime = c
-end)
-
-worldh:AddToggle('No Fog', true, nil, function(v)
-	while v do task.wait()
-		game.Lighting.Atmosphere.Density = 0
-		game.Lighting.Atmosphere.Offset = 0
-	end
-end)
-
-local prevAmbient = game.Lighting.Ambient
-local prevOutdoor = game.Lighting.OutdoorAmbient
-
-worldh:AddToggle('Ambient Toggle', true, nil, function(v)
-    worldvisualstoggle = v
-    if worldvisualstoggle then
-        game.Lighting.Ambient = worldambient
-        game.Lighting.OutdoorAmbient = worldoutdoor
-    else
-        game.Lighting.Ambient = prevAmbient
-        game.Lighting.OutdoorAmbient = prevOutdoor
+hitsounds:AddToggle({
+    text = "Hitsounds Enabled",
+    tooltip = "Enables/Disables Custom Hitsounds",
+    flag = "vHitsoundBool",
+    callback = function(v)
+        hitsoundbool = v
     end
-end)
+})
 
-worldh:AddColorPallete('Ambient Color', Color3.fromRGB(255, 255, 255), function(a) 
-    worldambient = a
-end)
+hitsounds:AddList({
+    enabled = true,
+    text = "Headshot Hitsound", 
+    selected = "Neverlose",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Neverlose", "Gamesense", "Rust", "Bubble", "Minecraft", "Among-Us"},
+    risky = false,
+    callback = function(v)
+        hitsoundhead = v
 
-worldh:AddColorPallete('Outdoor Ambient Color', Color3.fromRGB(255, 255, 255), function(a) 
-    worldoutdoor = a
-end)
+        local preview = Instance.new("Sound", workspace)
+        preview.SoundId = hitsoundlib[v]
+        preview:Play()
+        task.wait(1)
+        preview:Destroy()
+    end
+})
 
+hitsounds:AddList({
+    enabled = true,
+    text = "Bodyhit Hitsound", 
+    selected = "Gamesense",
+    multi = false,
+    open = false,
+    max = 4,
+    values = {"Neverlose", "Gamesense", "Rust", "Bubble", "Minecraft", "Among-Us"},
+    risky = false,
+    callback = function(v)
+        hitsoundbody = v
+
+        local preview = Instance.new("Sound", workspace)
+        preview.SoundId = hitsoundlib[v]
+        preview:Play()
+        task.wait(1)
+        preview:Destroy()
+    end
+})
 
 --tracers--
 
@@ -3109,18 +3419,7 @@ task.spawn(function()
             if isAdmin and not detectedAdmins[player.Name] then
                 detectedAdmins[player.Name] = true
                 print("[EXOTHIUM.XYZ] Admin joined:" .. player.Name)
-                Notify(
-                    "Exothium.xyz",
-                    "Admin detected: " .. player.Name,
-                    5,
-                    5,
-                    Color3.fromRGB(77, 210, 255),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(55, 170, 235),
-                    Color3.fromRGB(3, 3, 3),
-                    Color3.fromRGB(77, 210, 255)
-                )
+                library:SendNotification(("Admin Detected: " .. player.Name), 15)
             elseif not isAdmin and detectedAdmins[player.Name] then
                 detectedAdmins[player.Name] = nil
             end
@@ -3133,18 +3432,7 @@ Players.PlayerAdded:Connect(function(player)
     task.delay(1, function()
         if CheckAdminStatus(player) then
             print("[EXOTHIUM.XYZ] Admin joined:" .. player.Name)
-            Notify(
-                "Exothium.xyz",
-                "Admin detected: " .. player.Name,
-                5,
-                5,
-                    Color3.fromRGB(77, 210, 255),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(55, 170, 235),
-                    Color3.fromRGB(3, 3, 3),
-                    Color3.fromRGB(77, 210, 255)
-            )
+            library:SendNotification(("Admin Detected: " .. player.Name), 15)
             detectedAdmins[player.Name] = true
         end
     end)
@@ -3153,18 +3441,7 @@ end)
 Players.PlayerRemoving:Connect(function(player)
     if detectedAdmins[player.Name] then
     print("[EXOTHIUM.XYZ] Admin left:" .. player.Name)
-        Notify(
-            "Exothium.xyz",
-            "Admin left: " .. player.Name,
-            5,
-            10,
-                    Color3.fromRGB(77, 210, 255),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(66, 180, 245),
-                    Color3.fromRGB(55, 170, 235),
-                    Color3.fromRGB(3, 3, 3),
-                    Color3.fromRGB(77, 210, 255)
-        )
+    library:SendNotification(("Admin Left: " .. player.Name), 15)
         detectedAdmins[player.Name] = nil
     end
 end)
@@ -3184,12 +3461,6 @@ end)
 
 task.spawn(function() -- slow
     while wait(1) do
-
-        if keybindmenuvisible then
-            KeybindListMenuD["__238237458342578523124872147"].Enabled = true
-        elseif keybindmenuvisible == false then
-            KeybindListMenuD["__238237458342578523124872147"].Enabled = false
-        end
 
         local function handleFoliage()
             if workspace:FindFirstChild("SpawnerZones") then
@@ -3277,8 +3548,6 @@ end)
 
 runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
-
-        bindupdate()
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
         --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
@@ -3718,7 +3987,14 @@ end
     end
 end)
 
-Notify("Exothium.xyz", "Loaded script", 2.1)
-Notify("Exothium.xyz", "Press Insert to toggle the menu", 3.5)
+local Time = (string.format("%."..tostring(Decimals).."f", os.clock() - Clock))
+library:SendNotification(("Loaded in "..tostring(Time).."s"), 6)
 
-game.CoreGui.ewq9erdusafeuwufijnen329duewq_1.Enabled = true
+--[[
+    --Window1:SetOpen(false)
+    makefolder("Title Here")
+    library:SetTheme(Default)
+    library:GetConfig(Default)
+    library:LoadConfig(Default)
+    library:SaveConfig(Default)
+]]
