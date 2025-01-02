@@ -193,7 +193,7 @@ tracertexture = nil
 local tracertextures = {
     ["None"] = nil,
     ["Neon"] = "http://www.roblox.com/asset/?id=71799812889976",
-    ["Lightning"] = "http://www.roblox.com/asset/?id=7151778311",
+    ["Lightning"] = "http://www.roblox.com/asset/?id=118249217749149",
     ["Wide"] = "http://www.roblox.com/asset/?id=75056325012653"
 }
 
@@ -2407,9 +2407,9 @@ local function runtracer(start, endp)
         if tracertexture == "http://www.roblox.com/asset/?id=75056325012653" then
             beam.Width0 = 0.3
             beam.Width1 = 0.3
-        elseif tracertexture == "http://www.roblox.com/asset/?id=7151778311" then
-            beam.Width0 = 0.2
-            beam.Width1 = 0.2
+        elseif tracertexture == "http://www.roblox.com/asset/?id=118249217749149" then
+            beam.Width0 = 0.8
+            beam.Width1 = 0.8
         end
     end
 
