@@ -593,48 +593,66 @@ function library:init()
 function self:LoadConfig(name)
     local cfg = self:GetConfig(name)
     if not cfg then
-        self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1, 0, 0))
+        self:SendNotification('Error loading config: Config does not exist. (' .. tostring(name) .. ')', 5, c3new(1, 0, 0))
         return
     end
 
-    local s, e = pcall(function()
+    local success, err = pcall(function()
         setByConfig = true
-        for flag, value in next, http:JSONDecode(cfg) do
+        local configTable = http:JSONDecode(cfg)
+
+        if type(configTable) ~= "table" then
+            error("Invalid configuration format (expected table).")
+        end
+
+        for flag, value in next, configTable do
             local option = library.options[flag]
             if option then
+                -- Process based on option class
                 if option.class == 'toggle' then
-                    option:SetState(value ~= nil and (value == 1 and true or false) or false)
+                    option:SetState(value == 1)
                 elseif option.class == 'slider' then
-                    option:SetValue(value ~= nil and value or 0)
+                    option:SetValue(value or 0)
                 elseif option.class == 'bind' then
-                    option:SetBind(value ~= nil and (utility:HasProperty(Enum.KeyCode, value) and Enum.KeyCode[value] or Enum.UserInputType[value]) or 'none')
+                    if type(value) == "string" and 
+                       (utility:HasProperty(Enum.KeyCode, value) or utility:HasProperty(Enum.UserInputType, value)) then
+                        option:SetBind(Enum.KeyCode[value] or Enum.UserInputType[value])
+                    else
+                        print("Invalid bind value for flag: " .. tostring(flag))
+                    end
                 elseif option.class == 'color' then
                     if type(value) == "table" and #value >= 3 then
                         option:SetColor(c3new(value[1], value[2], value[3]))
                         option:SetTrans(value[4] or 1)
                     else
-                        print("Invalid color value for flag: "..flag)
+                        print("Invalid color value for flag: " .. tostring(flag))
                     end
                 elseif option.class == 'list' then
-                    option:Select(value or '')
+                    option:Select(value or "")
                 elseif option.class == 'box' then
-                    option:SetInput(value or '')
+                    option:SetInput(value or "")
                 else
-                    print("Unknown option class: "..tostring(option.class).." for flag: "..tostring(flag))
+                    print("Unknown option class for flag: " .. tostring(flag))
                 end
+
+                -- Log successfully processed flags
+                print("Loaded flag: " .. tostring(flag))
             else
-                print("Skipping unknown flag: "..tostring(flag))
+                print("Skipping unknown flag: " .. tostring(flag))
             end
         end
+
         setByConfig = false
     end)
 
-    if s then
+    if success then
         self:SendNotification('Successfully loaded config: ' .. name, 5, c3new(0, 1, 0))
     else
-        self:SendNotification('Error loading config: ' .. tostring(e) .. '. (' .. tostring(name) .. ')', 5, c3new(1, 0, 0))
+        self:SendNotification('Error loading config: ' .. tostring(err) .. '. (' .. tostring(name) .. ')', 5, c3new(1, 0, 0))
+        print("Error loading config: " .. tostring(err))
     end
 end
+
 
 
 function self:SaveConfig(name)
@@ -4801,5 +4819,5 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
-print("load v")
+print("v202")
 return library
