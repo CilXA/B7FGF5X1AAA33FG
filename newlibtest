@@ -590,43 +590,52 @@ function library:init()
         end
     end
 
-    function self:LoadConfig(name)
-        local cfg = self:GetConfig(name)
-        if not cfg then
-            self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1,0,0));
-            return
-        end
-
-        local s,e = pcall(function()
-            setByConfig = true
-            for flag,value in next, http:JSONDecode(cfg) do
-                local option = library.options[flag]
-                if option ~= nil then
-                    if option.class == 'toggle' then
-                        option:SetState(value == nil and false or (value == 1 and true or false));
-                    elseif option.class == 'slider' then
-                        option:SetValue(value == nil and 0 or value)
-                    elseif option.class == 'bind' then
-                        option:SetBind(value == nil and 'none' or (utility:HasProperty(Enum.KeyCode, value) and Enum.KeyCode[value] or Enum.UserInputType[value]));
-                    elseif option.class == 'color' then
-                        option:SetColor(value == nil and c3new(1,1,1) or c3new(value[1], value[2], value[3]));
-                        option:SetTrans(value == nil and 1 or value[4]);
-                    elseif option.class == 'list' then
-                        option:Select(value == nil and '' or value);
-                    elseif option.class == 'box' then
-                        option:SetInput(value == nil and '' or value)
-                    end
-                end
-            end
-            setByConfig = false
-        end)
-
-        if s then
-            self:SendNotification('Successfully loaded config: '..name, 5, c3new(0,1,0));
-        else
-            self:SendNotification('Error loading config: '..tostring(e)..'. ('..tostring(name)..')', 5, c3new(1,0,0));
-        end
+function self:LoadConfig(name)
+    local cfg = self:GetConfig(name)
+    if not cfg then
+        self:SendNotification('Error loading config: Config does not exist. ('..tostring(name)..')', 5, c3new(1, 0, 0))
+        return
     end
+
+    local s, e = pcall(function()
+        setByConfig = true
+        for flag, value in next, http:JSONDecode(cfg) do
+            local option = library.options[flag]
+            if option then
+                if option.class == 'toggle' then
+                    option:SetState(value ~= nil and (value == 1 and true or false) or false)
+                elseif option.class == 'slider' then
+                    option:SetValue(value ~= nil and value or 0)
+                elseif option.class == 'bind' then
+                    option:SetBind(value ~= nil and (utility:HasProperty(Enum.KeyCode, value) and Enum.KeyCode[value] or Enum.UserInputType[value]) or 'none')
+                elseif option.class == 'color' then
+                    if type(value) == "table" and #value >= 3 then
+                        option:SetColor(c3new(value[1], value[2], value[3]))
+                        option:SetTrans(value[4] or 1)
+                    else
+                        print("Invalid color value for flag: "..flag)
+                    end
+                elseif option.class == 'list' then
+                    option:Select(value or '')
+                elseif option.class == 'box' then
+                    option:SetInput(value or '')
+                else
+                    print("Unknown option class: "..tostring(option.class).." for flag: "..tostring(flag))
+                end
+            else
+                print("Skipping unknown flag: "..tostring(flag))
+            end
+        end
+        setByConfig = false
+    end)
+
+    if s then
+        self:SendNotification('Successfully loaded config: ' .. name, 5, c3new(0, 1, 0))
+    else
+        self:SendNotification('Error loading config: ' .. tostring(e) .. '. (' .. tostring(name) .. ')', 5, c3new(1, 0, 0))
+    end
+end
+
 
 function self:SaveConfig(name)
     if not self:GetConfig(name) then
@@ -4792,4 +4801,5 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 end
 
 getgenv().library = library
+print("load v")
 return library
