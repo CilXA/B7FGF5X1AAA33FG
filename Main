@@ -1352,7 +1352,7 @@ privatefeatures:AddSlider({
     focused = false,
     min = 0,
     max = 70,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         changerspeed = v
     end
@@ -1368,7 +1368,7 @@ privatefeatures:AddSlider({
     focused = false,
     min = 0,
     max = 25,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         changerjump = v
     end
@@ -1384,7 +1384,7 @@ privatefeatures:AddSlider({
     focused = false,
     min = 0,
     max = 25,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         changerheight = v
     end
