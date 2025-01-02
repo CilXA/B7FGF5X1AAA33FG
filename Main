@@ -1863,15 +1863,15 @@ worldh:AddSlider({
     end
 })
 
+local atmosphere = game.Lighting:FindFirstChild("Atmosphere")
+local old_dens = atmosphere.Density
+local old_offset = atmosphere.Offset
+
 worldh:AddToggle({
     text = "No Fog",
     tooltip = "Enables/Disables Fog",
     flag = "NoFog",
     callback = function(v)
-        local atmosphere = game.Lighting:FindFirstChild("Atmosphere")
-
-        local old_dens = atmosphere.Density
-        local old_offset = atmosphere.Offset
         if atmosphere then
             if v then
                 atmosphere.Density = 0
