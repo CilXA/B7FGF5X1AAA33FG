@@ -4547,7 +4547,7 @@ end
             objects = {};
             text = {
                 {self.cheatname, true},
-                {"Private", true},
+                {"Private", false},
                 {self.gamename, true},
                 {'0 fps', true},
                 {'0ms', true},
