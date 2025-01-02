@@ -7,8 +7,8 @@ local Decimals = 4
 local Clock = os.clock()
 
 local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/CilXA/B7FGF5X1AAA33FG/refs/heads/main/newlibtest"))({
-    cheatname = "Exothium.xyz", -- watermark text
-    gamename = "Project Delta", -- watermark text
+    cheatname = "Exothium.xyz",
+    gamename = "Project Delta",
 })
 
 library:init()
@@ -127,7 +127,7 @@ local aimdynamicfov = false
 local aimpart = "Head"
 local aimtype = "Instant Hit"
 local aimfov = 150
-local aimdistance = 1500
+local aimdistance = 1100
 local aimchance = 100
 local aimfakewait = 0
 local aimsnapline = Drawing.new("Line")
@@ -146,44 +146,35 @@ end
 local selftrack_data = {}
 local selftrack_update = 0
 
-local debuglist95 = {}
-local debuglistmode24 = "Blacklist"
-local debuglistmode95x = false
+local aimFRIENDLIST = {}
+local friendlistmode = "Blacklist"
+local friendlistbots = false
 
 local esptextcolor = Color3.fromRGB(77, 210, 255)
 local esptable = {}
---[[ esptable template
-    drawingobj = {
-        primary = instance
-        type = string --(highlight, name, hp, hotbar, distance, skelet)
-        otype = string --(plr, bot, dead, extract, loot)
-        fpart = instance --(for skelet)
-        spart = instance --(for skelet)
-    }      
-]] 
 
 healthtargetname = false
 admintargetname = false
 
-espbool = false -- main toggle for everything if this is false and everything else is true nothing will show, if this is true and everything is on it will show everything
-esptogglebind = Enum.KeyCode.Home -- espbind (dont change)
-espname = false -- esp name toggle
-esphp = false -- esp health toggle
-espdistance = false -- esp distance toggle
-espbots = false -- include bots in esp
-esphigh = false -- this is higghlight (chams)
-espskelet = false -- u can get rid of this
-espdead = false -- dead body esp
-esphotbar = false -- whatever the player is holding
-esploot = false -- u can get rid of this
-espexit = false -- esp for exits, make a variable where it will say exitzones folder path
-esptextline = true -- text outline
-esprenderdist = 1800 -- render distance for esp
-espchamsfill = 1    --highlight (for chams)
-espchamsline = 0    --highlight (for chams)
-esptextsize = 17    -- for drawing text
-espfillcolor = Color3.fromRGB(77, 210, 255) --highlight (for chams)
-esplinecolor = Color3.fromRGB(77, 210, 255) --highlight (for chams)
+espbool = false
+esptogglebind = Enum.KeyCode.Home
+espname = false
+esphp = false
+espdistance = false
+espbots = false
+esphigh = false
+espskelet = false
+espdead = false
+esphotbar = false
+esploot = false
+espexit = false
+esptextline = true
+esprenderdist = 1800
+espchamsfill = 1
+espchamsline = 0
+esptextsize = 17
+espfillcolor = Color3.fromRGB(77, 210, 255)
+esplinecolor = Color3.fromRGB(77, 210, 255)
 
 silentaimbind = Enum.KeyCode.H
 autoshootbind = Enum.KeyCode.K
@@ -267,6 +258,7 @@ local worldambient = Color3.fromRGB(255,255,255)
 local worldoutdoor = Color3.fromRGB(255,255,255)
 
 charantiaim_underground = false
+fallanim = false
 
 flipback = false
 
@@ -287,6 +279,10 @@ yrot = 0
 zrot = 0
 
 resolver = false
+
+local hitmarkbool = false
+local hitmarkcolor = Color3.fromRGB(255,255,255)
+local hitmarkfade = 2
 
 local hitsoundbool = false
 local hitsoundhead = "Neverlose"
@@ -313,7 +309,7 @@ RapidFire = false
 NoSway = false
 InstaEquip = false
 UnlockFiremodes = false
-BurstFire = 1
+multitaps = 1
 
 AntiDrown = false
 AntiProjectile = true
@@ -386,11 +382,6 @@ aimsnapline.Color = Color3.fromRGB(77, 210, 255)
 aimsnapline.Thickness = 1
 aimsnapline.Visible = false
 
-if not getrawmetatable or not setreadonly then
-    warn("Error: 426 getrawmetatable is not a available function")
-    return
-end
-
 local mt = getrawmetatable(game)
 local oldNamecall = mt.__namecall
 setreadonly(mt, false)
@@ -435,7 +426,6 @@ local inventorychecker = other:AddSection("Inventory Checker", 2)
 local camer = other:AddSection("Effects", 1)
 local hitsounds = other:AddSection("Hitsounds", 2)
 local extrafeatures = other:AddSection("Extra Features", 2)
-
 --aim:SetText("Text")
 
 extrafeatures:AddButton({
@@ -551,8 +541,8 @@ aim:AddToggle({
     text = "Silent Aim",
     state = false,
     risky = true,
-    tooltip = "Enables silent aim",
-    flag = "SilentAim",
+    tooltip = "Enables Silent Aim",
+    flag = "vSilentAim",
     callback = function(v)
         aimbool = v
         if v == true then
@@ -590,7 +580,7 @@ aim:AddToggle({
     end
 })
 aim:AddToggle({
-    text = "Target AI",
+    text = "Include NPCs",
     flag = "TargetAI",
     callback = function(v)
         aimbots = v
@@ -612,8 +602,8 @@ aim:AddToggle({
     end
 })
 aim:AddToggle({
-    text = "[!] Animation Resolver",
-    flag = "AnimResolver",
+    text = "Animation Resolver",
+    flag = "vAnimResolver",
     risky = true,
     callback = function(v)
         resolver = v
@@ -623,12 +613,12 @@ aim:AddToggle({
 aim:AddList({
     enabled = true,
     text = "Hitbox", 
-    tooltip = "Aimbot Hitbox",
+    tooltip = "Aim Hitbox",
     selected = "Head",
     multi = false,
     open = false,
     max = 4,
-    values = {"Head", "Torso", "Legs", "Random"},
+    values = {"Head", "HeadTop", "Face", "Torso", "LeftArm", "RightArm", "LeftLeg", "RightLeg"},
     risky = false,
     callback = function(v)
         aimpart = v
@@ -638,7 +628,7 @@ aim:AddList({
 aim:AddList({
     enabled = true,
     text = "Method", 
-    tooltip = "Aimbot Method",
+    tooltip = "Aim Method",
     selected = "Instant Hit",
     multi = false,
     open = false,
@@ -788,7 +778,6 @@ gunmods:AddToggle({
 gunmods:AddToggle({
     text = "Unlock Firemodes",
     flag = "Ashetrshert",
-    risky = true,
     callback = function(v)
         UnlockFiremodes = v
     end
@@ -1096,6 +1085,33 @@ semifly:AddToggle({
     end
 })
 
+local character = localplayer.Character or localplayer.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local animationxx = Instance.new("Animation")
+animationxx.AnimationId = "rbxassetid://12839509307"
+local animTrackHH = humanoid:LoadAnimation(animationxx)
+
+semifly:AddToggle({
+    text = "Play Falling Animation",
+    flag = "Ashg642xrt",
+    risky = true,
+    callback = function(v)
+        fallanim = v
+
+        if fallanim then
+            animTrackHH:Play()
+            wait(0.1)
+            animTrackHH:AdjustSpeed(0)
+        else
+            animTrackHH:Stop()
+            wait(0.1)
+            animTrackHH:AdjustSpeed(0)
+        end
+    end
+})
+
+
+
 semifly:AddToggle({
     text = "UpAngle Toggle",
     flag = "Ashgrgretfesrssferhert",
@@ -1151,7 +1167,7 @@ semifly:AddSlider({
     dragging = true,
     focused = false,
     min = 0,
-    max = 10,
+    max = 180,
     increment = 1,
     callback = function(v)
         yrot = v
@@ -1167,7 +1183,7 @@ semifly:AddSlider({
     dragging = true,
     focused = false,
     min = 0,
-    max = 10,
+    max = 180,
     increment = 1,
     callback = function(v)
         zrot = v
@@ -1208,7 +1224,7 @@ semifly:AddSlider({
     focused = false,
     min = 0,
     max = 20,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         xspeedspin = v
     end
@@ -1243,7 +1259,7 @@ semifly:AddSlider({
     focused = false,
     min = 0,
     max = 20,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         yspeedspin = v
     end
@@ -1278,7 +1294,7 @@ semifly:AddSlider({
     focused = false,
     min = 0,
     max = 20,
-    increment = 1,
+    increment = 0.1,
     callback = function(v)
         zspeedspin = v
     end
@@ -1635,6 +1651,19 @@ wh:AddToggle({
     flag = "v5ETextOutlinet543x54",
     callback = function(v)
         esptextline = v
+    end
+})
+
+wh:AddColor({
+    enabled = true,
+    text = "Text Color",
+    color = Color3.fromRGB(77, 210, 255),
+    flag = "Color_92514",
+    trans = 0,
+    open = false,
+    risky = false,
+    callback = function(v)
+        esptextcolor = v
     end
 })
 
@@ -2380,11 +2409,9 @@ local function runtracer(start, endp)
     endpart:Destroy()
 end
 
-
---silent aim--
-
+-- silent aim
 local function isonscreen(object)
-    local p, bool = wcamera:WorldToScreenPoint(object.Position)
+    local _, bool = wcamera:WorldToScreenPoint(object.Position)
     return bool
 end
 local v311 = require(game.ReplicatedStorage.Modules:WaitForChild("UniversalTables"))
@@ -2397,13 +2424,19 @@ local function isvisible(char, object)
         return true
     end
 
-    local origin = localplayer.Character.HumanoidRootPart.Position + Vector3.new(0, 1, 0)
+    local origin = localplayer.Character.HumanoidRootPart.Position + Vector3.new(0, 1.3, 0)
     if aimselftrack then
-        local plrping = localplayer:GetNetworkPing()
-        local key = math.floor((plrping + 5) / 10) * 10
+        local plrping = localplayer:GetNetworkPing() * 1000 + 5
+        local key = math.floor(plrping / 10) * 10
 
-        if selftrack_data[key] ~= nil then
-            origin = selftrack_data[key]
+        local onv
+        for _, entry in ipairs(selftrack_data) do
+            if entry.ms == key then
+                onv = entry
+            end
+        end
+        if onv ~= nil then
+            origin = onv.vpos
         end
     end
 
@@ -2424,30 +2457,23 @@ local function isvisible(char, object)
     }
 
     local ray = workspace:Raycast(origin, dir * dist, params)
-    if aimbang then
-        if ray and ray.Instance:IsDescendantOf(char) then
-            return true
-        elseif ray and ray.Instance.Name ~= "Terrain" and not ray.Instance:GetAttribute("NoPen") then
-            local armorpen4 = 10
-            local gname, gunmodel, guninv = getcurrentgun(localplayer)
-            if guninv then
-                armorpen4 = getcurrentammo(guninv):GetAttribute("ArmorPen")
-            end
-
-            local FunctionLibraryExtension = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension)
-            local armorpen1, newpos2 = FunctionLibraryExtension.Penetration(FunctionLibraryExtension, ray.Instance, ray.Position, dir, armorpen4)
-            if armorpen1 == nil or newpos2 == nil then
-                return false
-            end
-
-            local neworigin = ray.Position + dir * 0.01
-            local newray = workspace:Raycast(neworigin, dir * (dist - (neworigin - origin).Magnitude), params)
-            if newray and newray.Instance:IsDescendantOf(char) then
-                return true
-            end
+    if ray and ray.Instance:IsDescendantOf(char) then
+        return true
+    elseif ray and ray.Instance.Name ~= "Terrain" and not ray.Instance:GetAttribute("NoPen") then
+        local armorpen4 = 10
+        if globalammo then
+            armorpen4 = globalammo:GetAttribute("ArmorPen")
         end
-    else
-        if ray and ray.Instance:IsDescendantOf(char) then
+
+        local FunctionLibraryExtension = require(game.ReplicatedStorage.Modules.FunctionLibraryExtension)
+        local armorpen1, newpos2 = FunctionLibraryExtension.Penetration(FunctionLibraryExtension, ray.Instance, ray.Position, dir, armorpen4)
+        if armorpen1 == nil or newpos2 == nil then
+            return false
+        end
+
+        local neworigin = ray.Position + dir * 0.01
+        local newray = workspace:Raycast(neworigin, dir * (dist - (neworigin - origin).Magnitude), params)
+        if newray and newray.Instance:IsDescendantOf(char) then
             return true
         end
     end
@@ -2476,11 +2502,8 @@ local function choosetarget()
     local cpart = nil
 
     local ammodistance = 999999999
-    if aimdistcheck then
-        local gname, gunmodel, guninv = getcurrentgun(localplayer)
-        if guninv then
-            armorpen4 = getcurrentammo(guninv):GetAttribute("MuzzleVelocity")
-        end
+    if aimdistcheck and globalammo then
+        ammodistance = globalammo:GetAttribute("MuzzleVelocity")
     end
 
     local bparts = {
@@ -2503,28 +2526,27 @@ local function choosetarget()
         "RightFoot"
     }
 
-    local xbparts = {
-        "LeftLowerLeg",
-        "RightLowerLeg",
-        "LeftFoot",
-        "RightFoot"
-    }
-
     local function chooseTpart(charact)
         if aimpart == "Head" then
             return charact:FindFirstChild("Head")
+        elseif aimpart == "HeadTop" then
+            return charact:FindFirstChild("HeadTopHitBox")
+        elseif aimpart == "Face" then
+            return charact:FindFirstChild("FaceHitBox")
+
         elseif aimpart == "Torso" then
             return charact:FindFirstChild("UpperTorso")
-        elseif aimpart == "Legs" then
-            return charact:FindFirstChild(xbparts[math.random(1, #xbparts)])
-        elseif aimpart == "Scripted" then
-            local head = charact:FindFirstChild("Head")
-            local upperTorso = charact:FindFirstChild("UpperTorso")
-            if not isvisible(charact, head) then
-                return upperTorso
-            else
-                return head
-            end
+
+        elseif aimpart == "LeftArm" then
+            return charact:FindFirstChild("LeftUpperArm")
+        elseif aimpart == "RightArm" then
+            return charact:FindFirstChild("RightUpperArm")
+
+        elseif aimpart == "LeftLeg" then
+            return charact:FindFirstChild("LeftFoot")
+        elseif aimpart == "RightLeg" then
+            return charact:FindFirstChild("RightFoot")
+
         elseif aimpart == "Random" then
             return charact:FindFirstChild(bparts[math.random(1, #bparts)])
         end
@@ -2534,13 +2556,13 @@ local function choosetarget()
         for _, botfold in ipairs(workspace.AiZones:GetChildren()) do
             for _, bot in ipairs(botfold:GetChildren()) do
                 if bot:IsA("Model") and bot:FindFirstChild("Humanoid") and bot.Humanoid.Health > 0 then
-                    if debuglistmode95x then
-                        if debuglistmode24 == "Blacklist" then 
-                            if table.find(debuglist95, bot.Name) ~= nil then
+                    if friendlistbots then
+                        if friendlistmode == "Blacklist" then 
+                            if table.find(aimFRIENDLIST, bot.Name) ~= nil then
                                 continue
                             end
-                        elseif debuglistmode24 == "Whitelist" then 
-                            if table.find(debuglist95, bot.Name) == nil then
+                        elseif friendlistmode == "Whitelist" then 
+                            if table.find(aimFRIENDLIST, bot.Name) == nil then
                                 continue
                             end
                         end
@@ -2570,12 +2592,12 @@ local function choosetarget()
 
     for _, pottar in ipairs(game.Players:GetPlayers()) do --priority 1 (players)
         if pottar ~= localplayer and pottar.Character and localplayer.Character.PrimaryPart ~= nil then
-            if debuglistmode24 == "Blacklist" then 
-                if table.find(debuglist95, pottar.Name) ~= nil then
+            if friendlistmode == "Blacklist" then 
+                if table.find(aimFRIENDLIST, pottar.Name) ~= nil then
                     continue
                 end
-            elseif debuglistmode24 == "Whitelist" then 
-                if table.find(debuglist95, pottar.Name) == nil then
+            elseif friendlistmode == "Whitelist" then 
+                if table.find(aimFRIENDLIST, pottar.Name) == nil then
                     continue
                 end
             end
@@ -2608,7 +2630,43 @@ local function choosetarget()
         aimtargetpart = cpart
     end
 end
+local function runhitmark(v140)
+    if hitmarkbool then --some code by ds: meowya_1337
+        local hitpart = Instance.new("Part", workspace)
+        hitpart.Transparency = 1
+        hitpart.CanCollide = false
+        hitpart.CanQuery = false
+        hitpart.Size = Vector3.new(0.01,0.01,0.01)
+        hitpart.Anchored = true
+        hitpart.Position = v140
 
+        local hit = Instance.new("BillboardGui")
+        hit.Name = "hit"
+        hit.AlwaysOnTop = true
+        hit.Parent = hitpart
+
+        local hit_img = Instance.new("ImageLabel")
+        hit_img.Name = "hit_img"
+        hit_img.Image = "http://www.roblox.com/asset/?id=13298929624"
+        hit_img.BackgroundTransparency = 1
+        hit_img.Size = UDim2.new(0, 50, 0, 50)
+        hit_img.Visible = true
+        hit_img.ImageColor3 = hitmarkcolor
+        hit_img.Rotation = 45
+        hit_img.AnchorPoint = Vector2.new(0.5, 0.5)
+        hit_img.Parent = hit
+
+        task.spawn(function()
+            local tweninfo = TweenInfo.new(hitmarkfade, Enum.EasingStyle.Sine)
+            local tweninfo2 = TweenInfo.new(hitmarkfade, Enum.EasingStyle.Linear)
+            tweens:Create(hit_img, tweninfo, {ImageTransparency = 1}):Play()
+            tweens:Create(hit_img, tweninfo2, {Rotation = 180}):Play()
+            task.wait(hitmarkfade)
+            hit_img:Destroy()
+            hit:Destroy()
+        end)
+    end
+end
 aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     local v_u_6 = game.ReplicatedStorage.Remotes.VisualProjectile
     local v_u_108 = 1
@@ -2617,8 +2675,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     local target = aimtarget
     local target_part
     local v_u_4 = require(game.ReplicatedStorage.Modules:WaitForChild("FunctionLibraryExtension"))
-    local v9 = game:GetService("Players")
-    local v_u_15 = v9.LocalPlayer
+    local v_u_15 = localplayer
     local v_u_115 = v_u_4:GetEstimatedCameraPosition(v_u_15)
     local v_u_103
     local v_u_114
@@ -2631,7 +2688,6 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
     local v_u_10 = game:GetService("ReplicatedStorage")
     local v_u_12 = v_u_10:WaitForChild("RangedWeapons")
     local v_u_17 = game.ReplicatedStorage.Temp
-    local v9 = game:GetService("Players")
     local v_u_56 = v_u_15.Character
     local v135 = 500000
     local v_u_18 = v3.ReturnTable("GlobalIgnoreListProjectile")
@@ -2714,7 +2770,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
 
             if v_u_106 == 1 then
                 task.spawn(function()
-                    for i=1, BurstFire do
+                    for i=1, multitaps do
                         if aimtype == "Instant Hit" then
                             if not v_u_7:InvokeServer(usethisvec, v_u_108, tick()-15) then 
                                 game.ReplicatedStorage.Modules.FPS.Binds.AdjustBullets:Fire(v_u_64, 1)
@@ -2727,7 +2783,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                     end
                 end)
             elseif 1 < v_u_106 then
-                for i=1, BurstFire do
+                for i=1, multitaps do
                     v_u_6:FireServer(usethisvec, v_u_108)
                 end
             end
@@ -2766,6 +2822,8 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                 end
             end
 
+            local penetrated = false
+
             function v184(p134)
                 v_u_132 = v_u_132 + p134
                 if true then
@@ -2798,7 +2856,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         if ranbool then
                             local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
 
-                            if target_part then
+                            if target_part and penetrated == false then
                                 v_u_5:FireServer(target_part, v175, v_u_108, tick())
                             else
                                 v_u_5:FireServer(v137, v175, v_u_108, tick())
@@ -2809,16 +2867,30 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         end
 
                         v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+
+                        task.spawn(function()
+                            runhitmark(v140)
+                        end)
                     elseif v137.Name == "Terrain" then -- if hit terrain
                         local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
                         v_u_5:FireServer(v137, v175, v_u_108, tick())
 
                         v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
-                    else -- if hit not target then try wallbang
+
+                        task.spawn(function()
+                            runhitmark(v140)
+                        end)
+                    else -- if hit not target then try wallpen
                         v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
+
+                        task.spawn(function()
+                            runhitmark(v140)
+                        end)
 
                         local arg1, arg2, arg3 = v_u_4.Penetration(v_u_4, v137, v140, v_u_114, armorpen4)
                         if arg1 == nil or arg2 == nil then
+                            local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
+                            v_u_5:FireServer(v137, v175, v_u_108, tick())
                             v_u_131:Disconnect()
                             return
                         end
@@ -2827,54 +2899,12 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
                         if armorpen4 > 0 then
                             v_u_115 = arg2
                             v_u_2.Impact(unpack(arg3))
+                            penetrated = true
                             return
                         end
 
                         v_u_131:Disconnect()
                         return
-
-                        --[[
-                        if target_part ~= nil and target ~= nil then --wallbang
-                            --[[
-                            local bangparams = RaycastParams.new()
-                            bangparams.FilterType = Enum.RaycastFilterType.Include
-                            bangparams.FilterDescendantsInstances = {bangtarget}
-                            bangparams.CollisionGroup = "WeaponRay" 
-                            bangparams.IgnoreWater = true
-                            --
-
-                            local banglist = v_u_111
-                            table.insert(banglist, v137)
-                            v_u_110.FilterDescendantsInstances = banglist
-
-                            --[[
-                            local bangray = workspace:Raycast(v_u_115, v_u_114 * 123123123, v_u_110)
-                            if bangray then
-                                local plrmodel = v_u_4:FindDeepAncestor(bangray.Instance, "Model")
-
-                                local fake175 = bangray.Instance.CFrame:ToObjectSpace(CFrame.new(v60.Position))
-                                v_u_5:FireServer(bangray.Instance, fake175, v_u_108 + 1, tick() + 2)
-
-                                task.spawn(function()
-                                    if tracbool == true then
-                                        runtracer(v60.Position, bangray.Position)
-                                    end
-                                end)
-                            end
-                            --
-                        else --no wallbang 
-                            local ran = math.random(1, 100)
-                            local ranbool = ran <= aimchance
-                            if ranbool then
-                                local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
-                                v_u_5:FireServer(v137, v175, v_u_108, tick())
-                            else
-                                local v175 = v137.CFrame:ToObjectSpace(CFrame.new(v140))
-                                v_u_5:FireServer(p55, v175, v_u_108, tick())
-                            end
-                            v_u_2.Impact(v137, v140, v138, v139, v_u_114, "Ranged", true)
-                        end
-                        ]]
                     end
                 end
 
@@ -2905,7 +2935,7 @@ aimmodfunc = function(prikol, p49, p50, p_u_51, _, p52, p53, p54, p55)
 end
 
 --nosway
-
+viewmodoffset = false
 do
     local mod = require(game.ReplicatedStorage.Modules.FPS)
     local ogfunc = mod.updateClient
@@ -2913,7 +2943,14 @@ do
     mod.updateClient = function(a1,a2,a3)
         arg1, arg2, arg3 = ogfunc(a1,a2,a3)
         
+        a1table = a1
+        
         if NoSway then
+            a1.springs.sway.Position = Vector3.new(0,0,0)
+            a1.springs.walkCycle.Position = Vector3.new(0,0,0)
+            a1.springs.sprintCycle.Position = Vector3.new(0,0,0)
+            a1.springs.strafeTilt.Position = Vector3.new(0,0,0)
+            a1.springs.jumpTilt.Position = Vector3.new(0,0,0)
             a1.springs.sway.Speed = 0
             a1.springs.walkCycle.Speed = 0
             a1.springs.sprintCycle.Speed = 0
@@ -2925,6 +2962,13 @@ do
             a1.springs.sprintCycle.Speed = 4
             a1.springs.strafeTilt.Speed = 4
             a1.springs.jumpTilt.Speed = 4
+        end
+        if viewmodoffset then
+            a1.sprintIdleOffset = CFrame.new(Vector3.new(viewmodX, viewmodY, viewmodZ))
+            a1.weaponOffset = CFrame.new(Vector3.new(viewmodX, viewmodY, viewmodZ))
+            a1.AimInSpeed = 9e9
+        else
+            a1.AimInSpeed = 0.4
         end
 
         return arg1, arg2, arg3
@@ -3415,13 +3459,16 @@ end
 -- ping
 
 for i = 10, 1000, 10 do
-    selftrack_data[i] = localplayer.Character.Head.Position
+    table.insert(selftrack_data, {ms = i, vpos = localplayer.Character.HumanoidRootPart.Position + Vector3.new(0, 1.3, 0)})
 end
 local function updateselfpos()
-    for time = 990, 10, -10 do
-        selftrack_data[time + 10] = selftrack_data[time]
+    for i = #selftrack_data, 1, -1 do
+        selftrack_data[i].ms = selftrack_data[i].ms + 10
     end
-    selftrack_data[10] = localplayer.Character.Head.Position
+    if selftrack_data[#selftrack_data].ms > 1000 then
+        table.remove(selftrack_data, #selftrack_data)
+    end
+    table.insert(selftrack_data, 1, {ms = 10, vpos = localplayer.Character.HumanoidRootPart.Position + Vector3.new(0, 1.3, 0)})
 end
 
 -- resolver
@@ -3444,7 +3491,7 @@ spawn(function()
                 end
             end
         end
-        wait(0.02)
+        task.wait(0.02) -- Use `task.wait` for better scheduling in modern Roblox Lua.
     end
 end)
 
@@ -3689,28 +3736,29 @@ task.spawn(function() -- slow
     end
 end)
 
+local a1table
+local fpsrequired = require(game.ReplicatedStorage.Modules.FPS)
+
+runs.Heartbeat:Connect(function(delta) -- fast cycle
+    choosetarget() --aim part
+
+    if aimtrigger and aimtarget ~= nil then --trigger bot
+        fpsrequired.action(a1table, true)
+        wait()
+        fpsrequired.action(a1table, false)
+    end
+end)
+
 runs.RenderStepped:Connect(function(delta) --  fast
     runs.RenderStepped:Wait()
+    
+    local nil1, nil2, newglobalcurrentgun = getcurrentgun(localplayer)
+    globalcurrentgun = newglobalcurrentgun
+    globalammo = getcurrentammo(globalcurrentgun)
 
     if charsemifly == false and localplayer.Character.Humanoid.PlatformStand == true then
-        --print("Line 2189 - Toggled platformstand to false \\ charsemifly == false, localplayer.Character.Humanoid.PlatformStand == true")
         localplayer.Character.Humanoid.PlatformStand = false
     end
---[[
-    if hitsounds_enabled and currenthitsound ~= "" then
-        hitMarkers.BodyArmor.SoundId = currenthitsound
-        hitMarkers.Bodyshot.SoundId = currenthitsound
-        hitMarkers.Headshot.SoundId = currenthitsound
-        hitMarkers.Helmet.SoundId = currenthitsound
-        hitMarkers.Kill.SoundId = currenthitsound
-    else
-        hitMarkers.BodyArmor.SoundId = originalSounds.BodyArmor
-        hitMarkers.Bodyshot.SoundId = originalSounds.Bodyshot
-        hitMarkers.Headshot.SoundId = originalSounds.Headshot
-        hitMarkers.Helmet.SoundId = originalSounds.Helmet
-        hitMarkers.Kill.SoundId = originalSounds.Kill
-    end
-]]
 
     if charsemifly and charantiaim_underground then
         flipback = true
@@ -3732,18 +3780,22 @@ runs.RenderStepped:Connect(function(delta) --  fast
     end
 
     local bodyparts = {
-        "FaceHitBox",
         "Head",
         "HeadTopHitBox",
-        "LeftFoot",
-        "LeftHand",
-        "LeftLowerArm",
-        "LeftLowerLeg",
+        "FaceHitBox",
+        "UpperTorso",
         "LeftUpperArm",
-        "LowerTorso",
-        "RightFoot",
+        "RightUpperArm",
+        "LeftLowerArm",
         "RightLowerArm",
-        "RightUpperArm"
+        "LeftHand",
+        "RightHand",
+        "LeftUpperLeg",
+        "RightUpperLeg",
+        "LeftLowerLeg",
+        "RightLowerLeg",
+        "LeftFoot",
+        "RightFoot"
     }
 
     local character = localplayer.Character or localplayer.CharacterAdded:Wait()
@@ -3875,40 +3927,6 @@ end
 
     aimtargetname.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2 + aimfov + 20) 
     aimfovcircle.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
---[[
-if aimtarget ~= nil then
-
-    
-
-    local character = aimtarget.Character
-    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
-    
-    if humanoid then
-        local health = humanoid.Health
-        local camera = workspace.CurrentCamera
-        local screenPos, onScreen = camera:WorldToScreenPoint(character.PrimaryPart.Position)
-
-        aimtargetname.Text = string.format(
-            " %s | Health: %d ",
-            aimtarget.Name, math.floor(health)
-        )
-
-        aimtargetname.Position = Vector2.new(screenPos.X, screenPos.Y)
-    else
-        aimtargetname.Text = " ".. aimtarget.Name .." | Health: N/A "
-    end
-else
-    aimtargetname.Text = " "
-end
-]]
-
---[[
-    if aimtarget ~= nil then --on screen stuff
-        aimtargetname.Text = " ".. aimtarget.Name .." "
-    else
-        aimtargetname.Text = " "
-    end
-    ]]
     crosshair.Position = Vector2.new(wcamera.ViewportSize.X / 2, wcamera.ViewportSize.Y / 2)
 
     if aimdynamicfov then
@@ -3932,8 +3950,6 @@ end
             end)
         end
     end
-
-    choosetarget() -- aim part
 
     if snaplinebool and aimtargetpart then
         aimsnapline.Visible = true
