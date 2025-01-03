@@ -15,7 +15,7 @@ library:init()
 
 local Window1  = library.NewWindow({
     title = "Exothium.xyz - " .. version,
-    size = UDim2.new(0, 510, 0.66, 5
+    size = UDim2.new(0, 510, 0.68, 5
 )})
 
 local combat = Window1:AddTab('Combat')
