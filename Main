@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "v0.0.4a ghe"
+local version = "v0.0.4a"
 
 local detectedAdmins = {}
 
@@ -15,7 +15,7 @@ library:init()
 
 local Window1  = library.NewWindow({
     title = "Exothium.xyz - " .. version,
-    size = UDim2.new(0, 510, 0.68, 5
+    size = UDim2.new(0, 510, 0.66, 5
 )})
 
 local combat = Window1:AddTab('Combat')
@@ -239,8 +239,6 @@ local semifly_bodyvel = nil
 bunnyhop = false
 
 worldleaves = false
-
-clocktimemodifier = false
 worldclock = 14
 
 local waterplatforms = Instance.new("Folder", workspace)
@@ -1849,14 +1847,6 @@ worldh:AddSeparator({
     text = "Lighting Parameters"
 })
 
-worldh:AddToggle({
-    text = "Modify Clock Time",
-    flag = "ClockTimeToggle",
-    callback = function(v)
-        clocktimemodifier = v
-    end
-})
-
 worldh:AddSlider({
     enabled = true,
     text = "Clock Time",
@@ -1873,8 +1863,8 @@ worldh:AddSlider({
 })
 
 local atmosphere = game.Lighting:FindFirstChild("Atmosphere")
-local old_dens = atmosphere.Density
-local old_offset = atmosphere.Offset
+local originalDensity = atmosphere and atmosphere.Density
+local originalOffset = atmosphere and atmosphere.Offset
 
 worldh:AddToggle({
     text = "No Fog",
@@ -1886,15 +1876,17 @@ worldh:AddToggle({
                 atmosphere.Density = 0
                 atmosphere.Offset = 0
             else
-                atmosphere.Density = old_dens
-                atmosphere.Offset = old_offset
+                atmosphere.Density = originalDensity
+                atmosphere.Offset = originalOffset
             end
         end
     end
 })
 
+
 local prevAmbient = game.Lighting.Ambient
 local prevOutdoor = game.Lighting.OutdoorAmbient
+
 worldh:AddToggle({
     text = "Ambient Toggle",
     tooltip = "Enables/Disables Ambient Modifier",
@@ -1958,6 +1950,8 @@ viewmod:AddList({
     callback = function(v)
         if viewmod_materials[v] then
             viewmodhandmat = viewmod_materials[v]
+        else
+    
         end
     end
 })
@@ -1974,6 +1968,8 @@ viewmod:AddList({
     callback = function(v)
         if viewmod_materials[v] then
             viewmodgunmat = viewmod_materials[v]
+        else
+    
         end
     end
 })
@@ -3750,9 +3746,9 @@ local a1table
 local fpsrequired = require(game.ReplicatedStorage.Modules.FPS)
 
 runs.Heartbeat:Connect(function(delta) -- fast cycle
-    choosetarget()
+    choosetarget() --aim part
 
-    if aimtrigger and aimtarget ~= nil then
+    if aimtrigger and aimtarget ~= nil then --trigger bot
         fpsrequired.action(a1table, true)
         wait()
         fpsrequired.action(a1table, false)
@@ -3785,9 +3781,7 @@ runs.RenderStepped:Connect(function(delta) --  fast
         humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
     end
 
-    if clocktimemodifier then
-        game.Lighting.ClockTime = worldclock
-    end
+    game.Lighting.ClockTime = worldclock
 
     local bodyparts = {
         "Head",
@@ -3880,7 +3874,7 @@ runs.RenderStepped:Connect(function(delta) --  fast
 		end
     end
 
-    if changerbool and localplayer.Character ~= nil then
+    if changerbool and localplayer.Character ~= nil then -- humanoid changer
         localplayer.Character.Humanoid.WalkSpeed = changerspeed
         localplayer.Character.Humanoid.JumpHeight = changerjump
         localplayer.Character.Humanoid.HipHeight = changerheight
