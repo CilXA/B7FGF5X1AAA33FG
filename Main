@@ -239,6 +239,8 @@ local semifly_bodyvel = nil
 bunnyhop = false
 
 worldleaves = false
+
+clocktimemodifier = false
 worldclock = 14
 
 local waterplatforms = Instance.new("Folder", workspace)
@@ -1847,6 +1849,14 @@ worldh:AddSeparator({
     text = "Lighting Parameters"
 })
 
+worldh:AddToggle({
+    text = "Modify Clock Time",
+    flag = "ClockTimeToggle",
+    callback = function(v)
+        clocktimemodifier = v
+    end
+})
+
 worldh:AddSlider({
     enabled = true,
     text = "Clock Time",
@@ -1859,7 +1869,6 @@ worldh:AddSlider({
     increment = 0.1,
     callback = function(v)
         worldclock = v
-        game.Lighting.ClockTime = v
     end
 })
 
@@ -2400,6 +2409,16 @@ hitsounds:AddList({
         preview:Destroy()
     end
 })
+
+-- clocktime
+task.spawn(function()
+    while true do
+        if clocktimemodifier then
+            game.Lighting.ClockTime = worldclock
+        end
+        task.wait(0.02)
+    end
+end)
 
 --tracers--
 
