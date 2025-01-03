@@ -1,5 +1,5 @@
 local exec = identifyexecutor()
-local version = "v0.0.4a"
+local version = "v0.0.4a ghe"
 
 local detectedAdmins = {}
 
@@ -1958,8 +1958,6 @@ viewmod:AddList({
     callback = function(v)
         if viewmod_materials[v] then
             viewmodhandmat = viewmod_materials[v]
-        else
-    
         end
     end
 })
@@ -1976,8 +1974,6 @@ viewmod:AddList({
     callback = function(v)
         if viewmod_materials[v] then
             viewmodgunmat = viewmod_materials[v]
-        else
-    
         end
     end
 })
@@ -2234,58 +2230,6 @@ camer:AddToggle({
     end
 })
 
-
-local finishCharacterCreation = rp:WaitForChild("Remotes"):WaitForChild("FinishCharacterCreation")
-
-local skinColors = {"1", "2", "3", "4", "5", "6", "7", "8"}
-local faces = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"}
-local hairColors = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24"}
-local hairs = {"M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11", "M12"}
-
-local toggleActive = false
-local runningThread
-
-local function fireCharacterCreation()
-    for _, skinColor in ipairs(skinColors) do
-        for _, face in ipairs(faces) do
-            for _, hairColor in ipairs(hairColors) do
-                for _, hair in ipairs(hairs) do
-                    if not toggleActive then
-                        return
-                    end
-                    
-                    local args = {
-                        [1] = {
-                            ["SkinColor"] = skinColor,
-                            ["Face"] = face,
-                            ["HairColor"] = hairColor,
-                            ["Hair"] = hair
-                        }
-                    }
-                    
-                    finishCharacterCreation:InvokeServer(unpack(args))
-                    wait(0.01)
-                end
-            end
-        end
-    end
-end
-
-camer:AddToggle({
-    text = "Appearance Switcher",
-    tooltip = "Switches your appearance",
-    flag = "vAppearance",
-    callback = function(v)
-        toggleActive = v
-        if toggleActive then
-            runningThread = coroutine.create(fireCharacterCreation)
-            coroutine.resume(runningThread)
-        else
-            runningThread = nil
-        end
-    end
-})
-
 camer:AddToggle({
     text = "No Visor",
     tooltip = "Enables/Disables Visor Visibility",
@@ -2409,16 +2353,6 @@ hitsounds:AddList({
         preview:Destroy()
     end
 })
-
--- clocktime
-task.spawn(function()
-    while true do
-        if clocktimemodifier then
-            game.Lighting.ClockTime = worldclock
-        end
-        task.wait(0.02)
-    end
-end)
 
 --tracers--
 
@@ -3816,9 +3750,9 @@ local a1table
 local fpsrequired = require(game.ReplicatedStorage.Modules.FPS)
 
 runs.Heartbeat:Connect(function(delta) -- fast cycle
-    choosetarget() --aim part
+    choosetarget()
 
-    if aimtrigger and aimtarget ~= nil then --trigger bot
+    if aimtrigger and aimtarget ~= nil then
         fpsrequired.action(a1table, true)
         wait()
         fpsrequired.action(a1table, false)
@@ -3849,6 +3783,10 @@ runs.RenderStepped:Connect(function(delta) --  fast
         local forcedRotation = CFrame.Angles(math.rad(xrot), yrot, zrot)
 
         humanoidRootPart.CFrame = CFrame.new(position) * forcedRotation
+    end
+
+    if clocktimemodifier then
+        game.Lighting.ClockTime = worldclock
     end
 
     local bodyparts = {
@@ -3942,7 +3880,7 @@ runs.RenderStepped:Connect(function(delta) --  fast
 		end
     end
 
-    if changerbool and localplayer.Character ~= nil then -- humanoid changer
+    if changerbool and localplayer.Character ~= nil then
         localplayer.Character.Humanoid.WalkSpeed = changerspeed
         localplayer.Character.Humanoid.JumpHeight = changerjump
         localplayer.Character.Humanoid.HipHeight = changerheight
