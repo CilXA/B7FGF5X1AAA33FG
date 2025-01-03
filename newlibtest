@@ -589,6 +589,7 @@ function library:init()
             return readfile(self.cheatname..'/'..self.gamename..'/configs/'..name..self.fileext);
         end
     end
+
 function self:LoadConfig(name)
     local cfg = self:GetConfig(name)
     if not cfg then
@@ -609,7 +610,6 @@ function self:LoadConfig(name)
 
             -- Log the flag and option class type
             print("Processing flag: " .. flag)
-            print("Value associated with flag: " .. tostring(value))
 
             -- Check if the option exists in library.options
             if option then
@@ -647,17 +647,10 @@ function self:LoadConfig(name)
         self:SendNotification('Successfully loaded config: '..name..' ('..loadedFlags..' out of '..totalFlags..' flags loaded)', 5, c3new(0, 1, 0))
         print("Total flags processed: " .. totalFlags .. ", successfully loaded: " .. loadedFlags)
     else
-        -- Specific error for the flag that's causing issues
         self:SendNotification('Error loading config: '..tostring(e)..'. ('..tostring(name)..')', 5, c3new(1, 0, 0))
         print("Error loading config: "..tostring(e))
-
-        -- Detailed debug output for the problematic flag
-        if string.match(tostring(e), "NoEffects") then
-            print("Error occurred while processing 'NoEffects' flag.")
-        end
     end
 end
-
 
 function self:SaveConfig(name)
     if not self:GetConfig(name) then
@@ -4821,6 +4814,6 @@ themeSection:AddList({text = 'Presets', flag = 'preset_theme', values = themeStr
 
     return settingsTab;
 end
-print("debug active")
+print("debug active6")
 getgenv().library = library
 return library
