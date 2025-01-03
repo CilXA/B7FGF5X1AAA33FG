@@ -1481,6 +1481,32 @@ privatefeatures:AddToggle({
     end
 })
 
+privatefeatures:AddToggle({
+    text = "Bunnyhop",
+    flag = "Bunnyhop",
+    callback = function(v)
+        bunnyhop = v
+        repeat
+            if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
+                localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
+            end
+            task.wait()
+        until not bunnyhop
+    end
+})
+
+privatefeatures:AddToggle({
+    text = "Gnome Mode",
+    flag = "GnomeMode",
+    risky = true,
+    tooltip = "Moves your limbs and head into your torso",
+    callback = function(v)
+        game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
+    end
+})
+
+local fallingConnection
+
 function isFalling()
     local humanoid = localplayer.Character and localplayer.Character:FindFirstChild("Humanoid")
     return humanoid and humanoid:GetState() == Enum.HumanoidStateType.Freefall
@@ -1514,37 +1540,14 @@ function createSafetyPart()
 end
 
 local function startFallProtection()
-    while NoFallDamage do
-        if isFalling() then
+    if fallingConnection then fallingConnection:Disconnect() end
+
+    fallingConnection = runs.Heartbeat:Connect(function()
+        if NoFallDamage and isFalling() then
             createSafetyPart()
         end
-        wait(0.1)
-    end
+    end)
 end
-
-privatefeatures:AddToggle({
-    text = "Bunnyhop",
-    flag = "Bunnyhop",
-    callback = function(v)
-        bunnyhop = v
-        repeat
-            if localplayer.Character and localplayer.Character:FindFirstChildWhichIsA("Humanoid") then
-                localplayer.Character.Humanoid:SetAttribute("JumpCooldown", 0)
-            end
-            task.wait()
-        until not bunnyhop
-    end
-})
-
-privatefeatures:AddToggle({
-    text = "Gnome Mode",
-    flag = "GnomeMode",
-    risky = true,
-    tooltip = "Moves your limbs and head into your torso",
-    callback = function(v)
-        game.ReplicatedStorage.Remotes.UpdateTilt:FireServer(v and 0/0 or 0)
-    end
-})
 
 privatefeatures:AddToggle({
     text = "No Fall Damage",
@@ -1554,9 +1557,13 @@ privatefeatures:AddToggle({
         NoFallDamage = v
         if v then
             startFallProtection()
+        elseif fallingConnection then
+            fallingConnection:Disconnect()
+            fallingConnection = nil
         end
     end
 })
+
 
 privatefeatures:AddToggle({
     text = "Visualize",
